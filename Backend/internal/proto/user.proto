@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "Backend/internal/proto/gen";
+
+service UserService {
+    rpc CreateUser(CreateUserRequest) returns (UserResponse);
+    rpc GetUser(GetUserRequest) returns (UserResponse);
+    rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+    rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+}
+
+message User {
+    int32 id = 1;
+    string email = 2;
+    string role = 3;
+    string nombre_completo = 4;
+    optional string telefono = 5;
+    optional string fecha_registro = 6;
+}
+
+message CreateUserRequest {
+    string email = 1;
+    string password = 2;
+    string role = 3;
+    string nombre_completo = 4;
+    optional string telefono = 5;
+}
+
+message GetUserRequest {
+    int32 id = 1;
+}
+
+message UpdateUserRequest {
+    int32 id = 1;
+    optional string email = 2;
+    optional string nombre_completo = 3;
+    optional string telefono = 4;
+}
+
+message DeleteUserRequest {
+    int32 id = 1;
+}
+
+message DeleteUserResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message ListUsersRequest {
+    int32 page = 1;
+    int32 page_size = 2;
+}
+
+message ListUsersResponse {
+    repeated User users = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 page_size = 4;
+    int32 total_pages = 5;
+}
+
+message UserResponse {
+    User user = 1;
+}
