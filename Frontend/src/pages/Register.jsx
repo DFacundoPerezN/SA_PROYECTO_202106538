@@ -6,7 +6,7 @@ import '../styles/Auth.css'
 const Register = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    nombre_completo: '',
+    name: '',
     email: '',
     password: '',
     role: '',
@@ -82,11 +82,11 @@ const Register = () => {
                 </label>
                 <input
                   type="text"
-                  id="nombre_completo"
-                  name="nombre_completo"
+                  id="name"
+                  name="name"
                   className="form-input"
                   placeholder="Nombre y Apellido"
-                  value={formData.nombre_completo}
+                  value={formData.name}
                   onChange={handleChange}
                   required
                 />
@@ -139,7 +139,7 @@ const Register = () => {
                 >
                   <option value="">Selecciona un tipo</option>
                   <option value="CLIENTE">Cliente</option>
-                  <option value="ADMINISTRADOR">Administrador</option>
+                  {/* <option value="ADMINISTRADOR">Administrador</option> */}
                 </select>
               </div>
 

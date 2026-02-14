@@ -21,7 +21,10 @@ const Login = () => {
   }
 
   const handleSubmit = async (e) => {
+    // Prevenir comportamiento por defecto del formulario
     e.preventDefault()
+    e.stopPropagation()
+    
     setLoading(true)
     setError('')
 
@@ -30,18 +33,18 @@ const Login = () => {
       
       // Guardar token y usuario
       localStorage.setItem('token', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
-
+      localStorage.setItem('name', data.name)
+      localStorage.setItem('role', data.role)
+      //console.log('Usuario autenticado:', data)
       // Redirigir según el rol
-      if (data.user.role === 'ADMINISTRADOR') {
+      if (data.role === 'ADMINISTRADOR') {
         navigate('/admin/dashboard')
-      } else {
+      } else if (data.role === 'CLIENTE') {
         navigate('/cliente/dashboard')
       }
     } catch (err) {
-      console.error(err)
-      console.log(err.response)
-      setError(err.response?.data?.error || error || 'Error al iniciar sesión. Verifica tus credenciales.')
+      console.error('Error en login:', err)
+      setError(err.response?.data?.error || error|| 'Error al iniciar sesión. Verifica tus credenciales.')
     } finally {
       setLoading(false)
     }
@@ -64,7 +67,6 @@ const Login = () => {
           <div className="brand-content">
             <h1>Bienvenido a la nueva era de deliveries</h1>
             <p>Conectamos clientes con los mejores servicios de entrega. Rápido, seguro y confiable.</p>
-
           </div>
         </div>
 
@@ -81,7 +83,7 @@ const Login = () => {
               </div>
             )}
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} method="post" action="#">
               <div className="form-group">
                 <label className="form-label" htmlFor="email">
                   Correo electrónico
@@ -95,6 +97,7 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  autoComplete="email"
                 />
               </div>
 
@@ -111,10 +114,21 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  autoComplete="current-password"
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary" disabled={loading}>
+              <button 
+                type="submit" 
+                className="btn btn-primary" 
+                disabled={loading}
+                onClick={(e) => {
+                  // Asegurar que no haya propagación
+                  if (loading) {
+                    e.preventDefault()
+                  }
+                }}
+              >
                 {loading ? (
                   <>
                     <span>Iniciando sesión...</span>

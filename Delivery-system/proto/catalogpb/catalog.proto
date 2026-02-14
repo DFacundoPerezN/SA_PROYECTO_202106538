@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package catalog;
+
+option go_package = "delivery-proto/catalogpb";
+
+service CatalogService {
+  rpc GetProductsByRestaurant(GetProductsByRestaurantRequest)
+      returns (GetProductsByRestaurantResponse);
+
+  rpc GetProductsByIDs(GetProductsByIDsRequest)
+      returns (GetProductsByIDsResponse);
+
+  rpc GetProduct (GetProductRequest) returns (GetProductResponse);
+
+}
+
+message GetCatalogRequest {
+  int32 restaurant_id = 1;
+}
+
+message Product {
+  int32 id = 1;
+  int32 restaurant_id = 2;
+  string nombre = 3;
+  string descripcion = 4;
+  double precio = 5;
+  bool disponible = 6;
+  string categoria = 7;
+}
+
+message GetCatalogResponse {
+  repeated Product products = 1;
+}
+
+message GetProductsByRestaurantRequest {
+  int32 restaurante_id = 1;
+}
+
+message GetProductsByRestaurantResponse {
+  repeated Product products = 1;
+}
+
+message GetProductsByIDsRequest {
+  repeated int32 ids = 1;
+}
+
+message GetProductsByIDsResponse {
+  repeated Product products = 1;
+}
+
+message GetProductRequest {
+  int32 product_id = 1;
+}
+
+message GetProductResponse {
+  int32 id = 1;
+  string nombre = 2;
+  double precio = 3;
+  bool disponible = 4;
+  int32 restaurante_id = 5;
+}

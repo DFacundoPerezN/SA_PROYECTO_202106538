@@ -31,8 +31,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token inválido o expirado
       localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      window.location.href = '/login'
+      localStorage.removeItem('name')
+      localStorage.removeItem('role')
+      //window.location.href = '/login'
     }
     return Promise.reject(error)
   }
@@ -54,13 +55,15 @@ export const authService = {
   // Logout
   logout: () => {
     localStorage.removeItem('token')
-    localStorage.removeItem('user')
+    localStorage.removeItem('name')
+    localStorage.removeItem('role')
   },
 
   // Obtener usuario actual
   getCurrentUser: () => {
-    const userStr = localStorage.getItem('user')
-    return userStr ? JSON.parse(userStr) : null
+    const name = localStorage.getItem('name')
+    const role = localStorage.getItem('role')
+    return name ? { name, role } : null
   },
 
   // Verificar si está autenticado

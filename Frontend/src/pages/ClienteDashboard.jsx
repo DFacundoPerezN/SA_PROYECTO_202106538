@@ -1,15 +1,58 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../services/api'
+import api from '../services/api'
 import '../styles/Dashboard.css'
 
 const ClienteDashboard = () => {
   const navigate = useNavigate()
   const user = authService.getCurrentUser()
+  
+  const [restaurants, setRestaurants] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+    fetchRestaurants()
+  }, [])
+
+  const fetchRestaurants = async () => {
+    try {
+      setLoading(true)
+      const response = await api.get('/api/restaurants')
+      setRestaurants(response.data.restaurants || [])
+      setError('')
+    } catch (err) {
+      console.error('Error fetching restaurants:', err)
+      setError('Error al cargar los restaurantes')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleLogout = () => {
     authService.logout()
     navigate('/login')
   }
+
+const handleViewMenu = (restaurant) => {
+  // Guardar info del restaurante en localStorage
+  localStorage.setItem('currentRestaurant', JSON.stringify({
+    id: restaurant.id,
+    nombre: restaurant.nombre,
+    direccion: restaurant.direccion,
+    telefono: restaurant.telefono,
+    calificacion: restaurant.calificacion
+  }))
+  
+  navigate(`/cliente/restaurant/${restaurant.id}/menu`)
+}
+
+  const filteredRestaurants = restaurants.filter(restaurant =>
+    restaurant.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    restaurant.descripcion?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   return (
     <div className="dashboard-container">
@@ -42,39 +85,12 @@ const ClienteDashboard = () => {
               type="text" 
               placeholder="Buscar restaurantes, comida o bebidas..." 
               className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="categories-section">
-          <h2>Categorías Populares</h2>
-          <div className="categories-grid">
-            <div className="category-card">
-              <div className="category-icon">🍕</div>
-              <span>Pizza</span>
-            </div>
-            <div className="category-card">
-              <div className="category-icon">🍔</div>
-              <span>Hamburguesas</span>
-            </div>
-            <div className="category-card">
-              <div className="category-icon">🍣</div>
-              <span>Sushi</span>
-            </div>
-            <div className="category-card">
-              <div className="category-icon">🌮</div>
-              <span>Mexicana</span>
-            </div>
-            <div className="category-card">
-              <div className="category-icon">🍝</div>
-              <span>Italiana</span>
-            </div>
-            <div className="category-card">
-              <div className="category-icon">🥗</div>
-              <span>Saludable</span>
-            </div>
-          </div>
-        </div>
 
         <div className="dashboard-grid">
           <div className="dashboard-card">
@@ -88,80 +104,84 @@ const ClienteDashboard = () => {
               </button>
             </div>
           </div>
-
-          <div className="dashboard-card">
-            <h2>Favoritos</h2>
-            <div className="empty-state">
-              <div className="empty-icon">❤️</div>
-              <p>No tienes favoritos guardados</p>
-              <small>Guarda tus restaurantes favoritos para acceder rápidamente</small>
-            </div>
-          </div>
         </div>
 
         <div className="restaurants-section">
-          <h2>Restaurantes Recomendados</h2>
-          <div className="restaurants-grid">
-            <div className="restaurant-card">
-              <div className="restaurant-image">🍕</div>
-              <div className="restaurant-info">
-                <h3>Pizza Palace</h3>
-                <div className="restaurant-meta">
-                  <span>⭐ 4.8</span>
-                  <span>•</span>
-                  <span>25-35 min</span>
-                  <span>•</span>
-                  <span>$$</span>
-                </div>
-                <p className="restaurant-description">Pizza artesanal italiana</p>
-              </div>
+          <h2>Restaurantes Disponibles</h2>
+          
+          {error && (
+            <div className="alert alert-error" style={{ marginBottom: '20px' }}>
+              {error}
             </div>
+          )}
 
-            <div className="restaurant-card">
-              <div className="restaurant-image">🍔</div>
-              <div className="restaurant-info">
-                <h3>Burger King</h3>
-                <div className="restaurant-meta">
-                  <span>⭐ 4.5</span>
-                  <span>•</span>
-                  <span>15-25 min</span>
-                  <span>•</span>
-                  <span>$</span>
-                </div>
-                <p className="restaurant-description">Hamburguesas clásicas</p>
-              </div>
+          {loading ? (
+            <div className="loading-state">
+              <div className="spinner-large"></div>
+              <p>Cargando restaurantes...</p>
             </div>
+          ) : filteredRestaurants.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon">🍽️</div>
+              <p>No se encontraron restaurantes</p>
+              <small>
+                {searchTerm 
+                  ? 'Intenta con otro término de búsqueda' 
+                  : 'No hay restaurantes disponibles en este momento'}
+              </small>
+            </div>
+          ) : (
+            <div className="restaurants-grid">
+              {filteredRestaurants.map((restaurant) => (
+                <div key={restaurant.id} className="restaurant-card">
+                  <div className="restaurant-image">
+                    {restaurant.imagen_url ? (
+                      <img src={restaurant.imagen_url} alt={restaurant.nombre} />
+                    ) : (
+                      <div className="restaurant-placeholder">🍽️</div>
+                    )}
+                  </div>
+                  <div className="restaurant-info">
+                    <h3>{restaurant.nombre}</h3>
+                    
+                    <div className="restaurant-meta">
+                      {restaurant.calificacion && (
+                        <>
+                          <span>⭐ {restaurant.calificacion.toFixed(1)}</span>
+                          <span>•</span>
+                        </>
+                      )}
+                      {restaurant.tiempo_entrega && (
+                        <>
+                          <span>{restaurant.tiempo_entrega} min</span>
+                          <span>•</span>
+                        </>
+                      )}
+                      <span className={`status-badge ${restaurant.activo ? 'active' : 'inactive'}`}>
+                        {restaurant.activo ? 'Abierto' : 'Cerrado'}
+                      </span>
+                    </div>
+                    
+                    {restaurant.descripcion && (
+                      <p className="restaurant-description">{restaurant.descripcion}</p>
+                    )}
 
-            <div className="restaurant-card">
-              <div className="restaurant-image">🍣</div>
-              <div className="restaurant-info">
-                <h3>Sushi Master</h3>
-                <div className="restaurant-meta">
-                  <span>⭐ 4.9</span>
-                  <span>•</span>
-                  <span>30-40 min</span>
-                  <span>•</span>
-                  <span>$$$</span>
+                    {restaurant.direccion && (
+                      <p className="restaurant-address">📍 {restaurant.direccion}</p>
+                    )}
+                    
+                    <button 
+                      className="btn-view-menu"
+                      onClick={() => handleViewMenu(restaurant)}
+                      disabled={!restaurant.activo}
+                    >
+                      {restaurant.activo ? 'Ver Menú' : 'No disponible'}
+                    </button>
+                  </div>
                 </div>
-                <p className="restaurant-description">Sushi fresco y auténtico</p>
-              </div>
+              ))}
             </div>
-
-            <div className="restaurant-card">
-              <div className="restaurant-image">🌮</div>
-              <div className="restaurant-info">
-                <h3>Taco Fiesta</h3>
-                <div className="restaurant-meta">
-                  <span>⭐ 4.7</span>
-                  <span>•</span>
-                  <span>20-30 min</span>
-                  <span>•</span>
-                  <span>$$</span>
-                </div>
-                <p className="restaurant-description">Tacos mexicanos auténticos</p>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

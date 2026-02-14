@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package restaurantpb;
+
+option go_package = "delivery-proto/restaurantpb";
+
+service RestaurantService {
+rpc ListRestaurants (Empty) returns (RestaurantListResponse);
+}
+
+message Empty {}
+
+message Restaurant {
+int32 id = 1;
+string nombre = 2;
+string direccion = 3;
+double latitud = 4;
+double longitud = 5;
+string telefono = 6;
+double calificacion = 7;
+bool activo = 8;
+}
+
+message RestaurantListResponse {
+repeated Restaurant restaurants = 1;
+}
