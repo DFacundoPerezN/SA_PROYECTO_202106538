@@ -2,10 +2,29 @@ syntax = "proto3";
 
 package order;
 
+//import "google/protobuf/timestamp.proto";
+
 option go_package = "delivery-proto/orderpb";
 
 service OrderService {
   rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse);
+  
+  rpc UpdateOrderStatus(UpdateOrderStatusRequest)    returns (UpdateOrderStatusResponse);
+
+  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse);
+
+  // Obtener ordenes por cliente
+  rpc GetOrdersByClient(GetOrdersByClientRequest)      returns (GetOrdersResponse);
+
+  // Obtener ordenes por restaurante
+  rpc GetOrdersByRestaurant(GetOrdersByRestaurantRequest)      returns (GetOrdersResponse);
+
+  // Asignar repartidor
+  rpc AssignDriver(AssignDriverRequest)      returns (AssignDriverResponse);
+    
+  rpc GetFinishedOrders(GetFinishedOrdersRequest) returns (GetOrdersResponse);
+
+  rpc GetOrdersByDriver(GetOrdersByDriverRequest) returns (GetOrdersResponse);
 }
 
 message OrderItem {
@@ -32,4 +51,69 @@ message CreateOrderResponse {
   int32 order_id = 1;
   string message = 2;
   string estado = 3;
+}
+
+message UpdateOrderStatusRequest {
+  int32 order_id = 1;
+  string new_status = 2;
+}
+
+message UpdateOrderStatusResponse {
+  int32 order_id = 1;
+  string status = 2;
+}
+
+message CancelOrderRequest {
+  int32 order_id = 1;
+  string reason = 2; // Motivo de la cancelación
+  int32 user_id = 3; // ID del usuario que cancela (cliente, restaurante o repartidor)
+}
+
+message CancelOrderResponse {
+  int32 order_id = 1;
+  string new_status = 2;
+  //google.protobuf.Timestamp cancelled_at = 4;
+}
+
+message OrderSummary {
+  int32 id = 1;
+  int32 cliente_id = 2;
+  string cliente_nombre = 3;
+  int32 restaurante_id = 4;
+  string restaurante_nombre = 5;
+  string estado = 6;
+  double costo_total = 7;
+  string direccion_entrega = 8;
+  string fecha_creacion = 9;
+  int32 repartidor_id = 10;
+  string cliente_telefono = 11;
+}
+
+message GetOrdersByClientRequest {
+  int32 client_id = 1;
+}
+
+message GetOrdersByRestaurantRequest {
+  int32 restaurant_id = 1;
+}
+
+message GetOrdersResponse {
+  repeated OrderSummary orders = 1;
+}
+
+message AssignDriverRequest {
+  int32 order_id = 1;
+  int32 driver_id = 2;
+}
+
+message AssignDriverResponse {
+  int32 order_id = 1;
+  string status = 2;
+  string message = 3;
+}
+
+message GetFinishedOrdersRequest {}
+
+message GetOrdersByDriverRequest {
+  int32 driver_id = 1;
 }

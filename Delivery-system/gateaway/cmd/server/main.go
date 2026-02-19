@@ -104,9 +104,10 @@ func main() {
 	api := router.Group("/api")
 	{
 		api.POST("auth/login", authHandler.Login)
-		api.POST("/users", authHandler.Register)
+		api.POST("users", authHandler.Register)
 		api.GET("restaurants/:id/products", catalogHandler.GetProductsByRestaurant)
 		api.GET("restaurants", restaurantHandler.ListRestaurants)
+		api.GET("orders/available", orderHandler.GetAvailableOrders)
 	}
 
 	// PROTECTED ROUTES
@@ -124,6 +125,15 @@ func main() {
 		})
 
 		protected.POST("/orders", orderHandler.CreateOrder)
+		protected.PATCH("/orders/:id/status", orderHandler.UpdateStatus)
+		protected.POST("/orders/:id/cancel", orderHandler.CancelOrder)
+		// cliente
+		protected.GET("/orders/me", orderHandler.GetMyOrders)
+		// restaurante
+		protected.GET("/orders/restaurant/:id", orderHandler.GetRestaurantOrders)
+		// repartidor
+		protected.PUT("/orders/:id/assign", orderHandler.AssignDriver)
+		protected.GET("/orders/driver/me", orderHandler.GetMyDriverOrders)
 	}
 
 	// HTTP server

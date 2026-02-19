@@ -7,6 +7,8 @@ type Order struct {
 	ClienteTelefono   string
 	RestauranteId     int32
 	RestauranteNombre string
+	Estado            string
+	RepartidorId      int32
 	DireccionEntrega  string
 	LatitudEntrega    float64
 	LongitudEntrega   float64
