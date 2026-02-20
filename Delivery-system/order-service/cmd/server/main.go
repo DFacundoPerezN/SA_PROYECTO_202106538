@@ -67,13 +67,22 @@ func main() {
 	log.Println("Connected to catalog-service:", catalogClientServer)
 
 	// ---------------- USER SERVICE ----------------
-	catalogClientServer = os.Getenv("USER_SERVICE_ADDR")
-	if catalogClientServer == "" {
-		catalogClientServer = "localhost:50052"
+	catalogUserServer := os.Getenv("USER_SERVICE_ADDR")
+	if catalogUserServer == "" {
+		catalogUserServer = "localhost:50052"
 	}
-	userClient, err := grpcclient.NewUserClient(catalogClientServer)
+	userClient, err := grpcclient.NewUserClient(catalogUserServer)
 	if err != nil {
 		log.Fatalf("cannot connect to user-service: %v", err)
+	}
+
+	catalogNotiServer := os.Getenv("NOTIFICATION_SERVICE_ADDR")
+	if catalogNotiServer == "" {
+		catalogNotiServer = "localhost:50056"
+	}
+	notificationClient, err := grpcclient.NewNotificationClient(catalogNotiServer)
+	if err != nil {
+		log.Fatalf("cannot connect to notification-service: %v", err)
 	}
 
 	// ---------------------------
@@ -81,7 +90,7 @@ func main() {
 	// ---------------------------
 
 	orderRepository := repository.NewOrderRepository(db)
-	orderService := service.NewOrderService(orderRepository, catalogClient, userClient)
+	orderService := service.NewOrderService(orderRepository, catalogClient, userClient, notificationClient)
 	orderHandler := handler.NewOrderGRPCServer(orderService)
 
 	// ---------------------------

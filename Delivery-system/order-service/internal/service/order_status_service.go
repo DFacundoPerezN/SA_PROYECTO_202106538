@@ -6,6 +6,8 @@ import (
 	"slices"
 	"time"
 
+	notificationpb "delivery-proto/notificationpb"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -91,6 +93,60 @@ func (s *OrderService) CancelOrder(
 	if err := tx.Commit(); err != nil {
 		return time.Time{}, status.Error(codes.Internal, "transaction commit failed")
 	}
+
+	// ------------------------------
+	// ENVIAR NOTIFICACIÓN (POST-COMMIT)
+	// ------------------------------
+
+	go func() {
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		// obtener orden completa
+		fullOrder, err := s.repo.GetOrderByID(ctx, orderID)
+		if err != nil {
+			return
+		}
+
+		items, err := s.repo.GetOrderItems(ctx, orderID)
+		if err != nil {
+			return
+		}
+
+		// usuario que canceló
+		userResp, err := s.userClient.GetUser(int32(userID))
+		if err != nil {
+			return
+		}
+
+		// convertir productos
+		var protoItems = ""
+
+		for _, it := range items {
+			protoItems += fmt.Sprintf("- %s x%d\n", it.NombreProducto, it.Cantidad)
+		}
+
+		clientResp, err := s.userClient.GetUser(fullOrder.ClienteId)
+		if err != nil {
+			return
+		}
+
+		req := &notificationpb.SendOrderCanceledEmailRequest{
+			Email:   clientResp.User.Email,
+			OrderId: int32(orderID),
+			//NombreUsuario:      fullOrder.ClienteNombre,
+			NombreUsuario:    userResp.User.NombreCompleto,
+			RolUsuario:       userResp.User.Role,
+			Motivo:           reason,
+			FechaCancelacion: cancelledAt.Format(time.RFC3339),
+			Productos:        protoItems,
+			Estado:           "CANCELADA",
+		}
+
+		_ = s.notificationClient.SendOrderCancelledEmail(ctx, req)
+
+	}()
 
 	return cancelledAt, nil
 }

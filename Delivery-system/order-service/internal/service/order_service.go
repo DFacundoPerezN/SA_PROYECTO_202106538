@@ -14,13 +14,18 @@ import (
 )
 
 type OrderService struct {
-	repo          *repository.OrderRepository
-	catalogClient *catalogclient.CatalogClient
-	userClient    *catalogclient.UserClient
+	repo               *repository.OrderRepository
+	catalogClient      *catalogclient.CatalogClient
+	userClient         *catalogclient.UserClient
+	notificationClient *catalogclient.NotificationClient
 }
 
-func NewOrderService(r *repository.OrderRepository, catalogClient *catalogclient.CatalogClient, userClient *catalogclient.UserClient) *OrderService {
-	return &OrderService{repo: r, catalogClient: catalogClient, userClient: userClient}
+func NewOrderService(r *repository.OrderRepository, catalogClient *catalogclient.CatalogClient, userClient *catalogclient.UserClient, notificationClient *catalogclient.NotificationClient) *OrderService {
+	return &OrderService{repo: r,
+		catalogClient:      catalogClient,
+		userClient:         userClient,
+		notificationClient: notificationClient,
+	}
 }
 
 func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrderRequest) (int, error) {

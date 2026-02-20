@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package notification;
+
+
+option go_package = "delivery-proto/notificationpb";
+
+service NotificationService {
+  //rpc SendNotification (SendNotificationRequest) returns (SendNotificationResponse);
+  rpc SendOrderCanceledEmail(SendOrderCanceledEmailRequest)     returns (SendOrderCanceledEmailResponse);
+}
+
+message SendOrderCanceledEmailRequest {
+  string email = 1;
+  int32 order_id = 2;
+  string productos = 3;
+  string fecha_cancelacion = 4;
+  string nombre_usuario = 5;
+  string rol_usuario = 6;
+  string motivo = 7;
+  string estado = 8;
+}
+
+message SendOrderCanceledEmailResponse {
+  string message = 1;
+}
+

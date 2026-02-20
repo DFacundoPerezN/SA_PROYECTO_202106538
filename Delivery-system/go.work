@@ -4,6 +4,7 @@ use (
 	./auth-service
 	./catalog-service
 	./gateaway
+	./notification-service
 	./order-service
 	./proto
 	./restaurant-service
