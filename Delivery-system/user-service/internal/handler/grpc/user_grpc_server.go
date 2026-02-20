@@ -56,11 +56,15 @@ func (s *UserGRPCServer) GetUserByID(ctx context.Context, req *userpb.GetUserByI
 
 func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
 
+	if req.Rol == "" {
+		req.Rol = "CLIENTE" // Asignar rol por defecto si no se proporciona
+	}
+
 	user, err := s.userService.CreateUser(domain.CreateUserRequest{
 		Email:          req.Email,
 		Password:       req.Password,
 		NombreCompleto: req.NombreCompleto,
-		Role:           "CLIENTE", // Por defecto, asignamos el rol de CLIENTE
+		Role:           req.Rol, // Por defecto, asignamos el rol de CLIENTE
 	})
 	if err != nil {
 		return nil, err
