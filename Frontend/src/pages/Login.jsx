@@ -33,21 +33,33 @@ const Login = () => {
       
       // Guardar token y usuario
       localStorage.setItem('token', data.token)
+      localStorage.setItem('user', JSON.stringify(data)) // Guardar todo el objeto
       localStorage.setItem('name', data.name)
-      localStorage.setItem('role', data.role)
-      //console.log('Usuario autenticado:', data)
+      localStorage.setItem('role', data.role) 
+      
+      console.log('Usuario autenticado:', data)
+      console.log('Rol detectado:', data.role)
+      
       // Redirigir según el rol
-      if (data.role === 'ADMINISTRADOR') {
+      if (data.role === 'ADMIN' || data.role === 'ADMINISTRADOR') {
         navigate('/admin/dashboard')
+      } else if (data.role == 'RESTAURANTE') {
+        navigate('/restaurante/dashboard')
       } else if (data.role === 'CLIENTE') {
         navigate('/cliente/dashboard')
+      } else if (data.role === 'REPARTIDOR') {
+        navigate('/repartidor/dashboard')
+      } else {
+        console.error('Rol desconocido:', data.role)
+        setError('Rol de usuario no reconocido')
       }
+  
     } catch (err) {
       console.error('Error en login:', err)
-      setError(err.response?.data?.error || error|| 'Error al iniciar sesión. Verifica tus credenciales.')
+      setError(err.response?.data?.error || 'Error al iniciar sesión. Verifica tus credenciales.')
     } finally {
       setLoading(false)
-    }
+    } 
   }
 
   return (

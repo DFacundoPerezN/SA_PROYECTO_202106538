@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // Configura aquí la URL de tu backend
-const API_BASE_URL = 'http://127.0.0.1:8080'
+const API_BASE_URL = 'http://20.49.4.20:8080'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -61,15 +61,42 @@ export const authService = {
 
   // Obtener usuario actual
   getCurrentUser: () => {
-    const name = localStorage.getItem('name')
-    const role = localStorage.getItem('role')
-    return name ? { name, role } : null
+    const userStr = localStorage.getItem('user')
+    if (userStr) {
+      try {
+        return JSON.parse(userStr)
+      } catch (e) {
+        console.error('Error parsing user data:', e)
+        return null
+      }
+    }
+    return null
   },
 
   // Verificar si está autenticado
   isAuthenticated: () => {
     return !!localStorage.getItem('token')
   },
+}
+
+export const restaurantService = {
+  // Obtener todos los restaurantes
+  getAll: async () => {
+    const response = await api.get('/api/restaurants')
+    return response.data
+  },
+
+  // Crear restaurante
+  create: async (restaurantData) => {
+    const response = await api.post('/api/restaurants', restaurantData)
+    return response.data
+  },
+
+  // Obtener restaurante por ID
+  getById: async (id) => {
+    const response = await api.get(`/api/restaurants/${id}`)
+    return response.data
+  }
 }
 
 export default api

@@ -62,6 +62,22 @@ const handleViewMenu = (restaurant) => {
           <div className="logo-text">DeliveryApp</div>
         </div>
         <div className="nav-user">
+          <button 
+            onClick={() => navigate('/cliente/orders')}
+            style={{
+              padding: '0.5rem 1rem',
+              background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))',
+              border: 'none',
+              borderRadius: '10px',
+              color: 'white',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+           -+ Mis Órdenes
+          </button>
           <div className="user-info">
             <span className="user-name">{user?.nombre_completo}</span>
             <span className="user-role">Cliente</span>
@@ -77,7 +93,31 @@ const handleViewMenu = (restaurant) => {
           <h1>¡Bienvenido de nuevo!</h1>
           <p>Hola, {user?.nombre_completo}. ¿Qué te gustaría pedir hoy?</p>
         </div>
-
+          <button 
+                onClick={() => navigate('/cliente/orders')}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 12px rgba(255, 107, 53, 0.2)'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(255, 107, 53, 0.3)'
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 107, 53, 0.2)'
+                }}
+              >
+                📋 Ver Mis Órdenes
+              </button>
         <div className="search-section">
           <div className="search-box">
             <span className="search-icon">🔍</span>

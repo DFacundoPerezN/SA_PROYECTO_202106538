@@ -3,8 +3,11 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import AdminDashboard from './pages/AdminDashboard'
 import ClienteDashboard from './pages/ClienteDashboard'
+import ClienteOrders from './pages/ClienteOrders'
 import RestaurantMenu from './pages/RestaurantMenu'
 import ProtectedRoute from './components/ProtectedRoute'
+import RestaurantDashboard from './pages/RestaurantDashboard'
+import DriverDashboard from './pages/DriverDashborad'
 
 function App() {
   return (
@@ -32,10 +35,37 @@ function App() {
         />
 
         <Route 
+          path="/cliente/orders" 
+          element={
+            <ProtectedRoute allowedRoles={['CLIENTE']}>
+              <ClienteOrders />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
           path="/cliente/restaurant/:restaurantId/menu" 
           element={
             <ProtectedRoute allowedRoles={['CLIENTE']}>
               <RestaurantMenu />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/restaurante/dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['RESTAURANTE']}>
+              <RestaurantDashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/repartidor/dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['REPARTIDOR']}>
+              <DriverDashboard />
             </ProtectedRoute>
           } 
         />
