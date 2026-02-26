@@ -1,0 +1,82 @@
+version: "3.9"
+
+networks:
+  backend:
+    driver: bridge
+
+services:
+
+  # ---------------- API GATEWAY ----------------
+  api-gateway:
+    image: diegofacundopereznicolau/api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
+      - user-service
+      - catalog-service
+      - restaurant-service
+      - order-service
+    networks:
+      - backend
+
+  # ---------------- AUTH ----------------
+  auth-service:
+    image: diegofacundopereznicolau/auth-service:latest
+    container_name: auth-service
+    ports:
+      - "50051:50051"
+    networks:
+      - backend
+
+  # ---------------- USERS ----------------
+  user-service:
+    image: diegofacundopereznicolau/user-service:latest
+    container_name: user-service
+    ports:
+      - "50052:50052"
+    networks:
+      - backend
+
+  # ---------------- CATALOG ----------------
+  catalog-service:
+    image: diegofacundopereznicolau/catalog-service:latest
+    container_name: catalog-service
+    ports:
+      - "50053:50053"
+    networks:
+      - backend
+
+  # ---------------- RESTAURANT ----------------
+  restaurant-service:
+    image: diegofacundopereznicolau/restaurant-service:latest
+    container_name: restaurant-service
+    ports:
+      - "50054:50054"
+    networks:
+      - backend
+
+  # ---------------- ORDER ----------------
+  order-service:
+    image: diegofacundopereznicolau/order-service:latest
+    container_name: order-service
+    env_file:
+      - ./order-service/.env
+    ports:
+      - "50055:50055"
+    depends_on:
+      - notification-service
+    networks:
+      - backend
+
+  # ---------------- NOTIFICATION ----------------
+  notification-service:
+    image: diegofacundopereznicolau/notification-service:latest
+    container_name: notification-service
+    env_file:
+      - ./notification-service/.env
+    ports:
+      - "50056:50056"
+    networks:
+      - backend
