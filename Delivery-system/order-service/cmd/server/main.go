@@ -56,7 +56,7 @@ func main() {
 
 	catalogClientServer := os.Getenv("CATALOG_SERVICE_ADDR")
 	if catalogClientServer == "" {
-		catalogClientServer = "127.0.0.1:50053"
+		catalogClientServer = "catalog-service:50053"
 	}
 
 	catalogClient, err := grpcclient.NewCatalogClient(catalogClientServer)
@@ -69,7 +69,7 @@ func main() {
 	// ---------------- USER SERVICE ----------------
 	catalogUserServer := os.Getenv("USER_SERVICE_ADDR")
 	if catalogUserServer == "" {
-		catalogUserServer = "localhost:50052"
+		catalogUserServer = "user-service:50052"
 	}
 	userClient, err := grpcclient.NewUserClient(catalogUserServer)
 	if err != nil {
@@ -78,7 +78,7 @@ func main() {
 
 	catalogNotiServer := os.Getenv("NOTIFICATION_SERVICE_ADDR")
 	if catalogNotiServer == "" {
-		catalogNotiServer = "localhost:50056"
+		catalogNotiServer = "notification-service:50056"
 	}
 	notificationClient, err := grpcclient.NewNotificationClient(catalogNotiServer)
 	if err != nil {

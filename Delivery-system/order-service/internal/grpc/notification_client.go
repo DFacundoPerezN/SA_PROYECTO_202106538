@@ -36,3 +36,27 @@ func (n *NotificationClient) SendOrderCancelledEmail(
 	_, err := n.client.SendOrderCanceledEmail(ctx, req)
 	return err
 }
+
+func (n *NotificationClient) SendOrderRejectedEmail(
+	ctx context.Context,
+	req *notificationpb.OrderRejectedEmailRequest,
+) error {
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := n.client.SendOrderRejectedEmail(ctx, req)
+	return err
+}
+
+func (n *NotificationClient) SendDriverAssignedEmail(
+	ctx context.Context,
+	req *notificationpb.DriverAssignedEmailRequest,
+) error {
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := n.client.SendDriverAssignedEmail(ctx, req)
+	return err
+}

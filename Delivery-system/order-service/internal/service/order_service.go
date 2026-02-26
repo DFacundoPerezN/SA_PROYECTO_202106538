@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	catalogpb "delivery-proto/catalogpb"
+	notificationpb "delivery-proto/notificationpb"
 	orderpb "delivery-proto/orderpb"
 	"errors"
 	"fmt"
@@ -118,7 +119,62 @@ func (s *OrderService) GetOrdersByRestaurant(ctx context.Context, restaurantID i
 }
 
 func (s *OrderService) AssignDriver(ctx context.Context, orderID int, driverID int) error {
+	go s.notifyDriverAssigned(orderID, driverID)
 	return s.repo.AssignDriver(ctx, orderID, driverID)
+}
+
+func (s *OrderService) notifyDriverAssigned(orderID int, driverID int) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+
+	//fmt.Printf("Notificando asignación de conductor para orden %d y conductor %d\n", orderID, driverID)
+
+	// 1️ Orden
+	order, err := s.repo.GetOrderByID(ctx, orderID)
+	if err != nil {
+		return
+	}
+
+	// 2️ Items
+	items, err := s.repo.GetOrderItems(ctx, orderID)
+	if err != nil {
+		return
+	}
+
+	// 3️ Obtener repartidor desde user-service
+	driverResp, err := s.userClient.GetUser(int32(driverID))
+	if err != nil {
+		return
+	}
+
+	// 4️ convertir productos
+	var protoItems []*notificationpb.AssignedProduct
+
+	for _, it := range items {
+		protoItems = append(protoItems, &notificationpb.AssignedProduct{
+			Name:     it.NombreProducto,
+			Quantity: int32(it.Cantidad),
+		})
+	}
+
+	// Cliente
+	clientResp, err := s.userClient.GetUser(order.ClienteId)
+	if err != nil {
+		return
+	}
+
+	//fmt.Printf("Enviando notificación de asignación de conductor para orden %d al cliente %s (%s)\n", orderID, clientResp.User.NombreCompleto, clientResp.User.Email)
+
+	req := &notificationpb.DriverAssignedEmailRequest{
+		ToEmail:        clientResp.User.Email,
+		OrderId:        int32(orderID),
+		DriverName:     driverResp.User.NombreCompleto,
+		RestaurantName: order.RestauranteNombre,
+		Products:       protoItems,
+	}
+
+	_ = s.notificationClient.SendDriverAssignedEmail(ctx, req)
 }
 
 func (s *OrderService) GetFinishedOrders(ctx context.Context) ([]domain.Order, error) {

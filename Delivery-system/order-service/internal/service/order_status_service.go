@@ -43,6 +43,10 @@ func (s *OrderService) UpdateOrderStatus(ctx context.Context, orderID int, newSt
 		return "", err
 	}
 
+	if newStatus == "RECHAZADA" {
+		go s.notifyOrderRejected(orderID)
+	}
+
 	return newStatus, nil
 }
 
@@ -149,4 +153,47 @@ func (s *OrderService) CancelOrder(
 	}()
 
 	return cancelledAt, nil
+}
+
+func (s *OrderService) notifyOrderRejected(orderID int) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+
+	// 1. obtener orden
+	order, err := s.repo.GetOrderByID(ctx, orderID)
+	if err != nil {
+		return
+	}
+
+	// 2. obtener productos
+	items, err := s.repo.GetOrderItems(ctx, orderID)
+	if err != nil {
+		return
+	}
+
+	clientResp, err := s.userClient.GetUser(order.ClienteId)
+	if err != nil {
+		return
+	}
+
+	// 3. convertir productos
+	var protoItems []*notificationpb.RejectedProduct
+
+	for _, it := range items {
+		protoItems = append(protoItems, &notificationpb.RejectedProduct{
+			Name:     it.NombreProducto,
+			Quantity: int32(it.Cantidad),
+		})
+	}
+
+	req := &notificationpb.OrderRejectedEmailRequest{
+		ToEmail:        clientResp.User.Email,
+		OrderId:        int32(orderID),
+		RestaurantName: order.RestauranteNombre,
+		Products:       protoItems,
+		Status:         "RECHAZADA",
+	}
+
+	_ = s.notificationClient.SendOrderRejectedEmail(ctx, req)
 }
