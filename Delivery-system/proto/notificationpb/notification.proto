@@ -8,6 +8,8 @@ option go_package = "delivery-proto/notificationpb";
 service NotificationService {
   //rpc SendNotification (SendNotificationRequest) returns (SendNotificationResponse);
   rpc SendOrderCanceledEmail(SendOrderCanceledEmailRequest)     returns (SendOrderCanceledEmailResponse);
+  rpc SendOrderRejectedEmail(OrderRejectedEmailRequest)   returns (OrderRejectedEmailResponse);
+  rpc SendDriverAssignedEmail(DriverAssignedEmailRequest)    returns (DriverAssignedEmailResponse);
 }
 
 message SendOrderCanceledEmailRequest {
@@ -25,3 +27,40 @@ message SendOrderCanceledEmailResponse {
   string message = 1;
 }
 
+message OrderRejectedEmailRequest {
+  string to_email = 1;
+  int32 order_id = 2;
+  string restaurant_name = 3;
+  repeated RejectedProduct products = 4;
+  string status = 5;
+}
+
+message RejectedProduct {
+  string name = 1;
+  int32 quantity = 2;
+}
+
+message OrderRejectedEmailResponse {
+  bool sent = 1;
+}
+
+message DriverAssignedEmailRequest {
+  string to_email = 1;
+  int32 order_id = 2;
+
+  string driver_name = 3;
+  string driver_phone = 4;
+
+  string restaurant_name = 5;
+
+  repeated AssignedProduct products = 6;
+}
+
+message AssignedProduct {
+  string name = 1;
+  int32 quantity = 2;
+}
+
+message DriverAssignedEmailResponse {
+  bool sent = 1;
+}

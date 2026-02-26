@@ -13,6 +13,8 @@ service CatalogService {
 
   rpc GetProduct (GetProductRequest) returns (GetProductResponse);
 
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
+
 }
 
 message GetCatalogRequest {
@@ -59,4 +61,17 @@ message GetProductResponse {
   double precio = 3;
   bool disponible = 4;
   int32 restaurante_id = 5;
+}
+
+message CreateProductRequest {
+  string nombre = 1;
+  string descripcion = 2;
+  int32 restaurante_id = 3;
+  double precio = 4;
+  string categoria = 5;
+}
+
+message CreateProductResponse {
+  int32 product_id = 1;
+  string message = 2;
 }

@@ -165,6 +165,358 @@ func (x *SendOrderCanceledEmailResponse) GetMessage() string {
 	return ""
 }
 
+type OrderRejectedEmailRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ToEmail        string                 `protobuf:"bytes,1,opt,name=to_email,json=toEmail,proto3" json:"to_email,omitempty"`
+	OrderId        int32                  `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	RestaurantName string                 `protobuf:"bytes,3,opt,name=restaurant_name,json=restaurantName,proto3" json:"restaurant_name,omitempty"`
+	Products       []*RejectedProduct     `protobuf:"bytes,4,rep,name=products,proto3" json:"products,omitempty"`
+	Status         string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *OrderRejectedEmailRequest) Reset() {
+	*x = OrderRejectedEmailRequest{}
+	mi := &file_notificationpb_notification_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OrderRejectedEmailRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OrderRejectedEmailRequest) ProtoMessage() {}
+
+func (x *OrderRejectedEmailRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_notificationpb_notification_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OrderRejectedEmailRequest.ProtoReflect.Descriptor instead.
+func (*OrderRejectedEmailRequest) Descriptor() ([]byte, []int) {
+	return file_notificationpb_notification_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *OrderRejectedEmailRequest) GetToEmail() string {
+	if x != nil {
+		return x.ToEmail
+	}
+	return ""
+}
+
+func (x *OrderRejectedEmailRequest) GetOrderId() int32 {
+	if x != nil {
+		return x.OrderId
+	}
+	return 0
+}
+
+func (x *OrderRejectedEmailRequest) GetRestaurantName() string {
+	if x != nil {
+		return x.RestaurantName
+	}
+	return ""
+}
+
+func (x *OrderRejectedEmailRequest) GetProducts() []*RejectedProduct {
+	if x != nil {
+		return x.Products
+	}
+	return nil
+}
+
+func (x *OrderRejectedEmailRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+type RejectedProduct struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Quantity      int32                  `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RejectedProduct) Reset() {
+	*x = RejectedProduct{}
+	mi := &file_notificationpb_notification_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RejectedProduct) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RejectedProduct) ProtoMessage() {}
+
+func (x *RejectedProduct) ProtoReflect() protoreflect.Message {
+	mi := &file_notificationpb_notification_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RejectedProduct.ProtoReflect.Descriptor instead.
+func (*RejectedProduct) Descriptor() ([]byte, []int) {
+	return file_notificationpb_notification_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *RejectedProduct) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *RejectedProduct) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+type OrderRejectedEmailResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Sent          bool                   `protobuf:"varint,1,opt,name=sent,proto3" json:"sent,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OrderRejectedEmailResponse) Reset() {
+	*x = OrderRejectedEmailResponse{}
+	mi := &file_notificationpb_notification_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OrderRejectedEmailResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OrderRejectedEmailResponse) ProtoMessage() {}
+
+func (x *OrderRejectedEmailResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_notificationpb_notification_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OrderRejectedEmailResponse.ProtoReflect.Descriptor instead.
+func (*OrderRejectedEmailResponse) Descriptor() ([]byte, []int) {
+	return file_notificationpb_notification_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *OrderRejectedEmailResponse) GetSent() bool {
+	if x != nil {
+		return x.Sent
+	}
+	return false
+}
+
+type DriverAssignedEmailRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ToEmail        string                 `protobuf:"bytes,1,opt,name=to_email,json=toEmail,proto3" json:"to_email,omitempty"`
+	OrderId        int32                  `protobuf:"varint,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	DriverName     string                 `protobuf:"bytes,3,opt,name=driver_name,json=driverName,proto3" json:"driver_name,omitempty"`
+	DriverPhone    string                 `protobuf:"bytes,4,opt,name=driver_phone,json=driverPhone,proto3" json:"driver_phone,omitempty"`
+	RestaurantName string                 `protobuf:"bytes,5,opt,name=restaurant_name,json=restaurantName,proto3" json:"restaurant_name,omitempty"`
+	Products       []*AssignedProduct     `protobuf:"bytes,6,rep,name=products,proto3" json:"products,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *DriverAssignedEmailRequest) Reset() {
+	*x = DriverAssignedEmailRequest{}
+	mi := &file_notificationpb_notification_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DriverAssignedEmailRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DriverAssignedEmailRequest) ProtoMessage() {}
+
+func (x *DriverAssignedEmailRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_notificationpb_notification_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DriverAssignedEmailRequest.ProtoReflect.Descriptor instead.
+func (*DriverAssignedEmailRequest) Descriptor() ([]byte, []int) {
+	return file_notificationpb_notification_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *DriverAssignedEmailRequest) GetToEmail() string {
+	if x != nil {
+		return x.ToEmail
+	}
+	return ""
+}
+
+func (x *DriverAssignedEmailRequest) GetOrderId() int32 {
+	if x != nil {
+		return x.OrderId
+	}
+	return 0
+}
+
+func (x *DriverAssignedEmailRequest) GetDriverName() string {
+	if x != nil {
+		return x.DriverName
+	}
+	return ""
+}
+
+func (x *DriverAssignedEmailRequest) GetDriverPhone() string {
+	if x != nil {
+		return x.DriverPhone
+	}
+	return ""
+}
+
+func (x *DriverAssignedEmailRequest) GetRestaurantName() string {
+	if x != nil {
+		return x.RestaurantName
+	}
+	return ""
+}
+
+func (x *DriverAssignedEmailRequest) GetProducts() []*AssignedProduct {
+	if x != nil {
+		return x.Products
+	}
+	return nil
+}
+
+type AssignedProduct struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Quantity      int32                  `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AssignedProduct) Reset() {
+	*x = AssignedProduct{}
+	mi := &file_notificationpb_notification_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AssignedProduct) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AssignedProduct) ProtoMessage() {}
+
+func (x *AssignedProduct) ProtoReflect() protoreflect.Message {
+	mi := &file_notificationpb_notification_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AssignedProduct.ProtoReflect.Descriptor instead.
+func (*AssignedProduct) Descriptor() ([]byte, []int) {
+	return file_notificationpb_notification_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *AssignedProduct) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *AssignedProduct) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+type DriverAssignedEmailResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Sent          bool                   `protobuf:"varint,1,opt,name=sent,proto3" json:"sent,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DriverAssignedEmailResponse) Reset() {
+	*x = DriverAssignedEmailResponse{}
+	mi := &file_notificationpb_notification_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DriverAssignedEmailResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DriverAssignedEmailResponse) ProtoMessage() {}
+
+func (x *DriverAssignedEmailResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_notificationpb_notification_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DriverAssignedEmailResponse.ProtoReflect.Descriptor instead.
+func (*DriverAssignedEmailResponse) Descriptor() ([]byte, []int) {
+	return file_notificationpb_notification_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DriverAssignedEmailResponse) GetSent() bool {
+	if x != nil {
+		return x.Sent
+	}
+	return false
+}
+
 var File_notificationpb_notification_proto protoreflect.FileDescriptor
 
 const file_notificationpb_notification_proto_rawDesc = "" +
@@ -181,9 +533,35 @@ const file_notificationpb_notification_proto_rawDesc = "" +
 	"\x06motivo\x18\a \x01(\tR\x06motivo\x12\x16\n" +
 	"\x06estado\x18\b \x01(\tR\x06estado\":\n" +
 	"\x1eSendOrderCanceledEmailResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2\x8a\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xcd\x01\n" +
+	"\x19OrderRejectedEmailRequest\x12\x19\n" +
+	"\bto_email\x18\x01 \x01(\tR\atoEmail\x12\x19\n" +
+	"\border_id\x18\x02 \x01(\x05R\aorderId\x12'\n" +
+	"\x0frestaurant_name\x18\x03 \x01(\tR\x0erestaurantName\x129\n" +
+	"\bproducts\x18\x04 \x03(\v2\x1d.notification.RejectedProductR\bproducts\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\"A\n" +
+	"\x0fRejectedProduct\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1a\n" +
+	"\bquantity\x18\x02 \x01(\x05R\bquantity\"0\n" +
+	"\x1aOrderRejectedEmailResponse\x12\x12\n" +
+	"\x04sent\x18\x01 \x01(\bR\x04sent\"\xfa\x01\n" +
+	"\x1aDriverAssignedEmailRequest\x12\x19\n" +
+	"\bto_email\x18\x01 \x01(\tR\atoEmail\x12\x19\n" +
+	"\border_id\x18\x02 \x01(\x05R\aorderId\x12\x1f\n" +
+	"\vdriver_name\x18\x03 \x01(\tR\n" +
+	"driverName\x12!\n" +
+	"\fdriver_phone\x18\x04 \x01(\tR\vdriverPhone\x12'\n" +
+	"\x0frestaurant_name\x18\x05 \x01(\tR\x0erestaurantName\x129\n" +
+	"\bproducts\x18\x06 \x03(\v2\x1d.notification.AssignedProductR\bproducts\"A\n" +
+	"\x0fAssignedProduct\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1a\n" +
+	"\bquantity\x18\x02 \x01(\x05R\bquantity\"1\n" +
+	"\x1bDriverAssignedEmailResponse\x12\x12\n" +
+	"\x04sent\x18\x01 \x01(\bR\x04sent2\xe7\x02\n" +
 	"\x13NotificationService\x12s\n" +
-	"\x16SendOrderCanceledEmail\x12+.notification.SendOrderCanceledEmailRequest\x1a,.notification.SendOrderCanceledEmailResponseB\x1fZ\x1ddelivery-proto/notificationpbb\x06proto3"
+	"\x16SendOrderCanceledEmail\x12+.notification.SendOrderCanceledEmailRequest\x1a,.notification.SendOrderCanceledEmailResponse\x12k\n" +
+	"\x16SendOrderRejectedEmail\x12'.notification.OrderRejectedEmailRequest\x1a(.notification.OrderRejectedEmailResponse\x12n\n" +
+	"\x17SendDriverAssignedEmail\x12(.notification.DriverAssignedEmailRequest\x1a).notification.DriverAssignedEmailResponseB\x1fZ\x1ddelivery-proto/notificationpbb\x06proto3"
 
 var (
 	file_notificationpb_notification_proto_rawDescOnce sync.Once
@@ -197,19 +575,31 @@ func file_notificationpb_notification_proto_rawDescGZIP() []byte {
 	return file_notificationpb_notification_proto_rawDescData
 }
 
-var file_notificationpb_notification_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_notificationpb_notification_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_notificationpb_notification_proto_goTypes = []any{
 	(*SendOrderCanceledEmailRequest)(nil),  // 0: notification.SendOrderCanceledEmailRequest
 	(*SendOrderCanceledEmailResponse)(nil), // 1: notification.SendOrderCanceledEmailResponse
+	(*OrderRejectedEmailRequest)(nil),      // 2: notification.OrderRejectedEmailRequest
+	(*RejectedProduct)(nil),                // 3: notification.RejectedProduct
+	(*OrderRejectedEmailResponse)(nil),     // 4: notification.OrderRejectedEmailResponse
+	(*DriverAssignedEmailRequest)(nil),     // 5: notification.DriverAssignedEmailRequest
+	(*AssignedProduct)(nil),                // 6: notification.AssignedProduct
+	(*DriverAssignedEmailResponse)(nil),    // 7: notification.DriverAssignedEmailResponse
 }
 var file_notificationpb_notification_proto_depIdxs = []int32{
-	0, // 0: notification.NotificationService.SendOrderCanceledEmail:input_type -> notification.SendOrderCanceledEmailRequest
-	1, // 1: notification.NotificationService.SendOrderCanceledEmail:output_type -> notification.SendOrderCanceledEmailResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	3, // 0: notification.OrderRejectedEmailRequest.products:type_name -> notification.RejectedProduct
+	6, // 1: notification.DriverAssignedEmailRequest.products:type_name -> notification.AssignedProduct
+	0, // 2: notification.NotificationService.SendOrderCanceledEmail:input_type -> notification.SendOrderCanceledEmailRequest
+	2, // 3: notification.NotificationService.SendOrderRejectedEmail:input_type -> notification.OrderRejectedEmailRequest
+	5, // 4: notification.NotificationService.SendDriverAssignedEmail:input_type -> notification.DriverAssignedEmailRequest
+	1, // 5: notification.NotificationService.SendOrderCanceledEmail:output_type -> notification.SendOrderCanceledEmailResponse
+	4, // 6: notification.NotificationService.SendOrderRejectedEmail:output_type -> notification.OrderRejectedEmailResponse
+	7, // 7: notification.NotificationService.SendDriverAssignedEmail:output_type -> notification.DriverAssignedEmailResponse
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_notificationpb_notification_proto_init() }
@@ -223,7 +613,7 @@ func file_notificationpb_notification_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_notificationpb_notification_proto_rawDesc), len(file_notificationpb_notification_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

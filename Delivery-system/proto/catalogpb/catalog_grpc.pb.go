@@ -22,6 +22,7 @@ const (
 	CatalogService_GetProductsByRestaurant_FullMethodName = "/catalog.CatalogService/GetProductsByRestaurant"
 	CatalogService_GetProductsByIDs_FullMethodName        = "/catalog.CatalogService/GetProductsByIDs"
 	CatalogService_GetProduct_FullMethodName              = "/catalog.CatalogService/GetProduct"
+	CatalogService_CreateProduct_FullMethodName           = "/catalog.CatalogService/CreateProduct"
 )
 
 // CatalogServiceClient is the client API for CatalogService service.
@@ -31,6 +32,7 @@ type CatalogServiceClient interface {
 	GetProductsByRestaurant(ctx context.Context, in *GetProductsByRestaurantRequest, opts ...grpc.CallOption) (*GetProductsByRestaurantResponse, error)
 	GetProductsByIDs(ctx context.Context, in *GetProductsByIDsRequest, opts ...grpc.CallOption) (*GetProductsByIDsResponse, error)
 	GetProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*GetProductResponse, error)
+	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 }
 
 type catalogServiceClient struct {
@@ -71,6 +73,16 @@ func (c *catalogServiceClient) GetProduct(ctx context.Context, in *GetProductReq
 	return out, nil
 }
 
+func (c *catalogServiceClient) CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateProductResponse)
+	err := c.cc.Invoke(ctx, CatalogService_CreateProduct_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CatalogServiceServer is the server API for CatalogService service.
 // All implementations must embed UnimplementedCatalogServiceServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type CatalogServiceServer interface {
 	GetProductsByRestaurant(context.Context, *GetProductsByRestaurantRequest) (*GetProductsByRestaurantResponse, error)
 	GetProductsByIDs(context.Context, *GetProductsByIDsRequest) (*GetProductsByIDsResponse, error)
 	GetProduct(context.Context, *GetProductRequest) (*GetProductResponse, error)
+	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	mustEmbedUnimplementedCatalogServiceServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedCatalogServiceServer) GetProductsByIDs(context.Context, *GetP
 }
 func (UnimplementedCatalogServiceServer) GetProduct(context.Context, *GetProductRequest) (*GetProductResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetProduct not implemented")
+}
+func (UnimplementedCatalogServiceServer) CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateProduct not implemented")
 }
 func (UnimplementedCatalogServiceServer) mustEmbedUnimplementedCatalogServiceServer() {}
 func (UnimplementedCatalogServiceServer) testEmbeddedByValue()                        {}
@@ -172,6 +188,24 @@ func _CatalogService_GetProduct_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CatalogService_CreateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).CreateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_CreateProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).CreateProduct(ctx, req.(*CreateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CatalogService_ServiceDesc is the grpc.ServiceDesc for CatalogService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var CatalogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProduct",
 			Handler:    _CatalogService_GetProduct_Handler,
+		},
+		{
+			MethodName: "CreateProduct",
+			Handler:    _CatalogService_CreateProduct_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

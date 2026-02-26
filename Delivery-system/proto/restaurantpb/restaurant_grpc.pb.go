@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	RestaurantService_ListRestaurants_FullMethodName = "/restaurantpb.RestaurantService/ListRestaurants"
+	RestaurantService_ListRestaurants_FullMethodName  = "/restaurantpb.RestaurantService/ListRestaurants"
+	RestaurantService_CreateRestaurant_FullMethodName = "/restaurantpb.RestaurantService/CreateRestaurant"
 )
 
 // RestaurantServiceClient is the client API for RestaurantService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RestaurantServiceClient interface {
 	ListRestaurants(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*RestaurantListResponse, error)
+	CreateRestaurant(ctx context.Context, in *CreateRestaurantRequest, opts ...grpc.CallOption) (*CreateRestaurantResponse, error)
 }
 
 type restaurantServiceClient struct {
@@ -47,11 +49,22 @@ func (c *restaurantServiceClient) ListRestaurants(ctx context.Context, in *Empty
 	return out, nil
 }
 
+func (c *restaurantServiceClient) CreateRestaurant(ctx context.Context, in *CreateRestaurantRequest, opts ...grpc.CallOption) (*CreateRestaurantResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateRestaurantResponse)
+	err := c.cc.Invoke(ctx, RestaurantService_CreateRestaurant_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RestaurantServiceServer is the server API for RestaurantService service.
 // All implementations must embed UnimplementedRestaurantServiceServer
 // for forward compatibility.
 type RestaurantServiceServer interface {
 	ListRestaurants(context.Context, *Empty) (*RestaurantListResponse, error)
+	CreateRestaurant(context.Context, *CreateRestaurantRequest) (*CreateRestaurantResponse, error)
 	mustEmbedUnimplementedRestaurantServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedRestaurantServiceServer struct{}
 
 func (UnimplementedRestaurantServiceServer) ListRestaurants(context.Context, *Empty) (*RestaurantListResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListRestaurants not implemented")
+}
+func (UnimplementedRestaurantServiceServer) CreateRestaurant(context.Context, *CreateRestaurantRequest) (*CreateRestaurantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateRestaurant not implemented")
 }
 func (UnimplementedRestaurantServiceServer) mustEmbedUnimplementedRestaurantServiceServer() {}
 func (UnimplementedRestaurantServiceServer) testEmbeddedByValue()                           {}
@@ -104,6 +120,24 @@ func _RestaurantService_ListRestaurants_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RestaurantService_CreateRestaurant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRestaurantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RestaurantServiceServer).CreateRestaurant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RestaurantService_CreateRestaurant_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RestaurantServiceServer).CreateRestaurant(ctx, req.(*CreateRestaurantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RestaurantService_ServiceDesc is the grpc.ServiceDesc for RestaurantService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var RestaurantService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListRestaurants",
 			Handler:    _RestaurantService_ListRestaurants_Handler,
+		},
+		{
+			MethodName: "CreateRestaurant",
+			Handler:    _RestaurantService_CreateRestaurant_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

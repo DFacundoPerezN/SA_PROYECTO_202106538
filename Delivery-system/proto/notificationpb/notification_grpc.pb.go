@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	NotificationService_SendOrderCanceledEmail_FullMethodName = "/notification.NotificationService/SendOrderCanceledEmail"
+	NotificationService_SendOrderCanceledEmail_FullMethodName  = "/notification.NotificationService/SendOrderCanceledEmail"
+	NotificationService_SendOrderRejectedEmail_FullMethodName  = "/notification.NotificationService/SendOrderRejectedEmail"
+	NotificationService_SendDriverAssignedEmail_FullMethodName = "/notification.NotificationService/SendDriverAssignedEmail"
 )
 
 // NotificationServiceClient is the client API for NotificationService service.
@@ -28,6 +30,8 @@ const (
 type NotificationServiceClient interface {
 	// rpc SendNotification (SendNotificationRequest) returns (SendNotificationResponse);
 	SendOrderCanceledEmail(ctx context.Context, in *SendOrderCanceledEmailRequest, opts ...grpc.CallOption) (*SendOrderCanceledEmailResponse, error)
+	SendOrderRejectedEmail(ctx context.Context, in *OrderRejectedEmailRequest, opts ...grpc.CallOption) (*OrderRejectedEmailResponse, error)
+	SendDriverAssignedEmail(ctx context.Context, in *DriverAssignedEmailRequest, opts ...grpc.CallOption) (*DriverAssignedEmailResponse, error)
 }
 
 type notificationServiceClient struct {
@@ -48,12 +52,34 @@ func (c *notificationServiceClient) SendOrderCanceledEmail(ctx context.Context, 
 	return out, nil
 }
 
+func (c *notificationServiceClient) SendOrderRejectedEmail(ctx context.Context, in *OrderRejectedEmailRequest, opts ...grpc.CallOption) (*OrderRejectedEmailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(OrderRejectedEmailResponse)
+	err := c.cc.Invoke(ctx, NotificationService_SendOrderRejectedEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *notificationServiceClient) SendDriverAssignedEmail(ctx context.Context, in *DriverAssignedEmailRequest, opts ...grpc.CallOption) (*DriverAssignedEmailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DriverAssignedEmailResponse)
+	err := c.cc.Invoke(ctx, NotificationService_SendDriverAssignedEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotificationServiceServer is the server API for NotificationService service.
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility.
 type NotificationServiceServer interface {
 	// rpc SendNotification (SendNotificationRequest) returns (SendNotificationResponse);
 	SendOrderCanceledEmail(context.Context, *SendOrderCanceledEmailRequest) (*SendOrderCanceledEmailResponse, error)
+	SendOrderRejectedEmail(context.Context, *OrderRejectedEmailRequest) (*OrderRejectedEmailResponse, error)
+	SendDriverAssignedEmail(context.Context, *DriverAssignedEmailRequest) (*DriverAssignedEmailResponse, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -66,6 +92,12 @@ type UnimplementedNotificationServiceServer struct{}
 
 func (UnimplementedNotificationServiceServer) SendOrderCanceledEmail(context.Context, *SendOrderCanceledEmailRequest) (*SendOrderCanceledEmailResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SendOrderCanceledEmail not implemented")
+}
+func (UnimplementedNotificationServiceServer) SendOrderRejectedEmail(context.Context, *OrderRejectedEmailRequest) (*OrderRejectedEmailResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SendOrderRejectedEmail not implemented")
+}
+func (UnimplementedNotificationServiceServer) SendDriverAssignedEmail(context.Context, *DriverAssignedEmailRequest) (*DriverAssignedEmailResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SendDriverAssignedEmail not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 func (UnimplementedNotificationServiceServer) testEmbeddedByValue()                             {}
@@ -106,6 +138,42 @@ func _NotificationService_SendOrderCanceledEmail_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationService_SendOrderRejectedEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderRejectedEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).SendOrderRejectedEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotificationService_SendOrderRejectedEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).SendOrderRejectedEmail(ctx, req.(*OrderRejectedEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NotificationService_SendDriverAssignedEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DriverAssignedEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).SendDriverAssignedEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotificationService_SendDriverAssignedEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).SendDriverAssignedEmail(ctx, req.(*DriverAssignedEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotificationService_ServiceDesc is the grpc.ServiceDesc for NotificationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -116,6 +184,14 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendOrderCanceledEmail",
 			Handler:    _NotificationService_SendOrderCanceledEmail_Handler,
+		},
+		{
+			MethodName: "SendOrderRejectedEmail",
+			Handler:    _NotificationService_SendOrderRejectedEmail_Handler,
+		},
+		{
+			MethodName: "SendDriverAssignedEmail",
+			Handler:    _NotificationService_SendDriverAssignedEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

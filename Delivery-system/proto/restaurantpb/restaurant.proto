@@ -5,22 +5,41 @@ package restaurantpb;
 option go_package = "delivery-proto/restaurantpb";
 
 service RestaurantService {
-rpc ListRestaurants (Empty) returns (RestaurantListResponse);
+    rpc ListRestaurants (Empty) returns (RestaurantListResponse);
+    rpc CreateRestaurant(CreateRestaurantRequest)    returns (CreateRestaurantResponse);
 }
 
 message Empty {}
 
 message Restaurant {
-int32 id = 1;
-string nombre = 2;
-string direccion = 3;
-double latitud = 4;
-double longitud = 5;
-string telefono = 6;
-double calificacion = 7;
-bool activo = 8;
+    int32 id = 1;
+    string nombre = 2;
+    string direccion = 3;
+    double latitud = 4;
+    double longitud = 5;
+    string telefono = 6;
+    double calificacion = 7;
+    bool activo = 8;
 }
 
 message RestaurantListResponse {
-repeated Restaurant restaurants = 1;
+    repeated Restaurant restaurants = 1;
+}
+
+message CreateRestaurantRequest {
+  int32 user_id = 1;
+
+  string nombre = 2;
+  string direccion = 3;
+  double latitud = 4;
+  double longitud = 5;
+
+  string telefono = 6;
+  string horario_apertura = 7;
+  string horario_cierre = 8;
+}
+
+message CreateRestaurantResponse {
+  int32 restaurant_id = 1;
+  string message = 2;
 }
