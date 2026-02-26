@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"net"
+	"os"
 	"restaurant-service/internal/database"
+	grpcclient "restaurant-service/internal/grpc"
 
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/joho/godotenv"
@@ -33,8 +35,18 @@ func main() {
 		log.Fatal(err)
 	}
 
+	catalogUserServer := os.Getenv("USER_SERVICE_ADDR")
+	if catalogUserServer == "" {
+		catalogUserServer = "user-service:50052"
+	}
+
+	userClient, err := grpcclient.NewUserClient(catalogUserServer)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	repo := repository.NewRestaurantRepository(db)
-	svc := service.NewRestaurantService(repo)
+	svc := service.NewRestaurantService(repo, userClient)
 
 	lis, err := net.Listen("tcp", ":50054")
 	if err != nil {

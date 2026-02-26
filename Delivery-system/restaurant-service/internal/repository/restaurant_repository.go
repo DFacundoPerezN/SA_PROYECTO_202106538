@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"restaurant-service/internal/domain"
 )
 
 type Restaurant struct {
@@ -65,4 +66,46 @@ func (r *RestaurantRepository) ListRestaurants(ctx context.Context) ([]Restauran
 
 	return restaurants, nil
 
+}
+
+func (r *RestaurantRepository) Create(ctx context.Context, rest *domain.Restaurant) error {
+
+	query := `
+	INSERT INTO Restaurante (
+		Id,
+		Nombre,
+		Direccion,
+		Latitud,
+		Longitud,
+		Telefono,
+		HorarioApertura,
+		HorarioCierre
+	)
+	VALUES (@p1,@p2,@p3,@p4,@p5,@p6,@p7,@p8)
+	`
+
+	_, err := r.db.ExecContext(ctx, query,
+		rest.ID,
+		rest.Nombre,
+		rest.Direccion,
+		rest.Latitud,
+		rest.Longitud,
+		rest.Telefono,
+		rest.HorarioApertura,
+		rest.HorarioCierre,
+	)
+
+	return err
+}
+
+func (r *RestaurantRepository) Exists(ctx context.Context, userID int) (bool, error) {
+
+	var count int
+
+	err := r.db.QueryRowContext(ctx,
+		"SELECT COUNT(1) FROM Restaurante WHERE Id = @p1",
+		userID,
+	).Scan(&count)
+
+	return count > 0, err
 }

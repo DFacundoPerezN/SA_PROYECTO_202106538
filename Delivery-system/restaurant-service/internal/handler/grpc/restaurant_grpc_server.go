@@ -43,3 +43,19 @@ func (s *RestaurantGRPCServer) ListRestaurants(ctx context.Context, req *restaur
 	}, nil
 
 }
+
+func (s *RestaurantGRPCServer) CreateRestaurant(
+	ctx context.Context,
+	req *restaurantpb.CreateRestaurantRequest,
+) (*restaurantpb.CreateRestaurantResponse, error) {
+
+	id, err := s.service.CreateRestaurant(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &restaurantpb.CreateRestaurantResponse{
+		RestaurantId: int32(id),
+		Message:      "restaurant created successfully",
+	}, nil
+}

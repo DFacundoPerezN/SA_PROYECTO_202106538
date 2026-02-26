@@ -1,0 +1,48 @@
+# ---------- BUILD STAGE ----------
+
+FROM golang:1.25.6-alpine AS builder
+
+RUN apk add --no-cache git protobuf protobuf-dev
+
+# plugins gRPC (solo si generas protos dentro del contenedor)
+
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+ENV PATH="$PATH:/go/bin"
+
+WORKDIR /workspace
+
+# copiamos lo necesario
+
+COPY go.work ./
+COPY proto ./proto
+COPY restaurant-service ./restaurant-service
+
+# (Opcional) generar stubs si decides hacerlo aquí
+
+WORKDIR /workspace/proto/restaurantpb
+RUN protoc --go_out=.. --go-grpc_out=.. restaurant.proto
+
+# compilar servicio
+
+WORKDIR /workspace/restaurant-service
+
+# desactivar workspace
+
+ENV GOWORK=off
+
+RUN go mod tidy
+RUN go build -o restaurant-server ./cmd/server
+
+# ---------- RUNTIME ----------
+
+FROM alpine:3.19
+
+WORKDIR /app
+
+COPY --from=builder /workspace/restaurant-service/restaurant-server .
+
+EXPOSE 50054
+
+CMD ["./restaurant-server"]
