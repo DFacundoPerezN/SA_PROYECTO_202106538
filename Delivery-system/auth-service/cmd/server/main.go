@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
+	"os"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -28,7 +30,16 @@ func main() {
 	// ⚠️ IMPORTANTE:
 	// si usas docker-compose debe ser: "user-service:50052"
 	// si usas local: "localhost:50052"
-	userClient, err := grpcclient.NewUserClient("localhost:50052")
+	host := os.Getenv("USER_SERVICE_HOST")
+	port := os.Getenv("USER_SERVICE_PORT")
+
+	address := fmt.Sprintf("%s:%s", host, port)
+	if address == ":" {
+		fmt.Println("using user-service:50052 as default address")
+		address = "user-service:50052" // valor por defecto
+	}
+
+	userClient, err := grpcclient.NewUserClient(address)
 	if err != nil {
 		log.Fatalf("could not connect to user-service: %v", err)
 	}
