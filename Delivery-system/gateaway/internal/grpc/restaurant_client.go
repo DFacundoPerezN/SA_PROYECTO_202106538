@@ -34,3 +34,7 @@ func (c *RestaurantClient) ListRestaurants() (*restaurantpb.RestaurantListRespon
 
 	return c.client.ListRestaurants(ctx, &restaurantpb.Empty{})
 }
+
+func (c *RestaurantClient) CreateRestaurant(ctx context.Context, req *restaurantpb.CreateRestaurantRequest) (*restaurantpb.CreateRestaurantResponse, error) {
+	return c.client.CreateRestaurant(ctx, req)
+}

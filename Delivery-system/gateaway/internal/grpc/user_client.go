@@ -15,7 +15,7 @@ func NewUserClient(client userpb.UserServiceClient) *UserClient {
 	return &UserClient{client: client}
 }
 
-func (u *UserClient) Register(email, password, name string) (*userpb.CreateUserResponse, error) {
+func (u *UserClient) Register(email, password, name, role string) (*userpb.CreateUserResponse, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
@@ -24,5 +24,6 @@ func (u *UserClient) Register(email, password, name string) (*userpb.CreateUserR
 		Email:          email,
 		Password:       password,
 		NombreCompleto: name,
+		Rol:            role,
 	})
 }

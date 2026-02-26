@@ -34,3 +34,11 @@ func (c *CatalogClient) GetCatalog(restaurantID int32) (*catalogpb.GetProductsBy
 		RestauranteId: restaurantID,
 	})
 }
+
+func (c *CatalogClient) CreateProduct(
+	ctx context.Context,
+	req *catalogpb.CreateProductRequest,
+) (*catalogpb.CreateProductResponse, error) {
+
+	return c.client.CreateProduct(ctx, req)
+}

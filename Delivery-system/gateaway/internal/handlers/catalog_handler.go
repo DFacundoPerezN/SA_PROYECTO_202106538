@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"delivery-proto/catalogpb"
 	"net/http"
 	"strconv"
 
@@ -40,4 +41,40 @@ func (h *CatalogHandler) GetProductsByRestaurant(c *gin.Context) {
 
 	c.JSON(http.StatusOK, products)
 
+}
+
+type CreateProductBody struct {
+	Nombre        string  `json:"nombre"`
+	Descripcion   string  `json:"descripcion"`
+	RestauranteId int32   `json:"restaurante_id"`
+	Precio        float64 `json:"precio"`
+	Categoria     string  `json:"categoria"`
+}
+
+func (h *CatalogHandler) CreateProduct(c *gin.Context) {
+
+	var body CreateProductBody
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := h.client.CreateProduct(
+		c.Request.Context(),
+		&catalogpb.CreateProductRequest{
+			Nombre:        body.Nombre,
+			Descripcion:   body.Descripcion,
+			RestauranteId: body.RestauranteId,
+			Precio:        body.Precio,
+			Categoria:     body.Categoria,
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, resp)
 }
