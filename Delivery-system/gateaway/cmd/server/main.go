@@ -54,28 +54,31 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot connect to auth-service:", err)
 	}
-	// conectar user-service
+	// conectar user-service (gRPC)
+	// ¡IMPORTANTE!:
+	// si usas docker-compose debe ser "user-service:50052"
+	// si usas local: "localhost:50052"
 	userConn, err := grpc.Dial(
-		"localhost:50052",
+		"user-service:50052",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
 		log.Fatal("cannot connect to user-service:", err)
 	}
 
-	catalogClient, err := gatewaygrpc.NewCatalogClient("localhost:50053")
+	catalogClient, err := gatewaygrpc.NewCatalogClient("catalog-service:50053")
 	if err != nil {
 		log.Fatalf("could not connect to catalog-service: %v", err)
 	}
 
-	orderClient, err := gatewaygrpc.NewOrderClient("localhost:50055")
+	orderClient, err := gatewaygrpc.NewOrderClient("order-service:50055")
 	if err != nil {
 		log.Fatal("cannot connect to order-service:", err)
 	}
 
 	// ---------------- RESTAURANT SERVICE ----------------
 
-	restaurantClient, err := gatewaygrpc.NewRestaurantClient("localhost:50054")
+	restaurantClient, err := gatewaygrpc.NewRestaurantClient("restaurant-service:50054")
 	if err != nil {
 		log.Fatalf("could not connect to restaurant-service: %v", err)
 	}
@@ -108,6 +111,7 @@ func main() {
 		api.GET("restaurants/:id/products", catalogHandler.GetProductsByRestaurant)
 		api.GET("restaurants", restaurantHandler.ListRestaurants)
 		api.GET("orders/available", orderHandler.GetAvailableOrders)
+		api.POST("products", catalogHandler.CreateProduct)
 	}
 
 	// PROTECTED ROUTES
@@ -123,6 +127,8 @@ func main() {
 				"email":   email,
 			})
 		})
+
+		protected.POST("/restaurants", restaurantHandler.CreateRestaurant)
 
 		protected.POST("/orders", orderHandler.CreateOrder)
 		protected.PATCH("/orders/:id/status", orderHandler.UpdateStatus)
