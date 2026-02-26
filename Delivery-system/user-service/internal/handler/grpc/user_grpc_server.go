@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 
 	"user-service/internal/domain"
 	"user-service/internal/service"
@@ -57,6 +58,7 @@ func (s *UserGRPCServer) GetUserByID(ctx context.Context, req *userpb.GetUserByI
 func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
 
 	if req.Rol == "" {
+		fmt.Println("No se proporcionó un rol, asignando 'CLIENTE' por defecto")
 		req.Rol = "CLIENTE" // Asignar rol por defecto si no se proporciona
 	}
 
