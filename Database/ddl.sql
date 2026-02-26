@@ -1,14 +1,40 @@
+CREATE DATABASE Delivereats_SA_Usuarios;
+GO 
+USE Delivereats_SA_Usuarios;
+GO
+
 CREATE TABLE Usuario (
     Id INT PRIMARY KEY IDENTITY(1,1),
     Email NVARCHAR(64) UNIQUE NOT NULL,
     PasswordHash NVARCHAR(127) NOT NULL,
     Rol NVARCHAR(16) NOT NULL CHECK (Rol IN ('CLIENTE', 'RESTAURANTE', 'REPARTIDOR', 'ADMINISTRADOR')),
     NombreCompleto NVARCHAR(200) NOT NULL,
-    Telefono NVARCHAR(20),
     FechaRegistro DATETIME DEFAULT GETDATE()
 );
 
+USE Delivereats_SA_Productos;
+GO
+
+CREATE TABLE RecomendacionProducto (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+
+    ClienteId INT NOT NULL,
+    ProductoId INT NOT NULL,
+
+    Recomendado BIT NOT NULL DEFAULT 1,
+
+    FechaCreacion DATETIME DEFAULT GETDATE(),
+
+    INDEX IX_RecomendacionProducto_Producto (ProductoId),
+    INDEX IX_RecomendacionProducto_Cliente (ClienteId)
+);
+
 -- RESTURATNES DATABASE
+CREATE DATABASE Delivereats_SA_Restaurantes;
+GO 
+USE Delivereats_SA_Restaurantes;
+GO
+
 CREATE TABLE Restaurante (
     Id INT PRIMARY KEY, -- Id del usuario que es el restaurante
     Nombre NVARCHAR(64) NOT NULL,
@@ -21,8 +47,32 @@ CREATE TABLE Restaurante (
     CalificacionPromedio DECIMAL(3,2) DEFAULT 0,
     Activo BIT DEFAULT 1
 );
+USE Delivereats_SA_Restaurantes;
+GO
+
+CREATE TABLE CalificacionRestaurante (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+
+    RestauranteId INT NOT NULL,
+    ClienteId INT NOT NULL,
+
+    Estrellas INT NOT NULL 
+        CHECK (Estrellas BETWEEN 1 AND 5),
+
+    Comentario NVARCHAR(512),
+
+    FechaCreacion DATETIME DEFAULT GETDATE(),
+
+    INDEX IX_CalificacionRestaurante_Restaurante (RestauranteId)
+);
+
 
 -- PRODUCTOS DATABASE
+CREATE DATABASE Delivereats_SA_Productos;
+GO 
+USE Delivereats_SA_Productos;
+GO
+
 CREATE TABLE Producto (
     Id INT PRIMARY KEY IDENTITY(1,1),
     Nombre NVARCHAR(64) NOT NULL,
@@ -38,6 +88,11 @@ CREATE TABLE Producto (
 );
 
 -- ORDENES DATABASE
+CREATE DATABASE Delivereats_SA_Ordenes;
+GO 
+USE Delivereats_SA_Ordenes;
+GO
+
 CREATE TABLE Orden (
     Id INT PRIMARY KEY IDENTITY(1,1),
 
@@ -87,17 +142,33 @@ CREATE TABLE ProductoOrden (
 
 CREATE TABLE OrdenCancelada (
     Id INT PRIMARY KEY IDENTITY(1,1),
-    OrdenId INT NOT NULL, -- FOREIGN KEY REFERENCES Orden(Id)
-    CanceladoPor INT NOT NULL, -- FOREIGN KEY REFERENCES Usuario(Id)
+    OrdenId INT NOT NULL, -- 
+    CanceladoPor INT NOT NULL, -- 
     Motivo NVARCHAR(500),
     FechaCancelacion DATETIME DEFAULT GETDATE(),
     INDEX IX_OrdenCancelada_Orden (OrdenId)
 );
 
--- Índices adicionales para optimización
+USE Delivereats_SA_Productos;
+GO
 
--- Producto (búsquedas)
---CREATE INDEX IX_Producto_Nombre ON Producto(Nombre) WHERE Disponible = 1;
+CREATE TABLE RecomendacionProducto (
+    Id INT PRIMARY KEY IDENTITY(1,1),
 
--- Orden (consultas frecuentes)
---CREATE INDEX IX_Orden_Fecha ON Orden(FechaHoraCreacion DESC);
+    ClienteId INT NOT NULL,
+    ProductoId INT NOT NULL,
+
+    Recomendado BIT NOT NULL DEFAULT 1,
+
+    FechaCreacion DATETIME DEFAULT GETDATE(),
+
+    INDEX IX_RecomendacionProducto_Producto (ProductoId),
+    INDEX IX_RecomendacionProducto_Cliente (ClienteId)
+);
+
+CREATE TABLE ImagenOrden (
+
+    OrdenId INT NOT NULL,    
+    Link NVARCHAR(512),
+
+);
