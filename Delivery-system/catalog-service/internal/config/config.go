@@ -6,28 +6,24 @@ import (
 )
 
 type Config struct {
-	DBHost             string
-	DBPort             int
-	DBUser             string
-	DBPassword         string
-	DBName             string
-	JWTSecret          string
-	JWTExpirationHours int
-	ServerPort         string
-	DBWindowsAuth      bool
+	DBHost        string
+	DBPort        int
+	DBUser        string
+	DBPassword    string
+	DBName        string
+	ServerPort    string
+	DBWindowsAuth bool
 }
 
 func Load() *Config {
 	return &Config{
-		DBHost:             getEnv("DB_HOST", "localhost"),
-		DBPort:             getEnvAsInt("DB_PORT", 1434),
-		DBUser:             getEnv("DB_USER", "sa"),
-		DBPassword:         getEnv("DB_PASSWORD", ""),
-		DBName:             getEnv("DB_NAME", "Delivereats_SA"),
-		JWTSecret:          getEnv("JWT_SECRET", "static_vibrations_luis_is_gay"),
-		JWTExpirationHours: getEnvAsInt("JWT_EXPIRATION_HOURS", 2),
-		ServerPort:         getEnv("SERVER_PORT", "8080"),
-		DBWindowsAuth:      getEnvAsBool("DB_WINDOWS_AUTH", true), // false por defecto
+		DBHost:        getEnv("DB_HOST", "sa-delivereats.database.windows.net"),
+		DBPort:        getEnvAsInt("DB_PORT", 1433),
+		DBUser:        getEnv("DB_USER", "adminsql"),
+		DBPassword:    getEnv("DB_PASSWORD", "Delivereats123"),
+		DBName:        getEnv("DB_NAME", "Delivereats_SA_Productos"),
+		ServerPort:    getEnv("SERVER_PORT", "8080"),
+		DBWindowsAuth: getEnvAsBool("DB_WINDOWS_AUTH", false), // false por defecto
 	}
 }
 

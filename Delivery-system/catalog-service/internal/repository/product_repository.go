@@ -2,6 +2,7 @@ package repository
 
 import (
 	"catalog-service/internal/domain"
+	"context"
 	"database/sql"
 	"fmt"
 )
@@ -100,4 +101,45 @@ func (r *ProductRepository) GetByIDs(ids []int32) ([]domain.Product, error) {
 	}
 
 	return products, nil
+}
+
+func (r *ProductRepository) CreateProduct(
+	ctx context.Context,
+	nombre string,
+	descripcion string,
+	restauranteID int,
+	precio float64,
+	categoria string,
+) (int, error) {
+
+	query := `
+    INSERT INTO Producto (
+        Nombre,
+        Descripcion,
+        Precio,
+        RestauranteId,
+        Categoria,
+        Disponible
+    )
+    OUTPUT INSERTED.Id
+    VALUES (@p1,@p2,@p3,@p4,@p5,1)
+    `
+
+	var id int
+
+	err := r.db.QueryRowContext(
+		ctx,
+		query,
+		nombre,
+		descripcion,
+		precio,
+		restauranteID,
+		categoria,
+	).Scan(&id)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }

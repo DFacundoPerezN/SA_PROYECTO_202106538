@@ -73,3 +73,27 @@ func (s *CatalogGRPCServer) GetProductsByIDs(
 		Products: protoProducts,
 	}, nil
 }
+
+func (s *CatalogGRPCServer) CreateProduct(
+	ctx context.Context,
+	req *catalogpb.CreateProductRequest,
+) (*catalogpb.CreateProductResponse, error) {
+
+	id, err := s.service.CreateProduct(
+		ctx,
+		req.Nombre,
+		req.Descripcion,
+		int(req.RestauranteId),
+		req.Precio,
+		req.Categoria,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &catalogpb.CreateProductResponse{
+		ProductId: int32(id),
+		Message:   "product created successfully",
+	}, nil
+}
