@@ -48,7 +48,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("Connected to SQL Server")
+	log.Println("Connected to SQL Server :)")
 
 	// ---------------------------
 	// CLIENTE gRPC → catalog-service
