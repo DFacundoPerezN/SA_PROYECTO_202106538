@@ -10,6 +10,7 @@ import (
 	"order-service/internal/domain"
 	"order-service/internal/email"
 	catalogclient "order-service/internal/grpc"
+	"order-service/internal/messaging"
 	"order-service/internal/repository"
 	"time"
 )
@@ -104,6 +105,12 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrder
 	orderID, err := s.repo.CreateOrder(ctx, order)
 	if err != nil {
 		return 0, fmt.Errorf("error creando orden: %w", err)
+	}
+	fmt.Print("orden creada intentando publicar")
+	//publish Rabbit
+	err = messaging.PublicarOrden(order)
+	if err != nil {
+		return 0, fmt.Errorf("error publicando la orden en RabbitQM: %w", err)
 	}
 
 	go s.sendOrderCreatedEmail(int(orderID))

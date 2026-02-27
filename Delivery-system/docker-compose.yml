@@ -50,7 +50,10 @@ services:
 
   # ---------------- RESTAURANT ----------------
   restaurant-service:
-    image: diegofacundopereznicolau/restaurant-service:latest
+    #image: diegofacundopereznicolau/restaurant-service:latest
+    build:
+      context: .
+      dockerfile: restaurant-service/Dockerfile
     container_name: restaurant-service
     ports:
       - "50054:50054"
@@ -59,7 +62,10 @@ services:
 
   # ---------------- ORDER ----------------
   order-service:
-    image: diegofacundopereznicolau/order-service:latest
+    #image: diegofacundopereznicolau/order-service:latest
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
     container_name: order-service
     env_file:
       - ./order-service/.env
@@ -78,5 +84,15 @@ services:
       - ./notification-service/.env
     ports:
       - "50056:50056"
+    networks:
+      - backend
+
+  # -------------- RABBITMQ ------------------- 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - backend
