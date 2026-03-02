@@ -25,6 +25,8 @@ service OrderService {
   rpc GetFinishedOrders(GetFinishedOrdersRequest) returns (GetOrdersResponse);
 
   rpc GetOrdersByDriver(GetOrdersByDriverRequest) returns (GetOrdersResponse);
+  
+  rpc AddOrderImage(AddOrderImageRequest) returns (AddOrderImageResponse);
 }
 
 message OrderItem {
@@ -116,4 +118,13 @@ message GetFinishedOrdersRequest {}
 
 message GetOrdersByDriverRequest {
   int32 driver_id = 1;
+}
+
+message AddOrderImageRequest {
+  int32 order_id = 1;
+  string image_url = 2;
+}
+
+message AddOrderImageResponse {
+  string message = 1;
 }
