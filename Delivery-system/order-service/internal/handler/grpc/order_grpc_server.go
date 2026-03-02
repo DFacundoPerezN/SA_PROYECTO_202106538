@@ -210,3 +210,18 @@ func (s *OrderGRPCServer) GetOrdersByDriver(
 		Orders: protoOrders,
 	}, nil
 }
+
+func (h *OrderGRPCServer) AddOrderImage(
+	ctx context.Context,
+	req *orderpb.AddOrderImageRequest,
+) (*orderpb.AddOrderImageResponse, error) {
+
+	err := h.service.AddOrderImage(req.OrderId, req.ImageUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	return &orderpb.AddOrderImageResponse{
+		Message: "Imagen agregada correctamente",
+	}, nil
+}

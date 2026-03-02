@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v6.33.5
-// source: orderpb/order.proto
+// source: order.proto
 
 package orderpb
 
@@ -32,7 +32,7 @@ type OrderItem struct {
 
 func (x *OrderItem) Reset() {
 	*x = OrderItem{}
-	mi := &file_orderpb_order_proto_msgTypes[0]
+	mi := &file_order_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +44,7 @@ func (x *OrderItem) String() string {
 func (*OrderItem) ProtoMessage() {}
 
 func (x *OrderItem) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[0]
+	mi := &file_order_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +57,7 @@ func (x *OrderItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OrderItem.ProtoReflect.Descriptor instead.
 func (*OrderItem) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{0}
+	return file_order_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *OrderItem) GetProductId() int32 {
@@ -98,7 +98,7 @@ type CreateOrderRequest struct {
 
 func (x *CreateOrderRequest) Reset() {
 	*x = CreateOrderRequest{}
-	mi := &file_orderpb_order_proto_msgTypes[1]
+	mi := &file_order_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -110,7 +110,7 @@ func (x *CreateOrderRequest) String() string {
 func (*CreateOrderRequest) ProtoMessage() {}
 
 func (x *CreateOrderRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[1]
+	mi := &file_order_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -123,7 +123,7 @@ func (x *CreateOrderRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateOrderRequest.ProtoReflect.Descriptor instead.
 func (*CreateOrderRequest) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{1}
+	return file_order_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CreateOrderRequest) GetClientId() int32 {
@@ -200,7 +200,7 @@ type CreateOrderResponse struct {
 
 func (x *CreateOrderResponse) Reset() {
 	*x = CreateOrderResponse{}
-	mi := &file_orderpb_order_proto_msgTypes[2]
+	mi := &file_order_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -212,7 +212,7 @@ func (x *CreateOrderResponse) String() string {
 func (*CreateOrderResponse) ProtoMessage() {}
 
 func (x *CreateOrderResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[2]
+	mi := &file_order_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -225,7 +225,7 @@ func (x *CreateOrderResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateOrderResponse.ProtoReflect.Descriptor instead.
 func (*CreateOrderResponse) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{2}
+	return file_order_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CreateOrderResponse) GetOrderId() int32 {
@@ -259,7 +259,7 @@ type UpdateOrderStatusRequest struct {
 
 func (x *UpdateOrderStatusRequest) Reset() {
 	*x = UpdateOrderStatusRequest{}
-	mi := &file_orderpb_order_proto_msgTypes[3]
+	mi := &file_order_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -271,7 +271,7 @@ func (x *UpdateOrderStatusRequest) String() string {
 func (*UpdateOrderStatusRequest) ProtoMessage() {}
 
 func (x *UpdateOrderStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[3]
+	mi := &file_order_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -284,7 +284,7 @@ func (x *UpdateOrderStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateOrderStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateOrderStatusRequest) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{3}
+	return file_order_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *UpdateOrderStatusRequest) GetOrderId() int32 {
@@ -311,7 +311,7 @@ type UpdateOrderStatusResponse struct {
 
 func (x *UpdateOrderStatusResponse) Reset() {
 	*x = UpdateOrderStatusResponse{}
-	mi := &file_orderpb_order_proto_msgTypes[4]
+	mi := &file_order_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -323,7 +323,7 @@ func (x *UpdateOrderStatusResponse) String() string {
 func (*UpdateOrderStatusResponse) ProtoMessage() {}
 
 func (x *UpdateOrderStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[4]
+	mi := &file_order_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -336,7 +336,7 @@ func (x *UpdateOrderStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateOrderStatusResponse.ProtoReflect.Descriptor instead.
 func (*UpdateOrderStatusResponse) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{4}
+	return file_order_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UpdateOrderStatusResponse) GetOrderId() int32 {
@@ -364,7 +364,7 @@ type CancelOrderRequest struct {
 
 func (x *CancelOrderRequest) Reset() {
 	*x = CancelOrderRequest{}
-	mi := &file_orderpb_order_proto_msgTypes[5]
+	mi := &file_order_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -376,7 +376,7 @@ func (x *CancelOrderRequest) String() string {
 func (*CancelOrderRequest) ProtoMessage() {}
 
 func (x *CancelOrderRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[5]
+	mi := &file_order_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -389,7 +389,7 @@ func (x *CancelOrderRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CancelOrderRequest.ProtoReflect.Descriptor instead.
 func (*CancelOrderRequest) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{5}
+	return file_order_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CancelOrderRequest) GetOrderId() int32 {
@@ -423,7 +423,7 @@ type CancelOrderResponse struct {
 
 func (x *CancelOrderResponse) Reset() {
 	*x = CancelOrderResponse{}
-	mi := &file_orderpb_order_proto_msgTypes[6]
+	mi := &file_order_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -435,7 +435,7 @@ func (x *CancelOrderResponse) String() string {
 func (*CancelOrderResponse) ProtoMessage() {}
 
 func (x *CancelOrderResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[6]
+	mi := &file_order_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -448,7 +448,7 @@ func (x *CancelOrderResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CancelOrderResponse.ProtoReflect.Descriptor instead.
 func (*CancelOrderResponse) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{6}
+	return file_order_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CancelOrderResponse) GetOrderId() int32 {
@@ -484,7 +484,7 @@ type OrderSummary struct {
 
 func (x *OrderSummary) Reset() {
 	*x = OrderSummary{}
-	mi := &file_orderpb_order_proto_msgTypes[7]
+	mi := &file_order_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -496,7 +496,7 @@ func (x *OrderSummary) String() string {
 func (*OrderSummary) ProtoMessage() {}
 
 func (x *OrderSummary) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[7]
+	mi := &file_order_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -509,7 +509,7 @@ func (x *OrderSummary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OrderSummary.ProtoReflect.Descriptor instead.
 func (*OrderSummary) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{7}
+	return file_order_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *OrderSummary) GetId() int32 {
@@ -598,7 +598,7 @@ type GetOrdersByClientRequest struct {
 
 func (x *GetOrdersByClientRequest) Reset() {
 	*x = GetOrdersByClientRequest{}
-	mi := &file_orderpb_order_proto_msgTypes[8]
+	mi := &file_order_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -610,7 +610,7 @@ func (x *GetOrdersByClientRequest) String() string {
 func (*GetOrdersByClientRequest) ProtoMessage() {}
 
 func (x *GetOrdersByClientRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[8]
+	mi := &file_order_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -623,7 +623,7 @@ func (x *GetOrdersByClientRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOrdersByClientRequest.ProtoReflect.Descriptor instead.
 func (*GetOrdersByClientRequest) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{8}
+	return file_order_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetOrdersByClientRequest) GetClientId() int32 {
@@ -642,7 +642,7 @@ type GetOrdersByRestaurantRequest struct {
 
 func (x *GetOrdersByRestaurantRequest) Reset() {
 	*x = GetOrdersByRestaurantRequest{}
-	mi := &file_orderpb_order_proto_msgTypes[9]
+	mi := &file_order_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -654,7 +654,7 @@ func (x *GetOrdersByRestaurantRequest) String() string {
 func (*GetOrdersByRestaurantRequest) ProtoMessage() {}
 
 func (x *GetOrdersByRestaurantRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[9]
+	mi := &file_order_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -667,7 +667,7 @@ func (x *GetOrdersByRestaurantRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOrdersByRestaurantRequest.ProtoReflect.Descriptor instead.
 func (*GetOrdersByRestaurantRequest) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{9}
+	return file_order_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetOrdersByRestaurantRequest) GetRestaurantId() int32 {
@@ -686,7 +686,7 @@ type GetOrdersResponse struct {
 
 func (x *GetOrdersResponse) Reset() {
 	*x = GetOrdersResponse{}
-	mi := &file_orderpb_order_proto_msgTypes[10]
+	mi := &file_order_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -698,7 +698,7 @@ func (x *GetOrdersResponse) String() string {
 func (*GetOrdersResponse) ProtoMessage() {}
 
 func (x *GetOrdersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[10]
+	mi := &file_order_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -711,7 +711,7 @@ func (x *GetOrdersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOrdersResponse.ProtoReflect.Descriptor instead.
 func (*GetOrdersResponse) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{10}
+	return file_order_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GetOrdersResponse) GetOrders() []*OrderSummary {
@@ -731,7 +731,7 @@ type AssignDriverRequest struct {
 
 func (x *AssignDriverRequest) Reset() {
 	*x = AssignDriverRequest{}
-	mi := &file_orderpb_order_proto_msgTypes[11]
+	mi := &file_order_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -743,7 +743,7 @@ func (x *AssignDriverRequest) String() string {
 func (*AssignDriverRequest) ProtoMessage() {}
 
 func (x *AssignDriverRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[11]
+	mi := &file_order_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -756,7 +756,7 @@ func (x *AssignDriverRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssignDriverRequest.ProtoReflect.Descriptor instead.
 func (*AssignDriverRequest) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{11}
+	return file_order_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *AssignDriverRequest) GetOrderId() int32 {
@@ -784,7 +784,7 @@ type AssignDriverResponse struct {
 
 func (x *AssignDriverResponse) Reset() {
 	*x = AssignDriverResponse{}
-	mi := &file_orderpb_order_proto_msgTypes[12]
+	mi := &file_order_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -796,7 +796,7 @@ func (x *AssignDriverResponse) String() string {
 func (*AssignDriverResponse) ProtoMessage() {}
 
 func (x *AssignDriverResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[12]
+	mi := &file_order_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -809,7 +809,7 @@ func (x *AssignDriverResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssignDriverResponse.ProtoReflect.Descriptor instead.
 func (*AssignDriverResponse) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{12}
+	return file_order_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *AssignDriverResponse) GetOrderId() int32 {
@@ -841,7 +841,7 @@ type GetFinishedOrdersRequest struct {
 
 func (x *GetFinishedOrdersRequest) Reset() {
 	*x = GetFinishedOrdersRequest{}
-	mi := &file_orderpb_order_proto_msgTypes[13]
+	mi := &file_order_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -853,7 +853,7 @@ func (x *GetFinishedOrdersRequest) String() string {
 func (*GetFinishedOrdersRequest) ProtoMessage() {}
 
 func (x *GetFinishedOrdersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[13]
+	mi := &file_order_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -866,7 +866,7 @@ func (x *GetFinishedOrdersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFinishedOrdersRequest.ProtoReflect.Descriptor instead.
 func (*GetFinishedOrdersRequest) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{13}
+	return file_order_proto_rawDescGZIP(), []int{13}
 }
 
 type GetOrdersByDriverRequest struct {
@@ -878,7 +878,7 @@ type GetOrdersByDriverRequest struct {
 
 func (x *GetOrdersByDriverRequest) Reset() {
 	*x = GetOrdersByDriverRequest{}
-	mi := &file_orderpb_order_proto_msgTypes[14]
+	mi := &file_order_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -890,7 +890,7 @@ func (x *GetOrdersByDriverRequest) String() string {
 func (*GetOrdersByDriverRequest) ProtoMessage() {}
 
 func (x *GetOrdersByDriverRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_orderpb_order_proto_msgTypes[14]
+	mi := &file_order_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -903,7 +903,7 @@ func (x *GetOrdersByDriverRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOrdersByDriverRequest.ProtoReflect.Descriptor instead.
 func (*GetOrdersByDriverRequest) Descriptor() ([]byte, []int) {
-	return file_orderpb_order_proto_rawDescGZIP(), []int{14}
+	return file_order_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GetOrdersByDriverRequest) GetDriverId() int32 {
@@ -913,11 +913,107 @@ func (x *GetOrdersByDriverRequest) GetDriverId() int32 {
 	return 0
 }
 
-var File_orderpb_order_proto protoreflect.FileDescriptor
+type AddOrderImageRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	OrderId       int32                  `protobuf:"varint,1,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	ImageUrl      string                 `protobuf:"bytes,2,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_orderpb_order_proto_rawDesc = "" +
+func (x *AddOrderImageRequest) Reset() {
+	*x = AddOrderImageRequest{}
+	mi := &file_order_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddOrderImageRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddOrderImageRequest) ProtoMessage() {}
+
+func (x *AddOrderImageRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_order_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddOrderImageRequest.ProtoReflect.Descriptor instead.
+func (*AddOrderImageRequest) Descriptor() ([]byte, []int) {
+	return file_order_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *AddOrderImageRequest) GetOrderId() int32 {
+	if x != nil {
+		return x.OrderId
+	}
+	return 0
+}
+
+func (x *AddOrderImageRequest) GetImageUrl() string {
+	if x != nil {
+		return x.ImageUrl
+	}
+	return ""
+}
+
+type AddOrderImageResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddOrderImageResponse) Reset() {
+	*x = AddOrderImageResponse{}
+	mi := &file_order_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddOrderImageResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddOrderImageResponse) ProtoMessage() {}
+
+func (x *AddOrderImageResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_order_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddOrderImageResponse.ProtoReflect.Descriptor instead.
+func (*AddOrderImageResponse) Descriptor() ([]byte, []int) {
+	return file_order_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *AddOrderImageResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+var File_order_proto protoreflect.FileDescriptor
+
+const file_order_proto_rawDesc = "" +
 	"\n" +
-	"\x13orderpb/order.proto\x12\x05order\"b\n" +
+	"\vorder.proto\x12\x05order\"b\n" +
 	"\tOrderItem\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\x05R\tproductId\x12\x1a\n" +
@@ -983,7 +1079,12 @@ const file_orderpb_order_proto_rawDesc = "" +
 	"\amessage\x18\x03 \x01(\tR\amessage\"\x1a\n" +
 	"\x18GetFinishedOrdersRequest\"7\n" +
 	"\x18GetOrdersByDriverRequest\x12\x1b\n" +
-	"\tdriver_id\x18\x01 \x01(\x05R\bdriverId2\x83\x05\n" +
+	"\tdriver_id\x18\x01 \x01(\x05R\bdriverId\"N\n" +
+	"\x14AddOrderImageRequest\x12\x19\n" +
+	"\border_id\x18\x01 \x01(\x05R\aorderId\x12\x1b\n" +
+	"\timage_url\x18\x02 \x01(\tR\bimageUrl\"1\n" +
+	"\x15AddOrderImageResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2\xcf\x05\n" +
 	"\fOrderService\x12D\n" +
 	"\vCreateOrder\x12\x19.order.CreateOrderRequest\x1a\x1a.order.CreateOrderResponse\x12V\n" +
 	"\x11UpdateOrderStatus\x12\x1f.order.UpdateOrderStatusRequest\x1a .order.UpdateOrderStatusResponse\x12D\n" +
@@ -992,22 +1093,23 @@ const file_orderpb_order_proto_rawDesc = "" +
 	"\x15GetOrdersByRestaurant\x12#.order.GetOrdersByRestaurantRequest\x1a\x18.order.GetOrdersResponse\x12G\n" +
 	"\fAssignDriver\x12\x1a.order.AssignDriverRequest\x1a\x1b.order.AssignDriverResponse\x12N\n" +
 	"\x11GetFinishedOrders\x12\x1f.order.GetFinishedOrdersRequest\x1a\x18.order.GetOrdersResponse\x12N\n" +
-	"\x11GetOrdersByDriver\x12\x1f.order.GetOrdersByDriverRequest\x1a\x18.order.GetOrdersResponseB\x18Z\x16delivery-proto/orderpbb\x06proto3"
+	"\x11GetOrdersByDriver\x12\x1f.order.GetOrdersByDriverRequest\x1a\x18.order.GetOrdersResponse\x12J\n" +
+	"\rAddOrderImage\x12\x1b.order.AddOrderImageRequest\x1a\x1c.order.AddOrderImageResponseB\x18Z\x16delivery-proto/orderpbb\x06proto3"
 
 var (
-	file_orderpb_order_proto_rawDescOnce sync.Once
-	file_orderpb_order_proto_rawDescData []byte
+	file_order_proto_rawDescOnce sync.Once
+	file_order_proto_rawDescData []byte
 )
 
-func file_orderpb_order_proto_rawDescGZIP() []byte {
-	file_orderpb_order_proto_rawDescOnce.Do(func() {
-		file_orderpb_order_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_orderpb_order_proto_rawDesc), len(file_orderpb_order_proto_rawDesc)))
+func file_order_proto_rawDescGZIP() []byte {
+	file_order_proto_rawDescOnce.Do(func() {
+		file_order_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_order_proto_rawDesc), len(file_order_proto_rawDesc)))
 	})
-	return file_orderpb_order_proto_rawDescData
+	return file_order_proto_rawDescData
 }
 
-var file_orderpb_order_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
-var file_orderpb_order_proto_goTypes = []any{
+var file_order_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_order_proto_goTypes = []any{
 	(*OrderItem)(nil),                    // 0: order.OrderItem
 	(*CreateOrderRequest)(nil),           // 1: order.CreateOrderRequest
 	(*CreateOrderResponse)(nil),          // 2: order.CreateOrderResponse
@@ -1023,8 +1125,10 @@ var file_orderpb_order_proto_goTypes = []any{
 	(*AssignDriverResponse)(nil),         // 12: order.AssignDriverResponse
 	(*GetFinishedOrdersRequest)(nil),     // 13: order.GetFinishedOrdersRequest
 	(*GetOrdersByDriverRequest)(nil),     // 14: order.GetOrdersByDriverRequest
+	(*AddOrderImageRequest)(nil),         // 15: order.AddOrderImageRequest
+	(*AddOrderImageResponse)(nil),        // 16: order.AddOrderImageResponse
 }
-var file_orderpb_order_proto_depIdxs = []int32{
+var file_order_proto_depIdxs = []int32{
 	0,  // 0: order.CreateOrderRequest.items:type_name -> order.OrderItem
 	7,  // 1: order.GetOrdersResponse.orders:type_name -> order.OrderSummary
 	1,  // 2: order.OrderService.CreateOrder:input_type -> order.CreateOrderRequest
@@ -1035,41 +1139,43 @@ var file_orderpb_order_proto_depIdxs = []int32{
 	11, // 7: order.OrderService.AssignDriver:input_type -> order.AssignDriverRequest
 	13, // 8: order.OrderService.GetFinishedOrders:input_type -> order.GetFinishedOrdersRequest
 	14, // 9: order.OrderService.GetOrdersByDriver:input_type -> order.GetOrdersByDriverRequest
-	2,  // 10: order.OrderService.CreateOrder:output_type -> order.CreateOrderResponse
-	4,  // 11: order.OrderService.UpdateOrderStatus:output_type -> order.UpdateOrderStatusResponse
-	6,  // 12: order.OrderService.CancelOrder:output_type -> order.CancelOrderResponse
-	10, // 13: order.OrderService.GetOrdersByClient:output_type -> order.GetOrdersResponse
-	10, // 14: order.OrderService.GetOrdersByRestaurant:output_type -> order.GetOrdersResponse
-	12, // 15: order.OrderService.AssignDriver:output_type -> order.AssignDriverResponse
-	10, // 16: order.OrderService.GetFinishedOrders:output_type -> order.GetOrdersResponse
-	10, // 17: order.OrderService.GetOrdersByDriver:output_type -> order.GetOrdersResponse
-	10, // [10:18] is the sub-list for method output_type
-	2,  // [2:10] is the sub-list for method input_type
+	15, // 10: order.OrderService.AddOrderImage:input_type -> order.AddOrderImageRequest
+	2,  // 11: order.OrderService.CreateOrder:output_type -> order.CreateOrderResponse
+	4,  // 12: order.OrderService.UpdateOrderStatus:output_type -> order.UpdateOrderStatusResponse
+	6,  // 13: order.OrderService.CancelOrder:output_type -> order.CancelOrderResponse
+	10, // 14: order.OrderService.GetOrdersByClient:output_type -> order.GetOrdersResponse
+	10, // 15: order.OrderService.GetOrdersByRestaurant:output_type -> order.GetOrdersResponse
+	12, // 16: order.OrderService.AssignDriver:output_type -> order.AssignDriverResponse
+	10, // 17: order.OrderService.GetFinishedOrders:output_type -> order.GetOrdersResponse
+	10, // 18: order.OrderService.GetOrdersByDriver:output_type -> order.GetOrdersResponse
+	16, // 19: order.OrderService.AddOrderImage:output_type -> order.AddOrderImageResponse
+	11, // [11:20] is the sub-list for method output_type
+	2,  // [2:11] is the sub-list for method input_type
 	2,  // [2:2] is the sub-list for extension type_name
 	2,  // [2:2] is the sub-list for extension extendee
 	0,  // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_orderpb_order_proto_init() }
-func file_orderpb_order_proto_init() {
-	if File_orderpb_order_proto != nil {
+func init() { file_order_proto_init() }
+func file_order_proto_init() {
+	if File_order_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_orderpb_order_proto_rawDesc), len(file_orderpb_order_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_order_proto_rawDesc), len(file_order_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_orderpb_order_proto_goTypes,
-		DependencyIndexes: file_orderpb_order_proto_depIdxs,
-		MessageInfos:      file_orderpb_order_proto_msgTypes,
+		GoTypes:           file_order_proto_goTypes,
+		DependencyIndexes: file_order_proto_depIdxs,
+		MessageInfos:      file_order_proto_msgTypes,
 	}.Build()
-	File_orderpb_order_proto = out.File
-	file_orderpb_order_proto_goTypes = nil
-	file_orderpb_order_proto_depIdxs = nil
+	File_order_proto = out.File
+	file_order_proto_goTypes = nil
+	file_order_proto_depIdxs = nil
 }

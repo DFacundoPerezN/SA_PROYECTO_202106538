@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v6.33.5
-// source: orderpb/order.proto
+// source: order.proto
 
 package orderpb
 
@@ -27,6 +27,7 @@ const (
 	OrderService_AssignDriver_FullMethodName          = "/order.OrderService/AssignDriver"
 	OrderService_GetFinishedOrders_FullMethodName     = "/order.OrderService/GetFinishedOrders"
 	OrderService_GetOrdersByDriver_FullMethodName     = "/order.OrderService/GetOrdersByDriver"
+	OrderService_AddOrderImage_FullMethodName         = "/order.OrderService/AddOrderImage"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -44,6 +45,7 @@ type OrderServiceClient interface {
 	AssignDriver(ctx context.Context, in *AssignDriverRequest, opts ...grpc.CallOption) (*AssignDriverResponse, error)
 	GetFinishedOrders(ctx context.Context, in *GetFinishedOrdersRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error)
 	GetOrdersByDriver(ctx context.Context, in *GetOrdersByDriverRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error)
+	AddOrderImage(ctx context.Context, in *AddOrderImageRequest, opts ...grpc.CallOption) (*AddOrderImageResponse, error)
 }
 
 type orderServiceClient struct {
@@ -134,6 +136,16 @@ func (c *orderServiceClient) GetOrdersByDriver(ctx context.Context, in *GetOrder
 	return out, nil
 }
 
+func (c *orderServiceClient) AddOrderImage(ctx context.Context, in *AddOrderImageRequest, opts ...grpc.CallOption) (*AddOrderImageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddOrderImageResponse)
+	err := c.cc.Invoke(ctx, OrderService_AddOrderImage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServiceServer is the server API for OrderService service.
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility.
@@ -149,6 +161,7 @@ type OrderServiceServer interface {
 	AssignDriver(context.Context, *AssignDriverRequest) (*AssignDriverResponse, error)
 	GetFinishedOrders(context.Context, *GetFinishedOrdersRequest) (*GetOrdersResponse, error)
 	GetOrdersByDriver(context.Context, *GetOrdersByDriverRequest) (*GetOrdersResponse, error)
+	AddOrderImage(context.Context, *AddOrderImageRequest) (*AddOrderImageResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -182,6 +195,9 @@ func (UnimplementedOrderServiceServer) GetFinishedOrders(context.Context, *GetFi
 }
 func (UnimplementedOrderServiceServer) GetOrdersByDriver(context.Context, *GetOrdersByDriverRequest) (*GetOrdersResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetOrdersByDriver not implemented")
+}
+func (UnimplementedOrderServiceServer) AddOrderImage(context.Context, *AddOrderImageRequest) (*AddOrderImageResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddOrderImage not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 func (UnimplementedOrderServiceServer) testEmbeddedByValue()                      {}
@@ -348,6 +364,24 @@ func _OrderService_GetOrdersByDriver_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrderService_AddOrderImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddOrderImageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).AddOrderImage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrderService_AddOrderImage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).AddOrderImage(ctx, req.(*AddOrderImageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OrderService_ServiceDesc is the grpc.ServiceDesc for OrderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -387,7 +421,11 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetOrdersByDriver",
 			Handler:    _OrderService_GetOrdersByDriver_Handler,
 		},
+		{
+			MethodName: "AddOrderImage",
+			Handler:    _OrderService_AddOrderImage_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "orderpb/order.proto",
+	Metadata: "order.proto",
 }

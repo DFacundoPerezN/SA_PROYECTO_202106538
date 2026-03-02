@@ -220,3 +220,25 @@ func (h *OrderHandler) GetMyDriverOrders(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resp.Orders)
 }
+
+func (h *OrderHandler) AddOrderImage(context *gin.Context) {
+
+	orderIDParam := context.Param("id")
+	orderID, _ := strconv.Atoi(orderIDParam)
+	var body struct {
+		ImageURL string `json:"image_url"`
+	}
+
+	if err := context.ShouldBindJSON(&body); err != nil {
+		context.JSON(400, gin.H{"error": "Body inválido"})
+		return
+	}
+
+	resp, err := h.orderClient.AddOrderImage(int32(orderID), body.ImageURL)
+	if err != nil {
+		context.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(200, resp)
+}

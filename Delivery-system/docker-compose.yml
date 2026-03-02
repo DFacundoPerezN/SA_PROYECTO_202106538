@@ -5,10 +5,22 @@ networks:
     driver: bridge
 
 services:
+  # -------------- RABBITMQ ------------------- 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
 
   # ---------------- API GATEWAY ----------------
   api-gateway:
-    image: diegofacundopereznicolau/api-gateway:latest
+    #image: diegofacundopereznicolau/api-gateway:latest
+    build:
+      context: .
+      dockerfile: gateaway/Dockerfile
     container_name: api-gateway
     ports:
       - "8080:8080"
@@ -84,15 +96,5 @@ services:
       - ./notification-service/.env
     ports:
       - "50056:50056"
-    networks:
-      - backend
-
-  # -------------- RABBITMQ ------------------- 
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     networks:
       - backend

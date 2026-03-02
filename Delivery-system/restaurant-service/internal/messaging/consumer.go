@@ -15,7 +15,7 @@ func connectRabbitMQ() *amqp.Connection {
 	var conn *amqp.Connection
 	var err error
 
-	for range 6 {
+	for range 10 {
 		conn, err = amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 		if err == nil {
 			log.Println("Conectado a RabbitMQ")
