@@ -225,3 +225,54 @@ func (h *OrderGRPCServer) AddOrderImage(
 		Message: "Imagen agregada correctamente",
 	}, nil
 }
+
+func (h *OrderGRPCServer) GetOrderImage(
+	ctx context.Context,
+	req *orderpb.GetOrderImageRequest,
+) (*orderpb.GetOrderImageResponse, error) {
+
+	img, err := h.service.GetOrderImage(req.OrderId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &orderpb.GetOrderImageResponse{
+		OrderId: img.OrdenId,
+		Link:    img.Link,
+	}, nil
+}
+
+func (h *OrderGRPCServer) GetCancelledOrRejectedOrders(
+	ctx context.Context,
+	_ *orderpb.GetCancelledOrdersRequest,
+) (*orderpb.GetCancelledOrRejectedOrdersResponse, error) {
+
+	orders, err := h.service.GetCancelledOrRejectedOrders()
+	if err != nil {
+		return nil, err
+	}
+
+	var responseOrders []*orderpb.CancelledOrRejectedOrder
+
+	for _, o := range orders {
+
+		motivo := ""
+		if o.Motivo.Valid {
+			motivo = o.Motivo.String
+		} else {
+			motivo = "Orden rechazada por el restaurante"
+		}
+
+		responseOrders = append(responseOrders, &orderpb.CancelledOrRejectedOrder{
+			Id:            o.Id,
+			Estado:        o.Estado,
+			ClienteNombre: o.ClienteNombre,
+			CostoTotal:    o.CostoTotal,
+			Motivo:        motivo,
+		})
+	}
+
+	return &orderpb.GetCancelledOrRejectedOrdersResponse{
+		Orders: responseOrders,
+	}, nil
+}
