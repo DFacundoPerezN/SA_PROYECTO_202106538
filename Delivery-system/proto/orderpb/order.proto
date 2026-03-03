@@ -24,9 +24,14 @@ service OrderService {
     
   rpc GetFinishedOrders(GetFinishedOrdersRequest) returns (GetOrdersResponse);
 
+  rpc GetCancelledOrRejectedOrders(GetCancelledOrdersRequest) returns (GetCancelledOrRejectedOrdersResponse);
+
   rpc GetOrdersByDriver(GetOrdersByDriverRequest) returns (GetOrdersResponse);
   
+  // Agregar imagen a la orden
   rpc AddOrderImage(AddOrderImageRequest) returns (AddOrderImageResponse);
+
+  rpc GetOrderImage(GetOrderImageRequest) returns (GetOrderImageResponse);
 }
 
 message OrderItem {
@@ -116,6 +121,8 @@ message AssignDriverResponse {
 
 message GetFinishedOrdersRequest {}
 
+message GetCancelledOrdersRequest {}
+
 message GetOrdersByDriverRequest {
   int32 driver_id = 1;
 }
@@ -127,4 +134,26 @@ message AddOrderImageRequest {
 
 message AddOrderImageResponse {
   string message = 1;
+}
+
+message GetOrderImageRequest {
+  int32 order_id = 1;
+}
+
+message GetOrderImageResponse {
+  int32 order_id = 1;
+  string link = 2;
+}
+
+
+message CancelledOrRejectedOrder {
+  int32 id = 1;
+  string estado = 2;
+  string cliente_nombre = 3;
+  double costo_total = 4;
+  string motivo = 5; // puede venir vacío
+}
+
+message GetCancelledOrRejectedOrdersResponse {
+  repeated CancelledOrRejectedOrder orders = 1;
 }

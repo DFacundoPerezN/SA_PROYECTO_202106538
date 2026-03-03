@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"order-service/internal/domain"
 	"time"
 )
 
@@ -95,4 +96,46 @@ func (r *OrderRepository) InsertOrderCancellation(
 	}
 
 	return cancelledAt, nil
+}
+
+func (r *OrderRepository) GetCancelledOrRejectedOrders() ([]domain.CancelledOrRejectedOrder, error) {
+
+	query := `
+		SELECT 
+			o.Id,
+			o.Estado,
+			o.ClienteNombre,
+			o.CostoTotal,
+			oc.Motivo
+		FROM Orden o
+		LEFT JOIN OrdenCancelada oc ON o.Id = oc.OrdenId
+		WHERE o.Estado IN ('CANCELADA', 'RECHAZADA')
+	`
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var orders []domain.CancelledOrRejectedOrder
+
+	for rows.Next() {
+		var order domain.CancelledOrRejectedOrder
+
+		err := rows.Scan(
+			&order.Id,
+			&order.Estado,
+			&order.ClienteNombre,
+			&order.CostoTotal,
+			&order.Motivo,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		orders = append(orders, order)
+	}
+
+	return orders, nil
 }
