@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"payment-service/internal/domain"
 )
 
@@ -49,4 +50,29 @@ func (r *PaymentRepository) CreatePayment(ctx context.Context, p *domain.Payment
 	}
 
 	return id, nil
+}
+
+func (r *PaymentRepository) UpdateStatus(ctx context.Context, orderId int, newStatus string) error {
+
+	query := `
+	UPDATE Pagos
+	SET Estado = @p1
+	WHERE OrdenId = @p2
+	`
+
+	result, err := r.db.ExecContext(ctx, query, newStatus, orderId)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rows == 0 {
+		return errors.New("no se encontró el pago")
+	}
+
+	return nil
 }

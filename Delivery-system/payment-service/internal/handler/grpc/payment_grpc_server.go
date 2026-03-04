@@ -34,3 +34,22 @@ func (s *PaymentGRPCServer) ProcessPayment(ctx context.Context, req *paymentpb.P
 		Message:   "Pago procesado exitosamente",
 	}, nil
 }
+
+func (s *PaymentGRPCServer) RefundPayment(
+	ctx context.Context,
+	req *paymentpb.RefundPaymentRequest,
+) (*paymentpb.RefundPaymentResponse, error) {
+
+	err := s.paymentService.RefundPayment(ctx, int(req.OrderId))
+	if err != nil {
+		return &paymentpb.RefundPaymentResponse{
+			Success: false,
+			Message: err.Error(),
+		}, nil
+	}
+
+	return &paymentpb.RefundPaymentResponse{
+		Success: true,
+		Message: "Pago reembolsado correctamente",
+	}, nil
+}

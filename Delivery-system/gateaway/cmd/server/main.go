@@ -90,6 +90,7 @@ func main() {
 		log.Fatalf("could not connect to convert-service: %v", err)
 	}
 
+	// ---------------- PAYMENT SERVICE ----------------
 	paymentClient, err := gatewaygrpc.NewPaymentClient("payment-service:50058")
 	if err != nil {
 		log.Fatalf("could not connect to payment-service: %v", err)
@@ -163,6 +164,7 @@ func main() {
 		protected.PUT("/orders/:id/assign", orderHandler.AssignDriver)
 		protected.GET("/orders/driver/me", orderHandler.GetMyDriverOrders)
 		protected.POST("/payments", paymentHandler.ProcessPayment)
+		protected.PATCH("/payments/:id/refund", paymentHandler.RefundPayment)
 	}
 
 	// HTTP server
