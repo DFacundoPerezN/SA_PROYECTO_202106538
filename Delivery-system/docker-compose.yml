@@ -30,6 +30,7 @@ services:
       - catalog-service
       - restaurant-service
       - order-service
+      - payment-service
     networks:
       - backend
 
@@ -69,6 +70,8 @@ services:
     container_name: restaurant-service
     ports:
       - "50054:50054"
+    depends_on:
+      - rabbitmq
     networks:
       - backend
 
@@ -96,5 +99,18 @@ services:
       - ./notification-service/.env
     ports:
       - "50056:50056"
+    networks:
+      - backend
+
+  # ---------------- PAYMENT ----------------
+  payment-service:
+    build:
+      context: .
+      dockerfile: payment-service/Dockerfile
+    container_name: payment-service
+    ports:
+      - "50058:50058"
+    depends_on:
+      - rabbitmq
     networks:
       - backend

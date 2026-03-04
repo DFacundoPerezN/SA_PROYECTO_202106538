@@ -83,6 +83,11 @@ func main() {
 		log.Fatalf("could not connect to restaurant-service: %v", err)
 	}
 
+	paymentClient, err := gatewaygrpc.NewPaymentClient("payment-service:50058")
+	if err != nil {
+		log.Fatalf("could not connect to payment-service: %v", err)
+	}
+
 	restaurantHandler := handlers.NewRestaurantHandler(restaurantClient)
 
 	userServiceClient := userpb.NewUserServiceClient(userConn)
@@ -93,6 +98,8 @@ func main() {
 	catalogHandler := handlers.NewCatalogHandler(catalogClient)
 
 	orderHandler := handlers.NewOrderHandler(orderClient)
+
+	paymentHandler := handlers.NewPaymentHandler(paymentClient.Client)
 
 	// Gin
 	router := gin.Default()
@@ -143,6 +150,7 @@ func main() {
 		// repartidor
 		protected.PUT("/orders/:id/assign", orderHandler.AssignDriver)
 		protected.GET("/orders/driver/me", orderHandler.GetMyDriverOrders)
+		protected.POST("/payments", paymentHandler.ProcessPayment)
 	}
 
 	// HTTP server

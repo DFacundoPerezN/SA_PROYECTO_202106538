@@ -6,6 +6,7 @@ use (
 	./gateaway
 	./notification-service
 	./order-service
+	./payment-service
 	./proto
 	./restaurant-service
 	./user-service
