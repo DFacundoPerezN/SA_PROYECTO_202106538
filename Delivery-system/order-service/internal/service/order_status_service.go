@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"order-service/internal/domain"
 	"slices"
 	"time"
 
@@ -196,4 +197,8 @@ func (s *OrderService) notifyOrderRejected(orderID int) {
 	}
 
 	_ = s.notificationClient.SendOrderRejectedEmail(ctx, req)
+}
+
+func (s *OrderService) GetCancelledOrRejectedOrders() ([]domain.CancelledOrRejectedOrder, error) {
+	return s.repo.GetCancelledOrRejectedOrders()
 }

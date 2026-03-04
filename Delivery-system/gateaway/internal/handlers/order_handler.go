@@ -242,3 +242,30 @@ func (h *OrderHandler) AddOrderImage(context *gin.Context) {
 
 	context.JSON(200, resp)
 }
+
+func (h *OrderHandler) GetOrderImage(context *gin.Context) {
+
+	orderIDParam := context.Param("id")
+	orderID, err := strconv.Atoi(orderIDParam)
+	if err != nil {
+		context.JSON(400, gin.H{"error": "ID inválido / Invalid order ID"})
+		return
+	}
+
+	resp, err := h.orderClient.GetOrderImage(int32(orderID))
+	if err != nil {
+		context.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	context.JSON(200, resp)
+}
+
+func (h *OrderHandler) GetCancelledOrRejectedOrders(c *gin.Context) {
+
+	resp, err := h.orderClient.GetCancelledOrRejectedOrders()
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, resp.Orders)
+}

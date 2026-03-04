@@ -125,6 +125,8 @@ func main() {
 		// Convert Service Routes
 		api.GET("convert/exchange-rate", convertHandler.GetExchangeRate)
 		api.POST("convert/currency", convertHandler.ConvertCurrency)
+		api.GET("orders/:id/image", orderHandler.GetOrderImage)
+		api.GET("orders/cancelled", orderHandler.GetCancelledOrRejectedOrders)
 	}
 
 	// PROTECTED ROUTES

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v6.33.5
-// source: order.proto
+// source: orderpb/order.proto
 
 package orderpb
 
@@ -19,15 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	OrderService_CreateOrder_FullMethodName           = "/order.OrderService/CreateOrder"
-	OrderService_UpdateOrderStatus_FullMethodName     = "/order.OrderService/UpdateOrderStatus"
-	OrderService_CancelOrder_FullMethodName           = "/order.OrderService/CancelOrder"
-	OrderService_GetOrdersByClient_FullMethodName     = "/order.OrderService/GetOrdersByClient"
-	OrderService_GetOrdersByRestaurant_FullMethodName = "/order.OrderService/GetOrdersByRestaurant"
-	OrderService_AssignDriver_FullMethodName          = "/order.OrderService/AssignDriver"
-	OrderService_GetFinishedOrders_FullMethodName     = "/order.OrderService/GetFinishedOrders"
-	OrderService_GetOrdersByDriver_FullMethodName     = "/order.OrderService/GetOrdersByDriver"
-	OrderService_AddOrderImage_FullMethodName         = "/order.OrderService/AddOrderImage"
+	OrderService_CreateOrder_FullMethodName                  = "/order.OrderService/CreateOrder"
+	OrderService_UpdateOrderStatus_FullMethodName            = "/order.OrderService/UpdateOrderStatus"
+	OrderService_CancelOrder_FullMethodName                  = "/order.OrderService/CancelOrder"
+	OrderService_GetOrdersByClient_FullMethodName            = "/order.OrderService/GetOrdersByClient"
+	OrderService_GetOrdersByRestaurant_FullMethodName        = "/order.OrderService/GetOrdersByRestaurant"
+	OrderService_AssignDriver_FullMethodName                 = "/order.OrderService/AssignDriver"
+	OrderService_GetFinishedOrders_FullMethodName            = "/order.OrderService/GetFinishedOrders"
+	OrderService_GetCancelledOrRejectedOrders_FullMethodName = "/order.OrderService/GetCancelledOrRejectedOrders"
+	OrderService_GetOrdersByDriver_FullMethodName            = "/order.OrderService/GetOrdersByDriver"
+	OrderService_AddOrderImage_FullMethodName                = "/order.OrderService/AddOrderImage"
+	OrderService_GetOrderImage_FullMethodName                = "/order.OrderService/GetOrderImage"
 )
 
 // OrderServiceClient is the client API for OrderService service.
@@ -44,8 +46,11 @@ type OrderServiceClient interface {
 	// Asignar repartidor
 	AssignDriver(ctx context.Context, in *AssignDriverRequest, opts ...grpc.CallOption) (*AssignDriverResponse, error)
 	GetFinishedOrders(ctx context.Context, in *GetFinishedOrdersRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error)
+	GetCancelledOrRejectedOrders(ctx context.Context, in *GetCancelledOrdersRequest, opts ...grpc.CallOption) (*GetCancelledOrRejectedOrdersResponse, error)
 	GetOrdersByDriver(ctx context.Context, in *GetOrdersByDriverRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error)
+	// Agregar imagen a la orden
 	AddOrderImage(ctx context.Context, in *AddOrderImageRequest, opts ...grpc.CallOption) (*AddOrderImageResponse, error)
+	GetOrderImage(ctx context.Context, in *GetOrderImageRequest, opts ...grpc.CallOption) (*GetOrderImageResponse, error)
 }
 
 type orderServiceClient struct {
@@ -126,6 +131,16 @@ func (c *orderServiceClient) GetFinishedOrders(ctx context.Context, in *GetFinis
 	return out, nil
 }
 
+func (c *orderServiceClient) GetCancelledOrRejectedOrders(ctx context.Context, in *GetCancelledOrdersRequest, opts ...grpc.CallOption) (*GetCancelledOrRejectedOrdersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCancelledOrRejectedOrdersResponse)
+	err := c.cc.Invoke(ctx, OrderService_GetCancelledOrRejectedOrders_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *orderServiceClient) GetOrdersByDriver(ctx context.Context, in *GetOrdersByDriverRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetOrdersResponse)
@@ -146,6 +161,16 @@ func (c *orderServiceClient) AddOrderImage(ctx context.Context, in *AddOrderImag
 	return out, nil
 }
 
+func (c *orderServiceClient) GetOrderImage(ctx context.Context, in *GetOrderImageRequest, opts ...grpc.CallOption) (*GetOrderImageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrderImageResponse)
+	err := c.cc.Invoke(ctx, OrderService_GetOrderImage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServiceServer is the server API for OrderService service.
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility.
@@ -160,8 +185,11 @@ type OrderServiceServer interface {
 	// Asignar repartidor
 	AssignDriver(context.Context, *AssignDriverRequest) (*AssignDriverResponse, error)
 	GetFinishedOrders(context.Context, *GetFinishedOrdersRequest) (*GetOrdersResponse, error)
+	GetCancelledOrRejectedOrders(context.Context, *GetCancelledOrdersRequest) (*GetCancelledOrRejectedOrdersResponse, error)
 	GetOrdersByDriver(context.Context, *GetOrdersByDriverRequest) (*GetOrdersResponse, error)
+	// Agregar imagen a la orden
 	AddOrderImage(context.Context, *AddOrderImageRequest) (*AddOrderImageResponse, error)
+	GetOrderImage(context.Context, *GetOrderImageRequest) (*GetOrderImageResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -193,11 +221,17 @@ func (UnimplementedOrderServiceServer) AssignDriver(context.Context, *AssignDriv
 func (UnimplementedOrderServiceServer) GetFinishedOrders(context.Context, *GetFinishedOrdersRequest) (*GetOrdersResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetFinishedOrders not implemented")
 }
+func (UnimplementedOrderServiceServer) GetCancelledOrRejectedOrders(context.Context, *GetCancelledOrdersRequest) (*GetCancelledOrRejectedOrdersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCancelledOrRejectedOrders not implemented")
+}
 func (UnimplementedOrderServiceServer) GetOrdersByDriver(context.Context, *GetOrdersByDriverRequest) (*GetOrdersResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetOrdersByDriver not implemented")
 }
 func (UnimplementedOrderServiceServer) AddOrderImage(context.Context, *AddOrderImageRequest) (*AddOrderImageResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddOrderImage not implemented")
+}
+func (UnimplementedOrderServiceServer) GetOrderImage(context.Context, *GetOrderImageRequest) (*GetOrderImageResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetOrderImage not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 func (UnimplementedOrderServiceServer) testEmbeddedByValue()                      {}
@@ -346,6 +380,24 @@ func _OrderService_GetFinishedOrders_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrderService_GetCancelledOrRejectedOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCancelledOrdersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).GetCancelledOrRejectedOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrderService_GetCancelledOrRejectedOrders_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).GetCancelledOrRejectedOrders(ctx, req.(*GetCancelledOrdersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _OrderService_GetOrdersByDriver_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetOrdersByDriverRequest)
 	if err := dec(in); err != nil {
@@ -378,6 +430,24 @@ func _OrderService_AddOrderImage_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OrderServiceServer).AddOrderImage(ctx, req.(*AddOrderImageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrderService_GetOrderImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrderImageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).GetOrderImage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OrderService_GetOrderImage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).GetOrderImage(ctx, req.(*GetOrderImageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -418,6 +488,10 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _OrderService_GetFinishedOrders_Handler,
 		},
 		{
+			MethodName: "GetCancelledOrRejectedOrders",
+			Handler:    _OrderService_GetCancelledOrRejectedOrders_Handler,
+		},
+		{
 			MethodName: "GetOrdersByDriver",
 			Handler:    _OrderService_GetOrdersByDriver_Handler,
 		},
@@ -425,7 +499,11 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "AddOrderImage",
 			Handler:    _OrderService_AddOrderImage_Handler,
 		},
+		{
+			MethodName: "GetOrderImage",
+			Handler:    _OrderService_GetOrderImage_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "order.proto",
+	Metadata: "orderpb/order.proto",
 }
