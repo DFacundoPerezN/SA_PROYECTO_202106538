@@ -1,0 +1,261 @@
+{
+  "info": {
+    "_postman_id": "convert-service-collection",
+    "name": "Convert Service - Currency Exchange",
+    "description": "Colección para probar el servicio de conversión de monedas - Convert Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GetExchangeRate",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status should be 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response should contain rate', function() {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('rate');",
+              "});",
+              "",
+              "pm.test('Source should be one of: api, cache, cache_fallback', function() {",
+              "    var jsonData = pm.response.json();",
+              "    var validSources = ['api', 'cache', 'cache_fallback'];",
+              "    pm.expect(validSources).to.include(jsonData.source);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"from_currency\": \"USD\",\n  \"to_currency\": \"GTQ\"\n}"
+        },
+        "url": {
+          "raw": "grpc://localhost:50057/convertpb.ConvertService/GetExchangeRate",
+          "protocol": "grpc",
+          "host": [
+            "localhost"
+          ],
+          "port": "50057",
+          "path": [
+            "convertpb.ConvertService",
+            "GetExchangeRate"
+          ]
+        },
+        "description": "Obtiene el tipo de cambio entre dos monedas.\n\n**Ejemplo:**\n- USD a GTQ\n- EUR a MXN\n- GBP a CAD"
+      },
+      "response": [
+        {
+          "name": "USD a GTQ - Respuesta exitosa",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_currency\": \"USD\",\n  \"to_currency\": \"GTQ\"\n}"
+            },
+            "url": {
+              "raw": "grpc://localhost:50057/convertpb.ConvertService/GetExchangeRate",
+              "protocol": "grpc",
+              "host": [
+                "localhost"
+              ],
+              "port": "50057",
+              "path": [
+                "convertpb.ConvertService",
+                "GetExchangeRate"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"from_currency\": \"USD\",\n  \"to_currency\": \"GTQ\",\n  \"rate\": 7.75,\n  \"timestamp\": 1740960000,\n  \"source\": \"api\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "ConvertCurrency",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status should be 200', function() {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response should contain converted amount', function() {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('amount_to');",
+              "    pm.expect(jsonData).to.have.property('rate');",
+              "});",
+              "",
+              "pm.test('Conversion should be correct', function() {",
+              "    var jsonData = pm.response.json();",
+              "    var expectedAmount = jsonData.amount_from * jsonData.rate;",
+              "    pm.expect(jsonData.amount_to).to.be.closeTo(expectedAmount, 0.01);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"from_currency\": \"USD\",\n  \"to_currency\": \"GTQ\",\n  \"amount\": 100\n}"
+        },
+        "url": {
+          "raw": "grpc://localhost:50057/convertpb.ConvertService/ConvertCurrency",
+          "protocol": "grpc",
+          "host": [
+            "localhost"
+          ],
+          "port": "50057",
+          "path": [
+            "convertpb.ConvertService",
+            "ConvertCurrency"
+          ]
+        },
+        "description": "Convierte una cantidad de moneda de un tipo a otro.\n\n**Ejemplos:**\n- 100 USD a GTQ\n- 50 EUR a MXN\n- 1000 USD a CAD"
+      },
+      "response": [
+        {
+          "name": "100 USD a GTQ - Respuesta exitosa",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_currency\": \"USD\",\n  \"to_currency\": \"GTQ\",\n  \"amount\": 100\n}"
+            },
+            "url": {
+              "raw": "grpc://localhost:50057/convertpb.ConvertService/ConvertCurrency",
+              "protocol": "grpc",
+              "host": [
+                "localhost"
+              ],
+              "port": "50057",
+              "path": [
+                "convertpb.ConvertService",
+                "ConvertCurrency"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"from_currency\": \"USD\",\n  \"to_currency\": \"GTQ\",\n  \"amount_from\": 100,\n  \"amount_to\": 775,\n  \"rate\": 7.75,\n  \"timestamp\": 1740960000,\n  \"source\": \"cache\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Test EUR a MXN",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"from_currency\": \"EUR\",\n  \"to_currency\": \"MXN\",\n  \"amount\": 50\n}"
+        },
+        "url": {
+          "raw": "grpc://localhost:50057/convertpb.ConvertService/ConvertCurrency",
+          "protocol": "grpc",
+          "host": [
+            "localhost"
+          ],
+          "port": "50057",
+          "path": [
+            "convertpb.ConvertService",
+            "ConvertCurrency"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Test GBP a CAD",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"from_currency\": \"GBP\",\n  \"to_currency\": \"CAD\",\n  \"amount\": 250\n}"
+        },
+        "url": {
+          "raw": "grpc://localhost:50057/convertpb.ConvertService/ConvertCurrency",
+          "protocol": "grpc",
+          "host": [
+            "localhost"
+          ],
+          "port": "50057",
+          "path": [
+            "convertpb.ConvertService",
+            "ConvertCurrency"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "grpc://localhost:50057",
+      "type": "string"
+    },
+    {
+      "key": "service_name",
+      "value": "convertpb.ConvertService",
+      "type": "string"
+    }
+  ]
+}

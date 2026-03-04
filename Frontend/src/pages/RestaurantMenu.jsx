@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { authService } from '../services/api'
 import { orderService } from '../services/orderService'
+import { convertService } from '../services/convertService'
 import api from '../services/api'
 import '../styles/Dashboard.css'
 
@@ -18,6 +19,12 @@ const RestaurantMenu = () => {
   const [orderLoading, setOrderLoading] = useState(false)
   const [showCart, setShowCart] = useState(false)
 
+  // Conversión de moneda
+  const [selectedCurrency, setSelectedCurrency] = useState('USD')
+  const [convertedPrices, setConvertedPrices] = useState({})
+  const [convertingLoading, setConvertingLoading] = useState(false)
+  const [convertingError, setConvertingError] = useState('')
+
   // Formulario de entrega
   const [deliveryForm, setDeliveryForm] = useState({
     direccion_entrega: '',
@@ -31,11 +38,66 @@ const RestaurantMenu = () => {
     fetchProducts()
   }, [restaurantId])
 
+  // Convertir precios cuando cambia la moneda o los productos
+  useEffect(() => {
+    if (selectedCurrency !== 'USD' && products.length > 0) {
+      convertAllPrices()
+    } else {
+      setConvertedPrices({})
+    }
+  }, [selectedCurrency, products])
+
   const loadRestaurantData = () => {
     const savedRestaurant = localStorage.getItem('currentRestaurant')
     if (savedRestaurant) {
       setRestaurant(JSON.parse(savedRestaurant))
     }
+  }
+
+  const convertAllPrices = async () => {
+    try {
+      setConvertingLoading(true)
+      setConvertingError('')
+      const newConvertedPrices = {}
+
+      // Crear un set de precios únicos para reducir llamadas a la API
+      const uniquePrices = [...new Set(products.map(p => p.precio))]
+
+      for (const price of uniquePrices) {
+        try {
+          const result = await convertService.convertCurrency(
+            price,
+            'USD',
+            selectedCurrency
+          )
+          newConvertedPrices[price] = result.amount_to || result.converted_amount
+        } catch (priceErr) {
+          console.warn(`Error converting price ${price}:`, priceErr)
+          newConvertedPrices[price] = price
+        }
+      }
+
+      setConvertedPrices(newConvertedPrices)
+    } catch (err) {
+      console.error('Error converting prices:', err)
+      setConvertingError('Error al convertir precios')
+    } finally {
+      setConvertingLoading(false)
+    }
+  }
+
+  const handleCurrencyChange = (e) => {
+    setSelectedCurrency(e.target.value)
+  }
+
+  const getDisplayPrice = (priceUSD) => {
+    if (selectedCurrency === 'USD') {
+      return `$${priceUSD.toFixed(2)}`
+    }
+    if (convertedPrices[priceUSD]) {
+      return `${convertedPrices[priceUSD].toFixed(2)} ${selectedCurrency}`
+    }
+    return `$${priceUSD.toFixed(2)}`
   }
 
   const fetchProducts = async () => {
@@ -115,6 +177,12 @@ const RestaurantMenu = () => {
   // Calcular total
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + (item.precio * item.cantidad), 0)
+  }
+
+  // Calcular total con conversión
+  const getDisplayTotal = () => {
+    const totalUSD = calculateTotal()
+    return getDisplayPrice(totalUSD)
   }
 
   // Crear orden
@@ -228,6 +296,24 @@ const RestaurantMenu = () => {
                 {restaurant.telefono && (
                   <span>📞 {restaurant.telefono}</span>
                 )}
+                <span>
+                  💱 
+                  <select
+                    value={selectedCurrency}
+                    onChange={handleCurrencyChange}
+                    style={{ marginLeft: '0.5rem', padding: '0.25rem 0.5rem', cursor: 'pointer' }}
+                  >
+                    <option value="USD">USD</option>
+                    <option value="GTQ">GTQ</option>
+                    <option value="MXN">MXN</option>
+                    <option value="COP">COP</option>
+                    <option value="PEN">PEN</option>
+                    <option value="CLP">CLP</option>
+                    <option value="ARS">ARS</option>
+                    <option value="BRL">BRL</option>
+                  </select>
+                  {convertingLoading && <small style={{ marginLeft: '0.5rem' }}>⏳</small>}
+                </span>
               </div>
             </div>
           </div>
@@ -246,7 +332,7 @@ const RestaurantMenu = () => {
                 <div key={item.producto_id} className="cart-item">
                   <div className="cart-item-info">
                     <h4>{item.nombre}</h4>
-                    <p>${item.precio.toFixed(2)} c/u</p>
+                    <p>{getDisplayPrice(item.precio)} c/u</p>
                   </div>
                   
                   <div className="cart-item-controls">
@@ -255,7 +341,7 @@ const RestaurantMenu = () => {
                       <span>{item.cantidad}</span>
                       <button onClick={() => updateQuantity(item.producto_id, item.cantidad + 1)}>+</button>
                     </div>
-                    <span className="item-total">${(item.precio * item.cantidad).toFixed(2)}</span>
+                    <span className="item-total">{getDisplayPrice(item.precio * item.cantidad)}</span>
                   </div>
 
                   <input
@@ -303,7 +389,7 @@ const RestaurantMenu = () => {
             </div>
 
             <div className="cart-total">
-              <h3>Total: ${calculateTotal().toFixed(2)}</h3>
+              <h3>Total: {getDisplayTotal()}</h3>
             </div>
 
             {error && (
@@ -357,7 +443,7 @@ const RestaurantMenu = () => {
                           )}
                           <div className="product-footer">
                             <span className="product-price">
-                              ${product.precio.toFixed(2)}
+                              {getDisplayPrice(product.precio)}
                             </span>
                             {!product.disponible && (
                               <span className="product-unavailable">No disponible</span>
