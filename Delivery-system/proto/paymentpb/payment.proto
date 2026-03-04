@@ -6,6 +6,8 @@ option go_package = "delivery-proto/paymentpb";
 
 service PaymentService {
   rpc ProcessPayment (ProcessPaymentRequest) returns (ProcessPaymentResponse);
+
+  rpc RefundPayment (RefundPaymentRequest) returns (RefundPaymentResponse);
 }
 
 message ProcessPaymentRequest {
@@ -19,4 +21,13 @@ message ProcessPaymentResponse {
   int32 payment_id = 1;
   string status = 2;
   string message = 3;
+}
+
+message RefundPaymentRequest {
+  int32 order_id = 1;
+}
+
+message RefundPaymentResponse {
+  bool success = 1;
+  string message = 2;
 }

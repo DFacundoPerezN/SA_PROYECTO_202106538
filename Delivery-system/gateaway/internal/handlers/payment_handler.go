@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	paymentpb "delivery-proto/paymentpb"
 
@@ -41,6 +42,30 @@ func (h *PaymentHandler) ProcessPayment(c *gin.Context) {
 			PaymentMethod: req.PaymentMethod,
 			UseCupon:      req.UseCupon,
 			ClientId:      int32(ClientID),
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (h *PaymentHandler) RefundPayment(c *gin.Context) {
+
+	orderId := c.Param("id")
+	orderID, err := strconv.Atoi(orderId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+		return
+	}
+
+	resp, err := h.client.RefundPayment(
+		context.Background(),
+		&paymentpb.RefundPaymentRequest{
+			OrderId: int32(orderID),
 		},
 	)
 

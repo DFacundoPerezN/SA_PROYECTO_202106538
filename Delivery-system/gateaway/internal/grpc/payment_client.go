@@ -48,3 +48,16 @@ func (c *PaymentClient) ProcessPayment(ctx context.Context, orderID int32, payme
 	}
 	return resp, nil
 }
+
+func (c *PaymentClient) RefundPayment(
+	ctx context.Context,
+	orderId int32,
+) (*paymentpb.RefundPaymentResponse, error) {
+
+	return c.Client.RefundPayment(
+		ctx,
+		&paymentpb.RefundPaymentRequest{
+			OrderId: orderId,
+		},
+	)
+}

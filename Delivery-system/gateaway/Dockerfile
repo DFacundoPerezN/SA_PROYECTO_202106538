@@ -51,6 +51,7 @@ RUN protoc --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:
 WORKDIR /workspace/proto/convertpb
 RUN protoc --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. convert.proto
 
+ENV GOWORK=off
 # compilar servicio
 WORKDIR /workspace/gateaway
 

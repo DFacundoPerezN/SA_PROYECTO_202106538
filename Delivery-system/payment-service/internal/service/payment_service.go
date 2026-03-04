@@ -27,3 +27,7 @@ func (s *PaymentService) ProcessPaymentRequest(ctx context.Context, orderID int,
 
 	return s.repo.CreatePayment(ctx, &domainPayment)
 }
+
+func (s *PaymentService) RefundPayment(ctx context.Context, orderID int) error {
+	return s.repo.UpdateStatus(ctx, orderID, "REEMBOLSADO")
+}
