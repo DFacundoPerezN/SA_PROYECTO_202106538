@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../services/api'
 import api from '../services/api'
+import { convertService } from '../services/convertService'
 import styles from '../styles/DriverDashboard.module.css' // Reutilizamos los estilos minimalistas
 
 const ClienteOrders = () => {
@@ -17,9 +18,72 @@ const ClienteOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [cancelReason, setCancelReason] = useState('')
 
+  // Conversión de moneda
+  const [selectedCurrency, setSelectedCurrency] = useState('USD')
+  const [convertedAmounts, setConvertedAmounts] = useState({})
+  const [convertingLoading, setConvertingLoading] = useState(false)
+  const [convertingError, setConvertingError] = useState('')
+
+  // Monedas soportadas
+  const supportedCurrencies = ['USD', 'GTQ', 'MXN', 'COP', 'PEN', 'CLP', 'ARS', 'BRL']
+
   useEffect(() => {
     fetchOrders()
   }, [])
+
+  // Manejar conversión de monedas cuando cambia la moneda seleccionada
+  useEffect(() => {
+    if (selectedCurrency !== 'USD' && orders.length > 0) {
+      convertAllOrderAmounts()
+    } else {
+      setConvertedAmounts({})
+    }
+  }, [selectedCurrency, orders])
+
+  const convertAllOrderAmounts = async () => {
+    try {
+      setConvertingLoading(true)
+      setConvertingError('')
+      const newConvertedAmounts = {}
+
+      for (const order of orders) {
+        try {
+          const result = await convertService.convertCurrency(
+            order.costo_total,
+            'USD',
+            selectedCurrency
+          )
+          // La respuesta contiene amount_to que es el monto convertido
+          newConvertedAmounts[order.id] = result.amount_to || result.converted_amount
+        } catch (orderErr) {
+          console.warn(`Error converting order ${order.id}:`, orderErr)
+          // Si falla la conversión de una orden, mantenemos la cantidad original
+          newConvertedAmounts[order.id] = order.costo_total
+        }
+      }
+
+      setConvertedAmounts(newConvertedAmounts)
+    } catch (err) {
+      console.error('Error converting amounts:', err)
+      setConvertingError('Error al convertir monedas')
+    } finally {
+      setConvertingLoading(false)
+    }
+  }
+
+  const handleCurrencyChange = (e) => {
+    setSelectedCurrency(e.target.value)
+  }
+
+  const getDisplayAmount = (order) => {
+    if (selectedCurrency === 'USD') {
+      return `$${order.costo_total.toFixed(2)} USD`
+    }
+    if (convertedAmounts[order.id]) {
+      return `${convertedAmounts[order.id].toFixed(2)} ${selectedCurrency}`
+    }
+    return `$${order.costo_total.toFixed(2)} USD`
+  }
 
   const fetchOrders = async () => {
     try {
@@ -131,6 +195,56 @@ const ClienteOrders = () => {
           <p>Historial de pedidos realizados</p>
         </div>
 
+        {/* Currency Converter */}
+        <div style={{
+          padding: '1rem',
+          marginBottom: '1.5rem',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '0.5rem',
+          border: '1px solid #e0e0e0'
+        }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '0.5rem',
+            fontWeight: '600',
+            color: '#333'
+          }}>
+             Cambiar moneda de visualización:
+          </label>
+          <select
+            value={selectedCurrency}
+            onChange={handleCurrencyChange}
+            style={{
+              padding: '0.5rem',
+              width: '100%',
+              maxWidth: '200px',
+              border: '1px solid #ccc',
+              borderRadius: '0.25rem',
+              fontSize: '1rem',
+              cursor: 'pointer'
+            }}
+          >
+            <option value="USD">USD - Dólar Estadounidense</option>
+            <option value="GTQ">GTQ - Quetzal Guatemalteco</option>
+            <option value="MXN">MXN - Peso Mexicano</option>
+            <option value="COP">COP - Peso Colombiano</option>
+            <option value="PEN">PEN - Sol Peruano</option>
+            <option value="CLP">CLP - Peso Chileno</option>
+            <option value="ARS">ARS - Peso Argentino</option>
+            <option value="BRL">BRL - Real Brasileño</option>
+          </select>
+          {convertingError && (
+            <small style={{ color: '#d32f2f', display: 'block', marginTop: '0.5rem' }}>
+              {convertingError}
+            </small>
+          )}
+          {convertingLoading && selectedCurrency !== 'USD' && (
+            <small style={{ color: '#1976d2', display: 'block', marginTop: '0.5rem' }}>
+              ⏳ Convirtiendo monedas...
+            </small>
+          )}
+        </div>
+
         {error && (
           <div className={`${styles.alert} ${styles.alertError}`}>
             {error}
@@ -171,7 +285,7 @@ const ClienteOrders = () => {
                   </div>
                   <div className={styles.detailRow}>
                     <span className={styles.detailLabel}>Total:</span>
-                    <span className={styles.detailValue}>${order.costo_total.toFixed(2)}</span>
+                    <span className={styles.detailValue}>{getDisplayAmount(order)}</span>
                   </div>
                   <div className={styles.detailRow}>
                     <span className={styles.detailLabel}>Estado:</span>
