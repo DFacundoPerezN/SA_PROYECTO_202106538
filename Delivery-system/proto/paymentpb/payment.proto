@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package payment;
+
+option go_package = "delivery-proto/paymentpb";
+
+service PaymentService {
+  rpc ProcessPayment (ProcessPaymentRequest) returns (ProcessPaymentResponse);
+}
+
+message ProcessPaymentRequest {
+  int32 order_id = 1;
+  string payment_method = 2; 
+  bool use_cupon = 3; 
+  int32 client_id = 4;
+}
+
+message ProcessPaymentResponse {
+  int32 payment_id = 1;
+  string status = 2;
+  string message = 3;
+}
