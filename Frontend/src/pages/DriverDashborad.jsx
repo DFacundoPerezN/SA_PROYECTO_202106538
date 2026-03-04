@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../services/api'
+import { imageUploadService } from '../services/imageUpload'
 import api from '../services/api'
 import styles from '../styles/DriverDashboard.module.css'
 
@@ -14,6 +15,13 @@ const DriverDashboard = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   
+  // Estados para imagen
+  const [showImageModal, setShowImageModal] = useState(false)
+  const [selectedOrderForImage, setSelectedOrderForImage] = useState(null)
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
+  const [uploadingImage, setUploadingImage] = useState(false)
+
   // Modal para cancelar
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [selectedOrder, setSelectedOrder] = useState(null)
@@ -72,16 +80,78 @@ const DriverDashboard = () => {
     }
   }
 
-  const handleDeliverOrder = async (orderId) => {
-    try {
-      await api.patch(`/api/orders/${orderId}/status`, { status: 'ENTREGADA' })
-      alert('¡Orden entregada exitosamente!')
-      fetchMyOrders()
-    } catch (err) {
-      console.error('Error delivering order:', err)
-      alert('Error al marcar como entregada: ' + (err.response?.data?.error || err.message))
+const openImageModal = (order) => {
+  setSelectedOrderForImage(order)
+  setShowImageModal(true)
+  setSelectedImage(null)
+  setImagePreview(null)
+}
+
+const handleImageSelect = (event) => {
+  const file = event.target.files[0]
+  
+  if (!file) return
+  
+  try {
+    // Validar imagen
+    imageUploadService.validateImage(file)
+    
+    // Preview
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setImagePreview(e.target.result)
     }
+    reader.readAsDataURL(file)
+    
+    setSelectedImage(file)
+  } catch (error) {
+    alert(error.message)
+    event.target.value = ''
   }
+}
+
+const handleDeliverWithImage = async () => {
+  if (!selectedImage) {
+    alert('Por favor selecciona una imagen de prueba de entrega')
+    return
+  }
+
+  setUploadingImage(true)
+  setError('')
+
+  try {
+    // Opción 1: Subir a Azure Blob Storage
+    const imageUrl = await imageUploadService.uploadToImgBB(selectedImage)
+    console.log('Imagen subida a ImgBB:', imageUrl)
+    // Opción 2: Convertir a base64 y enviar al backend
+    // const base64Image = await imageUploadService.uploadAsBase64(selectedImage)
+    
+    // Enviar imagen al backend
+    await api.post(`/api/orders/${selectedOrderForImage.id}/image`, {
+      image_url: imageUrl
+    })
+    
+    // Marcar como entregada
+    await api.patch(`/api/orders/${selectedOrderForImage.id}/status`, { 
+      status: 'ENTREGADA' 
+    })
+    
+    alert('¡Orden entregada exitosamente!')
+    setShowImageModal(false)
+    setSelectedOrderForImage(null)
+    setSelectedImage(null)
+    setImagePreview(null)
+    fetchMyOrders()
+    
+  } catch (err) {
+    console.error('Error delivering order:', err)
+    const errorMessage = err.response?.data?.error || 'Error al entregar la orden'
+    setError(errorMessage)
+    alert('Error: ' + errorMessage)
+  } finally {
+    setUploadingImage(false)
+  }
+}
 
   const openCancelModal = (order) => {
     setSelectedOrder(order)
@@ -214,7 +284,7 @@ const DriverDashboard = () => {
                         className={`${styles.btn} ${styles.btnAssign}`}
                         onClick={() => handleAssignOrder(order.id)}
                       >
-                        🚚 Tomar Esta Orden
+                        ♦ Tomar Esta Orden
                       </button>
                     </div>
                   </div>
@@ -279,9 +349,9 @@ const DriverDashboard = () => {
                       <div className={styles.orderActions}>
                         <button 
                           className={`${styles.btn} ${styles.btnDeliver}`}
-                          onClick={() => handleDeliverOrder(order.id)}
+                          onClick={() => openImageModal(order)}
                         >
-                          ✓ Marcar como Entregada
+                          + Entregar con Foto
                         </button>
                         <button 
                           className={`${styles.btn} ${styles.btnCancel}`}
@@ -291,6 +361,7 @@ const DriverDashboard = () => {
                         </button>
                       </div>
                     )}
+
                   </div>
                 ))}
               </div>
@@ -298,6 +369,117 @@ const DriverDashboard = () => {
           </>
         )}
       </div>
+      {/* Modal Subir Imagen */}
+      {showImageModal && (
+        <div className={styles.modal} onClick={() => setShowImageModal(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.modalHeader}>
+              Foto de Entrega - Orden #{selectedOrderForImage?.id}
+            </h3>
+            
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
+                Toma una foto del pedido entregado *
+              </label>
+              
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleImageSelect}
+                style={{ display: 'none' }}
+                id="image-upload"
+              />
+              
+              <label 
+                htmlFor="image-upload"
+                style={{
+                  display: 'block',
+                  padding: '3rem 1rem',
+                  border: '2px dashed #ddd',
+                  borderRadius: '8px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  backgroundColor: '#f9f9f9',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.borderColor = '#2196f3'
+                  e.currentTarget.style.backgroundColor = '#f0f8ff'
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.borderColor = '#ddd'
+                  e.currentTarget.style.backgroundColor = '#f9f9f9'
+                }}
+              >
+                {imagePreview ? (
+                  <div>
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      style={{ 
+                        maxWidth: '100%', 
+                        maxHeight: '300px',
+                        borderRadius: '8px',
+                        marginBottom: '1rem'
+                      }} 
+                    />
+                    <p style={{ color: '#2196f3', fontSize: '0.875rem' }}>
+                      ✓ Imagen seleccionada - Click para cambiar
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📸</div>
+                    <p style={{ color: '#666', marginBottom: '0.5rem' }}>
+                      Click para tomar foto o seleccionar imagen
+                    </p>
+                    <small style={{ color: '#999' }}>
+                      JPG, PNG o WEBP - Máximo 5MB
+                    </small>
+                  </div>
+                )}
+              </label>
+              
+              <small style={{ 
+                display: 'block', 
+                marginTop: '0.5rem', 
+                color: '#666',
+                fontSize: '0.8rem'
+              }}>
+                Esta foto será la prueba de que el pedido fue entregado
+              </small>
+            </div>
+
+            {error && (
+              <div className={`${styles.alert} ${styles.alertError}`}>
+                {error}
+              </div>
+            )}
+
+            <div className={styles.modalActions}>
+              <button 
+                className={styles.btnSecondary}
+                onClick={() => {
+                  setShowImageModal(false)
+                  setSelectedImage(null)
+                  setImagePreview(null)
+                }}
+                disabled={uploadingImage}
+              >
+                Cancelar
+              </button>
+              <button 
+                className={`${styles.btn} ${styles.btnDeliver}`}
+                onClick={handleDeliverWithImage}
+                disabled={!selectedImage || uploadingImage}
+              >
+                {uploadingImage ? 'Subiendo...' : '✓ Confirmar Entrega'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal Cancelar */}
       {showCancelModal && (

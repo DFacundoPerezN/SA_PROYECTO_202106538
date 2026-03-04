@@ -400,3 +400,35 @@
     gap: 0.25rem;
   }
 }
+
+.imagePreviewContainer {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.imagePreview {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.uploadButton {
+  padding: 1rem;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.uploadButton:hover {
+  border-color: #2196f3;
+  background: #f0f8ff;
+}
+
+.uploadIcon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
