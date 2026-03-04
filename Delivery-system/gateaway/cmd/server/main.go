@@ -83,12 +83,20 @@ func main() {
 		log.Fatalf("could not connect to restaurant-service: %v", err)
 	}
 
+	// ---------------- CONVERT SERVICE ----------------
+
+	convertClient, err := gatewaygrpc.NewConvertClient("convert-service:50057")
+	if err != nil {
+		log.Fatalf("could not connect to convert-service: %v", err)
+	}
+
 	paymentClient, err := gatewaygrpc.NewPaymentClient("payment-service:50058")
 	if err != nil {
 		log.Fatalf("could not connect to payment-service: %v", err)
 	}
 
 	restaurantHandler := handlers.NewRestaurantHandler(restaurantClient)
+	convertHandler := handlers.NewConvertHandler(convertClient)
 
 	userServiceClient := userpb.NewUserServiceClient(userConn)
 	userClient := gatewaygrpc.NewUserClient(userServiceClient)
@@ -120,6 +128,10 @@ func main() {
 		api.GET("orders/available", orderHandler.GetAvailableOrders)
 		api.POST("products", catalogHandler.CreateProduct)
 		api.POST("orders/:id/image", orderHandler.AddOrderImage)
+
+		// Convert Service Routes
+		api.GET("convert/exchange-rate", convertHandler.GetExchangeRate)
+		api.POST("convert/currency", convertHandler.ConvertCurrency)
 		api.GET("orders/:id/image", orderHandler.GetOrderImage)
 		api.GET("orders/cancelled", orderHandler.GetCancelledOrRejectedOrders)
 	}

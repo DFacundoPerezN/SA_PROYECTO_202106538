@@ -3,6 +3,7 @@ go 1.25.6
 use (
 	./auth-service
 	./catalog-service
+	./convert-service
 	./gateaway
 	./notification-service
 	./order-service

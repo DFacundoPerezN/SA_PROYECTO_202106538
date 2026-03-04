@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package convertpb;
+
+option go_package = "delivery-proto/convertpb";
+
+service ConvertService {
+  rpc GetExchangeRate(GetExchangeRateRequest) returns (GetExchangeRateResponse);
+  rpc ConvertCurrency(ConvertCurrencyRequest) returns (ConvertCurrencyResponse);
+}
+
+message GetExchangeRateRequest {
+  string from_currency = 1; // e.g., "USD"
+  string to_currency = 2;   // e.g., "GTQ"
+}
+
+message GetExchangeRateResponse {
+  string from_currency = 1;
+  string to_currency = 2;
+  double rate = 3;
+  int64 timestamp = 4;
+  string source = 5; // "api" o "cache"
+}
+
+message ConvertCurrencyRequest {
+  string from_currency = 1;
+  string to_currency = 2;
+  double amount = 3;
+}
+
+message ConvertCurrencyResponse {
+  string from_currency = 1;
+  string to_currency = 2;
+  double amount_from = 3;
+  double amount_to = 4;
+  double rate = 5;
+  int64 timestamp = 6;
+  string source = 7; // "api" o "cache"
+}
