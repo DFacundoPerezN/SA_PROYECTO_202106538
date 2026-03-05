@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"user-service/internal/domain"
 	"user-service/internal/service"
@@ -23,6 +23,7 @@ func (s *UserGRPCServer) GetUserByEmail(ctx context.Context, req *userpb.GetUser
 
 	user, err := s.userService.GetUserByEmail(req.Email)
 	if err != nil {
+		log.Printf("[user-service][GetUserByEmail] email=%s error=%v", req.Email, err)
 		return nil, err
 	}
 
@@ -41,6 +42,7 @@ func (s *UserGRPCServer) GetUserByID(ctx context.Context, req *userpb.GetUserByI
 
 	user, err := s.userService.GetUserByID(int(req.Id))
 	if err != nil {
+		log.Printf("[user-service][GetUserByID] id=%d error=%v", req.Id, err)
 		return nil, err
 	}
 
@@ -58,7 +60,7 @@ func (s *UserGRPCServer) GetUserByID(ctx context.Context, req *userpb.GetUserByI
 func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*userpb.CreateUserResponse, error) {
 
 	if req.Rol == "" {
-		fmt.Println("No se proporcionó un rol, asignando 'CLIENTE' por defecto")
+		log.Println("[user-service][CreateUser] no se proporcionó rol, asignando 'CLIENTE' por defecto")
 		req.Rol = "CLIENTE" // Asignar rol por defecto si no se proporciona
 	}
 
@@ -69,6 +71,7 @@ func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserR
 		Role:           req.Rol, // Por defecto, asignamos el rol de CLIENTE
 	})
 	if err != nil {
+		log.Printf("[user-service][CreateUser] email=%s role=%s error=%v", req.Email, req.Rol, err)
 		return nil, err
 	}
 
@@ -76,5 +79,36 @@ func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserR
 		UserId:         int64(user.ID),
 		Email:          user.Email,
 		NombreCompleto: user.NombreCompleto,
+	}, nil
+}
+
+func (s *UserGRPCServer) ListUsers(ctx context.Context, req *userpb.ListUsersRequest) (*userpb.ListUsersResponse, error) {
+	roleFilter := req.RoleFilter
+	if roleFilter == "" {
+		roleFilter = "CLIENTE" // Filtro por defecto
+	}
+
+	users, total, err := s.userService.GetAllUsersByRole(roleFilter, int(req.Page), int(req.PageSize))
+	if err != nil {
+		log.Printf("[user-service][ListUsers] role=%s page=%d pageSize=%d error=%v", roleFilter, req.Page, req.PageSize, err)
+		return nil, err
+	}
+
+	var pbUsers []*userpb.User
+	for _, user := range users {
+		pbUsers = append(pbUsers, &userpb.User{
+			Id:             int32(user.ID),
+			Email:          user.Email,
+			Password:       user.PasswordHash,
+			NombreCompleto: user.NombreCompleto,
+			Role:           user.Role,
+		})
+	}
+
+	return &userpb.ListUsersResponse{
+		Users:    pbUsers,
+		Total:    int32(total),
+		Page:     req.Page,
+		PageSize: req.PageSize,
 	}, nil
 }

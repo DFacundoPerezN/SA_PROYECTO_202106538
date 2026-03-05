@@ -27,3 +27,14 @@ func (u *UserClient) Register(email, password, name, role string) (*userpb.Creat
 		Rol:            role,
 	})
 }
+
+func (u *UserClient) ListUsers(page, pageSize int32, roleFilter string) (*userpb.ListUsersResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	return u.client.ListUsers(ctx, &userpb.ListUsersRequest{
+		Page:       page,
+		PageSize:   pageSize,
+		RoleFilter: roleFilter,
+	})
+}

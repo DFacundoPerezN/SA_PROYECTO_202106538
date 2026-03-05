@@ -53,7 +53,10 @@ services:
 
   # ---------------- USERS ----------------
   user-service:
-    image: diegofacundopereznicolau/user-service:latest
+    #image: diegofacundopereznicolau/user-service:latest
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
     container_name: user-service
     ports:
       - "50052:50052"
