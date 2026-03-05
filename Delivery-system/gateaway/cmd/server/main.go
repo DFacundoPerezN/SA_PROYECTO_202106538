@@ -101,6 +101,7 @@ func main() {
 
 	userServiceClient := userpb.NewUserServiceClient(userConn)
 	userClient := gatewaygrpc.NewUserClient(userServiceClient)
+	userHandler := handlers.NewUserHandler(userClient)
 
 	authHandler := handlers.NewAuthHandler(authClient, userClient)
 
@@ -124,9 +125,11 @@ func main() {
 	{
 		api.POST("auth/login", authHandler.Login)
 		api.POST("users", authHandler.Register)
+		api.GET("users", userHandler.ListUsers)
 		api.GET("restaurants/:id/products", catalogHandler.GetProductsByRestaurant)
 		api.GET("restaurants", restaurantHandler.ListRestaurants)
 		api.GET("orders/available", orderHandler.GetAvailableOrders)
+		api.GET("orders/delivered", orderHandler.GetDeliveredOrders)
 		api.POST("products", catalogHandler.CreateProduct)
 		api.POST("orders/:id/image", orderHandler.AddOrderImage)
 

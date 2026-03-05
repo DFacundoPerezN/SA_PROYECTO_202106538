@@ -188,6 +188,10 @@ func (s *OrderService) GetFinishedOrders(ctx context.Context) ([]domain.Order, e
 	return s.repo.GetOrdersByStatus(ctx, "TERMINADA")
 }
 
+func (s *OrderService) GetDeliveredOrders(ctx context.Context) ([]domain.Order, error) {
+	return s.repo.GetOrdersByStatus(ctx, "ENTREGADA")
+}
+
 func (s *OrderService) GetDriverOrders(
 	ctx context.Context,
 	driverID int,

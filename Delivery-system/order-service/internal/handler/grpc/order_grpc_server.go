@@ -177,6 +177,36 @@ func (s *OrderGRPCServer) GetFinishedOrders(
 	}, nil
 }
 
+func (s *OrderGRPCServer) GetDeliveredOrders(
+	ctx context.Context,
+	req *orderpb.GetDeliveredOrdersRequest,
+) (*orderpb.GetOrdersResponse, error) {
+
+	orders, err := s.service.GetDeliveredOrders(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var protoOrders []*orderpb.OrderSummary
+
+	for _, o := range orders {
+		protoOrders = append(protoOrders, &orderpb.OrderSummary{
+			Id:            int32(o.Id),
+			ClienteId:     int32(o.ClienteId),
+			ClienteNombre: o.ClienteNombre,
+			RestauranteId:     int32(o.RestauranteId),
+			RestauranteNombre: o.RestauranteNombre,
+			Estado:            o.Estado,
+			DireccionEntrega:  o.DireccionEntrega,
+			CostoTotal: o.CostoTotal,
+		})
+	}
+
+	return &orderpb.GetOrdersResponse{
+		Orders: protoOrders,
+	}, nil
+}
+
 func (s *OrderGRPCServer) GetOrdersByDriver(
 	ctx context.Context,
 	req *orderpb.GetOrdersByDriverRequest,

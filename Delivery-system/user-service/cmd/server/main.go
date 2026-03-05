@@ -1,11 +1,16 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net"
+	"runtime/debug"
+	"time"
 
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	userpb "delivery-proto/userpb"
 	"user-service/internal/config"
@@ -14,6 +19,26 @@ import (
 	"user-service/internal/repository/sqlserver"
 	"user-service/internal/service"
 )
+
+func loggingUnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+	start := time.Now()
+
+	defer func() {
+		duration := time.Since(start)
+
+		if recovered := recover(); recovered != nil {
+			log.Printf("[user-service][panic] method=%s duration=%s panic=%v\n%s", info.FullMethod, duration, recovered, debug.Stack())
+			err = status.Error(codes.Internal, "internal server error")
+			return
+		}
+
+		if err != nil {
+			log.Printf("[user-service][grpc-error] method=%s duration=%s error=%v", info.FullMethod, duration, err)
+		}
+	}()
+
+	return handler(ctx, req)
+}
 
 func main() {
 
@@ -41,7 +66,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(loggingUnaryInterceptor))
 
 	userpb.RegisterUserServiceServer(
 		grpcServer,
@@ -49,6 +74,9 @@ func main() {
 	)
 
 	log.Println("User service running on :50052")
+	log.Println("Prueba completada")
 
-	grpcServer.Serve(lis)
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatal(err)
+	}
 }
