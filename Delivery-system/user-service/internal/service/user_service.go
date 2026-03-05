@@ -142,3 +142,31 @@ func (s *UserService) GetAllUsers(page, pageSize int) ([]domain.User, int, error
 
 	return users, total, nil
 }
+
+func (s *UserService) GetAllUsersByRole(role string, page, pageSize int) ([]domain.User, int, error) {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 || pageSize > 100 {
+		pageSize = 10
+	}
+
+	offset := (page - 1) * pageSize
+
+	users, err := s.userRepo.FindAllByRole(role, pageSize, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	total, err := s.userRepo.CountByRole(role)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Clear sensitive data
+	for i := range users {
+		users[i].PasswordHash = ""
+	}
+
+	return users, total, nil
+}

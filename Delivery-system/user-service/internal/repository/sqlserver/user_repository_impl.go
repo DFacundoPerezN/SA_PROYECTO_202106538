@@ -213,3 +213,65 @@ func (r *UserRepositoryImpl) Count() (int, error) {
 	err := r.db.QueryRowContext(ctx, query).Scan(&count)
 	return count, err
 }
+
+func (r *UserRepositoryImpl) FindAllByRole(role string, limit, offset int) ([]domain.User, error) {
+	query := `
+    SELECT Id, Email, PasswordHash, Rol, NombreCompleto, Telefono, FechaRegistro
+    FROM Usuario
+    WHERE Rol = @Role
+    ORDER BY Id
+    OFFSET @Offset ROWS
+    FETCH NEXT @Limit ROWS ONLY
+    `
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	rows, err := r.db.QueryContext(ctx, query,
+		sql.Named("Role", role),
+		sql.Named("Offset", offset),
+		sql.Named("Limit", limit),
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []domain.User
+	for rows.Next() {
+		var user domain.User
+		var telefono sql.NullString
+
+		err := rows.Scan(
+			&user.ID,
+			&user.Email,
+			&user.PasswordHash,
+			&user.Role,
+			&user.NombreCompleto,
+			&telefono,
+			&user.FechaRegistro,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		if telefono.Valid {
+			user.Telefono = &telefono.String
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (r *UserRepositoryImpl) CountByRole(role string) (int, error) {
+	query := `SELECT COUNT(*) FROM Usuario WHERE Rol = @Role`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var count int
+	err := r.db.QueryRowContext(ctx, query, sql.Named("Role", role)).Scan(&count)
+	return count, err
+}

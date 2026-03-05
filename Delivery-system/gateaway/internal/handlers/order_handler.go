@@ -208,6 +208,17 @@ func (h *OrderHandler) GetAvailableOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, resp.Orders)
 }
 
+func (h *OrderHandler) GetDeliveredOrders(c *gin.Context) {
+
+	resp, err := h.orderClient.GetDeliveredOrders()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp.Orders)
+}
+
 func (h *OrderHandler) GetMyDriverOrders(c *gin.Context) {
 
 	driverID := c.GetInt("user_id") // viene del middleware

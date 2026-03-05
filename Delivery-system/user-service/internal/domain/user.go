@@ -44,4 +44,6 @@ type UserRepository interface {
 	Delete(id int) error
 	FindAll(limit, offset int) ([]User, error)
 	Count() (int, error)
+	FindAllByRole(role string, limit, offset int) ([]User, error)
+	CountByRole(role string) (int, error)
 }
