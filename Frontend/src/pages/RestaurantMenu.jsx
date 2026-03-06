@@ -234,8 +234,7 @@ const RestaurantMenu = () => {
       // Guardar el order_id para el pago
       setCreatedOrderId(response.order_id)
       
-      // Limpiar carrito
-      setCart([])
+      // Cerrar carrito y abrir modal de pago
       setShowCart(false)
       setShowPaymentModal(true)
       
