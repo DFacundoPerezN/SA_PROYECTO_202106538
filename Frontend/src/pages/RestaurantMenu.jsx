@@ -19,6 +19,18 @@ const RestaurantMenu = () => {
   const [orderLoading, setOrderLoading] = useState(false)
   const [showCart, setShowCart] = useState(false)
 
+  // ESTADOS PARA PAGO
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [createdOrderId, setCreatedOrderId] = useState(null)
+  const [paymentForm, setPaymentForm] = useState({
+    cardNumber: '',
+    cardName: '',
+    expiryDate: '',
+    cvv: '',
+    cupon: ''
+  })
+  const [processingPayment, setProcessingPayment] = useState(false)
+
   // Conversión de moneda
   const [selectedCurrency, setSelectedCurrency] = useState('USD')
   const [convertedPrices, setConvertedPrices] = useState({})
@@ -186,6 +198,7 @@ const RestaurantMenu = () => {
   }
 
   // Crear orden
+  // Paso 1: Crear orden (sin pago todavía)
   const handleCreateOrder = async () => {
     if (!deliveryForm.direccion_entrega.trim()) {
       alert('Por favor ingresa una dirección de entrega')
@@ -218,15 +231,13 @@ const RestaurantMenu = () => {
 
       const response = await orderService.createOrder(orderData)
       
-      // Orden creada exitosamente
-      alert(`¡Orden #${response.order_id} creada exitosamente!\nEstado: ${response.estado}`)
+      // Guardar el order_id para el pago
+      setCreatedOrderId(response.order_id)
       
       // Limpiar carrito
       setCart([])
       setShowCart(false)
-      
-      // Opcional: Redirigir a página de órdenes
-      // navigate('/cliente/orders')
+      setShowPaymentModal(true)
       
     } catch (err) {
       console.error('Error creating order:', err)
@@ -235,6 +246,126 @@ const RestaurantMenu = () => {
       alert('Error: ' + errorMessage)
     } finally {
       setOrderLoading(false)
+    }
+  }
+
+  // Paso 2: Procesar pago
+  const handleProcessPayment = async (e) => {
+    e.preventDefault()
+    
+    // Validar datos de tarjeta
+    if (!paymentForm.cardNumber || paymentForm.cardNumber.length < 16) {
+      alert('Número de tarjeta inválido')
+      return
+    }
+    
+    if (!paymentForm.cardName.trim()) {
+      alert('Nombre en la tarjeta requerido')
+      return
+    }
+    
+    if (!paymentForm.expiryDate || paymentForm.expiryDate.length < 5) {
+      alert('Fecha de expiración inválida')
+      return
+    }
+    
+    if (!paymentForm.cvv || paymentForm.cvv.length < 3) {
+      alert('CVV inválido')
+      return
+    }
+
+    setProcessingPayment(true)
+    setError('')
+
+    try {
+      const total = calculateTotal()
+      
+      const paymentData = {
+        order_id: createdOrderId,
+        payment_method: 'TARJETA',
+        use_cupon: paymentForm.cupon.trim() !== '',
+        amount: total
+      }
+
+      const response = await api.post('/api/payments', paymentData)
+      
+      // Pago exitoso
+      alert(`¡Pago procesado exitosamente!\n\nPago ID: ${response.data.payment_id}\nEstado: ${response.data.status}\n\n${response.data.message}`)
+      
+      // Limpiar todo
+      setShowPaymentModal(false)
+      setCreatedOrderId(null)
+      setCart([])
+      resetPaymentForm()
+      
+      // Opcional: Redirigir a página de órdenes
+      // navigate('/cliente/orders')
+      
+    } catch (err) {
+      console.error('Error processing payment:', err)
+      const errorMessage = err.response?.data?.error || 'Error al procesar el pago'
+      setError(errorMessage)
+      alert('Error en el pago: ' + errorMessage)
+    } finally {
+      setProcessingPayment(false)
+    }
+  }
+
+  const resetPaymentForm = () => {
+    setPaymentForm({
+      cardNumber: '',
+      cardName: '',
+      expiryDate: '',
+      cvv: '',
+      cupon: ''
+    })
+  }
+
+  // Formatear número de tarjeta (espacios cada 4 dígitos)
+  const formatCardNumber = (value) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+    const matches = v.match(/\d{4,16}/g)
+    const match = (matches && matches[0]) || ''
+    const parts = []
+
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4))
+    }
+
+    if (parts.length) {
+      return parts.join(' ')
+    } else {
+      return value
+    }
+  }
+
+  // Formatear fecha de expiración (MM/YY)
+  const formatExpiryDate = (value) => {
+    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+    if (v.length >= 2) {
+      return v.slice(0, 2) + '/' + v.slice(2, 4)
+    }
+    return v
+  }
+
+  const handleCardNumberChange = (e) => {
+    const formatted = formatCardNumber(e.target.value)
+    if (formatted.replace(/\s/g, '').length <= 16) {
+      setPaymentForm({ ...paymentForm, cardNumber: formatted })
+    }
+  }
+
+  const handleExpiryChange = (e) => {
+    const formatted = formatExpiryDate(e.target.value)
+    if (formatted.replace(/\//g, '').length <= 4) {
+      setPaymentForm({ ...paymentForm, expiryDate: formatted })
+    }
+  }
+
+  const handleCvvChange = (e) => {
+    const value = e.target.value.replace(/[^0-9]/gi, '')
+    if (value.length <= 4) {
+      setPaymentForm({ ...paymentForm, cvv: value })
     }
   }
 
@@ -466,6 +597,248 @@ const RestaurantMenu = () => {
           )}
         </div>
       </div>
+      
+{/* Modal de Pago */}
+      {showPaymentModal && (
+        <div className="cart-sidebar" style={{ zIndex: 1001 }}>
+          <div className="cart-header">
+            <h3>💳 Procesar Pago</h3>
+            <button 
+              onClick={() => {
+                if (window.confirm('¿Seguro que quieres cancelar el pago? La orden se perderá.')) {
+                  setShowPaymentModal(false)
+                  setCreatedOrderId(null)
+                  resetPaymentForm()
+                }
+              }} 
+              className="btn-close"
+            >
+              ✕
+            </button>
+          </div>
+
+          <form onSubmit={handleProcessPayment} style={{ padding: '20px' }}>
+            <div style={{ 
+              background: 'rgba(76, 175, 80, 0.1)', 
+              border: '1px solid rgba(76, 175, 80, 0.3)',
+              borderRadius: '10px',
+              padding: '16px',
+              marginBottom: '20px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '14px', color: '#4caf50', marginBottom: '8px' }}>
+                ✓ Orden creada exitosamente
+              </div>
+              <div style={{ fontSize: '12px', color: '#666' }}>
+                Orden ID: #{createdOrderId}
+              </div>
+            </div>
+
+            <div style={{ 
+              background: 'rgba(33, 150, 243, 0.05)',
+              border: '1px solid rgba(33, 150, 243, 0.2)',
+              borderRadius: '10px',
+              padding: '16px',
+              marginBottom: '20px'
+            }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#333', textAlign: 'center' }}>
+                Total a Pagar: ${calculateTotal().toFixed(2)}
+              </div>
+            </div>
+
+            <h4 style={{ fontSize: '16px', color: '#333', marginBottom: '16px' }}>
+              Información de Tarjeta
+            </h4>
+
+            <div className="form-group" style={{ marginBottom: '16px' }}>
+              <label style={{ 
+                display: 'block', 
+                fontSize: '13px', 
+                color: '#666', 
+                marginBottom: '6px' 
+              }}>
+                Número de Tarjeta *
+              </label>
+              <input
+                type="text"
+                value={paymentForm.cardNumber}
+                onChange={handleCardNumberChange}
+                placeholder="1234 5678 9012 3456"
+                className="form-input"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontFamily: 'monospace',
+                  letterSpacing: '1px'
+                }}
+                required
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: '16px' }}>
+              <label style={{ 
+                display: 'block', 
+                fontSize: '13px', 
+                color: '#666', 
+                marginBottom: '6px' 
+              }}>
+                Nombre en la Tarjeta *
+              </label>
+              <input
+                type="text"
+                value={paymentForm.cardName}
+                onChange={(e) => setPaymentForm({ ...paymentForm, cardName: e.target.value.toUpperCase() })}
+                placeholder="JUAN PEREZ"
+                className="form-input"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  textTransform: 'uppercase'
+                }}
+                required
+              />
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+              <div className="form-group">
+                <label style={{ 
+                  display: 'block', 
+                  fontSize: '13px', 
+                  color: '#666', 
+                  marginBottom: '6px' 
+                }}>
+                  Fecha Exp. *
+                </label>
+                <input
+                  type="text"
+                  value={paymentForm.expiryDate}
+                  onChange={handleExpiryChange}
+                  placeholder="MM/YY"
+                  className="form-input"
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontFamily: 'monospace'
+                  }}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label style={{ 
+                  display: 'block', 
+                  fontSize: '13px', 
+                  color: '#666', 
+                  marginBottom: '6px' 
+                }}>
+                  CVV *
+                </label>
+                <input
+                  type="password"
+                  value={paymentForm.cvv}
+                  onChange={handleCvvChange}
+                  placeholder="123"
+                  className="form-input"
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontFamily: 'monospace'
+                  }}
+                  maxLength="4"
+                  required
+                />
+              </div>
+            </div>
+
+            <div style={{
+              borderTop: '1px solid #eee',
+              paddingTop: '16px',
+              marginTop: '16px',
+              marginBottom: '16px'
+            }}>
+              <h4 style={{ fontSize: '14px', color: '#333', marginBottom: '12px' }}>
+                ¿Tienes un cupón? (Opcional)
+              </h4>
+              <input
+                type="text"
+                value={paymentForm.cupon}
+                onChange={(e) => setPaymentForm({ ...paymentForm, cupon: e.target.value.toUpperCase() })}
+                placeholder="CODIGO-DESCUENTO"
+                className="form-input"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  textTransform: 'uppercase'
+                }}
+              />
+              {paymentForm.cupon && (
+                <small style={{ 
+                  display: 'block', 
+                  marginTop: '6px', 
+                  color: '#2196f3',
+                  fontSize: '12px' 
+                }}>
+                  ✓ Cupón: {paymentForm.cupon}
+                </small>
+              )}
+            </div>
+
+            {error && (
+              <div className="alert alert-error" style={{ marginTop: '10px' }}>
+                {error}
+              </div>
+            )}
+
+            <div style={{
+              background: 'rgba(255, 152, 0, 0.05)',
+              border: '1px solid rgba(255, 152, 0, 0.2)',
+              borderRadius: '8px',
+              padding: '12px',
+              marginTop: '16px',
+              marginBottom: '16px'
+            }}>
+              <div style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
+                🔒 Pago simulado - No se realizará cargo real
+              </div>
+            </div>
+
+            <button 
+              type="submit"
+              disabled={processingPayment}
+              style={{
+                width: '100%',
+                padding: '16px',
+                background: 'linear-gradient(135deg, #4caf50, #45a049)',
+                border: 'none',
+                borderRadius: '12px',
+                color: 'white',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: processingPayment ? 'not-allowed' : 'pointer',
+                opacity: processingPayment ? 0.6 : 1,
+                transition: 'all 0.3s ease'
+              }}
+            >
+              {processingPayment ? '💳 Procesando...' : '✓ Confirmar Pago'}
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   )
 }
