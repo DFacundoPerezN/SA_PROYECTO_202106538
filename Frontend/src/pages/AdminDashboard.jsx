@@ -13,6 +13,10 @@ const [users, setUsers] = useState([])
 const [loading, setLoading] = useState(false)
 const [error, setError] = useState('')
 
+// Estados para reembolsos
+const [cancelledOrders, setCancelledOrders] = useState([])
+const [loadingRefunds, setLoadingRefunds] = useState(false)
+
 // Modal para ver órdenes del usuario
 const [showUserOrdersModal, setShowUserOrdersModal] = useState(false)
 const [selectedUser, setSelectedUser] = useState(null)
@@ -51,6 +55,8 @@ const [restaurantForm, setRestaurantForm] = useState({
   useEffect(() => {
     if (activeTab === 'restaurants') {
       fetchRestaurants()
+    } else if (activeTab === 'refunds') {
+    fetchCancelledOrders()
     } else {
       fetchUsers()
     }
@@ -83,6 +89,44 @@ const [restaurantForm, setRestaurantForm] = useState({
       setLoading(false)
     }
   }
+
+  const fetchCancelledOrders = async () => {
+    try {
+      setLoadingRefunds(true)
+      const response = await api.get('/api/orders/cancelled')
+      setCancelledOrders(response.data || [])
+      setError('')
+    } catch (err) {
+      console.error('Error fetching cancelled orders:', err)
+      setError('Error al cargar órdenes canceladas')
+    } finally {
+      setLoadingRefunds(false)
+    }
+  }
+
+  // Funcion autorizar reembolso
+  const handleAuthorizeRefund = async (orderId) => {
+  if (!window.confirm(`¿Autorizar reembolso para la orden #${orderId}?`)) {
+    return
+  }
+
+  try {
+    setLoading(true)
+    const response = await api.patch(`/api/payments/${orderId}/refund`)
+    
+    alert(response.data.message || 'Reembolso autorizado exitosamente')
+    
+    // Recargar la lista
+    fetchCancelledOrders()
+    
+  } catch (err) {
+    console.error('Error authorizing refund:', err)
+    const errorMessage = err.response?.data?.error || 'Error al autorizar el reembolso'
+    alert('Error: ' + errorMessage)
+  } finally {
+    setLoading(false)
+  }
+}
 
   const handleLogout = () => {
     authService.logout()
@@ -283,6 +327,12 @@ const handleCloseModal = () => {
           >
             👥 Usuarios
           </button>
+          <button 
+            className={`tab ${activeTab === 'refunds' ? 'active' : ''}`}
+            onClick={() => setActiveTab('refunds')}
+          >
+            💰 Reembolsos
+          </button>
         </div>
 
         {error && (
@@ -402,6 +452,102 @@ const handleCloseModal = () => {
             )}
           </div>
         )}
+        {/* Tab: Reembolsos */}
+        {activeTab === 'refunds' && (
+          <div className="tab-content">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div>
+                <h2>Órdenes Canceladas y Rechazadas</h2>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+                  Gestiona los reembolsos pendientes
+                </p>
+              </div>
+              <button 
+                className="btn-primary"
+                onClick={fetchCancelledOrders}
+                disabled={loadingRefunds}
+              >
+                🔄 Actualizar
+              </button>
+            </div>
+
+            {loadingRefunds ? (
+              <div className="loading-state">
+                <div className="spinner-large"></div>
+                <p>Cargando órdenes...</p>
+              </div>
+            ) : cancelledOrders.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">✅</div>
+                <p>No hay órdenes canceladas o rechazadas</p>
+                <small>Las órdenes que requieran reembolso aparecerán aquí</small>
+              </div>
+            ) : (
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID Orden</th>
+                      <th>Cliente</th>
+                      <th>Estado</th>
+                      <th>Monto</th>
+                      <th>Motivo</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cancelledOrders.map(order => (
+                      <tr key={order.id}>
+                        <td>
+                          <strong>#{order.id}</strong>
+                        </td>
+                        <td>{order.cliente_nombre}</td>
+                        <td>
+                          <span className={`role-badge ${order.estado === 'CANCELADA' ? 'cancelada' : 'rechazada'}`}>
+                            {order.estado}
+                          </span>
+                        </td>
+                        <td>
+                          <strong style={{ color: 'var(--error)' }}>
+                            ${order.costo_total.toFixed(2)}
+                          </strong>
+                        </td>
+                        <td>
+                          <div style={{ 
+                            maxWidth: '300px', 
+                            whiteSpace: 'nowrap', 
+                            overflow: 'hidden', 
+                            textOverflow: 'ellipsis',
+                            color: 'var(--text-secondary)',
+                            fontSize: '0.9rem'
+                          }}>
+                            {order.motivo || 'Sin motivo especificado'}
+                          </div>
+                        </td>
+                        <td>
+                          <button
+                            className="btn-primary"
+                            onClick={() => handleAuthorizeRefund(order.id)}
+                            disabled={loading}
+                            style={{
+                              padding: '8px 16px',
+                              fontSize: '0.875rem',
+                              background: 'linear-gradient(135deg, #4caf50, #45a049)',
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            💰 Autorizar Reembolso
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
 
       {/* Modal Crear Restaurante */}
