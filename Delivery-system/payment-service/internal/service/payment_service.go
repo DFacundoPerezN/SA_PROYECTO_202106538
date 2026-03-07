@@ -31,3 +31,7 @@ func (s *PaymentService) ProcessPaymentRequest(ctx context.Context, orderID int,
 func (s *PaymentService) RefundPayment(ctx context.Context, orderID int) error {
 	return s.repo.UpdateStatus(ctx, orderID, "REEMBOLSADO")
 }
+
+func (s *PaymentService) GetPayments(ctx context.Context, clientID int) ([]domain.Payment, error) {
+	return s.repo.GetPayments(ctx, clientID)
+}

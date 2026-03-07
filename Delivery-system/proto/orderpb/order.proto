@@ -24,8 +24,6 @@ service OrderService {
     
   rpc GetFinishedOrders(GetFinishedOrdersRequest) returns (GetOrdersResponse);
 
-  rpc GetDeliveredOrders(GetDeliveredOrdersRequest) returns (GetOrdersResponse);
-
   rpc GetCancelledOrRejectedOrders(GetCancelledOrdersRequest) returns (GetCancelledOrRejectedOrdersResponse);
 
   rpc GetOrdersByDriver(GetOrdersByDriverRequest) returns (GetOrdersResponse);
@@ -122,8 +120,6 @@ message AssignDriverResponse {
 }
 
 message GetFinishedOrdersRequest {}
-
-message GetDeliveredOrdersRequest {}
 
 message GetCancelledOrdersRequest {}
 

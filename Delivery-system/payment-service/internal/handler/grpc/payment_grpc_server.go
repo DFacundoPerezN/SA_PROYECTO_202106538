@@ -53,3 +53,34 @@ func (s *PaymentGRPCServer) RefundPayment(
 		Message: "Pago reembolsado correctamente",
 	}, nil
 }
+
+func (s *PaymentGRPCServer) GetPayments(
+	ctx context.Context,
+	req *paymentpb.GetPaymentsRequest,
+) (*paymentpb.GetPaymentsResponse, error) {
+
+	payments, err := s.paymentService.GetPayments(ctx, int(req.ClientId))
+	if err != nil {
+		return nil, err
+	}
+
+	var response []*paymentpb.Payment
+
+	for _, p := range payments {
+
+		response = append(response, &paymentpb.Payment{
+			Id:          int32(p.Id),
+			OrderId:     int32(p.OrdenId),
+			ClientId:    int32(p.ClienteId),
+			PrecioFinal: p.PrecioFinal,
+			Estado:      p.Estado,
+			UsaCupon:    p.UsaCupon,
+			MetodoPago:  p.MetodoPago,
+			Moneda:      p.Moneda,
+		})
+	}
+
+	return &paymentpb.GetPaymentsResponse{
+		Payments: response,
+	}, nil
+}

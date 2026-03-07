@@ -8,6 +8,8 @@ service PaymentService {
   rpc ProcessPayment (ProcessPaymentRequest) returns (ProcessPaymentResponse);
 
   rpc RefundPayment (RefundPaymentRequest) returns (RefundPaymentResponse);
+
+  rpc GetPayments (GetPaymentsRequest) returns (GetPaymentsResponse);
 }
 
 message ProcessPaymentRequest {
@@ -30,4 +32,23 @@ message RefundPaymentRequest {
 message RefundPaymentResponse {
   bool success = 1;
   string message = 2;
+}
+
+message GetPaymentsRequest {
+  int32 client_id = 1; // opcional (para filtrar pagos de un cliente)
+}
+
+message Payment {
+  int32 id = 1;
+  int32 order_id = 2;
+  int32 client_id = 3;
+  double precio_final = 4;
+  string estado = 5;
+  bool usa_cupon = 6;
+  string metodo_pago = 7;
+  string moneda = 8;
+}
+
+message GetPaymentsResponse {
+  repeated Payment payments = 1;
 }

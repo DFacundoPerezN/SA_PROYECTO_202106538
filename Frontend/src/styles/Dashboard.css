@@ -1503,3 +1503,126 @@
   margin-top: 6px;
   display: block;
 }
+
+.role-badge.cancelada {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+}
+
+.role-badge.rechazada {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Payment Method Badge */
+.payment-method {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.payment-method.tarjeta {
+  background: rgba(33, 150, 243, 0.1);
+  color: #2196f3;
+}
+
+.payment-method.efectivo {
+  background: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+}
+
+/* Cupon Badge */
+.cupon-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+}
+
+.no-cupon {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Amount Value */
+.amount-value {
+  font-size: 15px;
+  color: var(--primary);
+}
+
+/* Order Link */
+.order-link {
+  color: var(--primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.order-link:hover {
+  text-decoration: underline;
+}
+
+/* Table Summary */
+.table-summary {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 16px 16px;
+  margin-top: -1px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-item span {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.summary-item strong {
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.total-amount {
+  color: var(--primary);
+  font-size: 20px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-summary {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
