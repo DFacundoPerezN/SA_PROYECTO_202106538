@@ -8,7 +8,6 @@ service UserService {
   rpc GetUserByEmail (GetUserByEmailRequest) returns (UserResponse);
   rpc GetUserByID (GetUserByIDRequest) returns (UserResponse);
   rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
-  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
 }
 
 message User {
@@ -44,17 +43,4 @@ message CreateUserResponse {
   string role = 3;
   string nombre_completo = 4;
   string telefono = 5;
-}
-
-message ListUsersRequest {
-  int32 page = 1;
-  int32 page_size = 2;
-  string role_filter = 3;
-}
-
-message ListUsersResponse {
-  repeated User users = 1;
-  int32 total = 2;
-  int32 page = 3;
-  int32 page_size = 4;
 }

@@ -61,3 +61,19 @@ func (c *PaymentClient) RefundPayment(
 		},
 	)
 }
+
+func (c *PaymentClient) GetPayments(ctx context.Context, clientID int32) (*paymentpb.GetPaymentsResponse, error) {
+
+	resp, err := c.Client.GetPayments(
+		ctx,
+		&paymentpb.GetPaymentsRequest{
+			ClientId: clientID,
+		},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}

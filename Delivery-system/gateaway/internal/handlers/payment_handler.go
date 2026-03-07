@@ -76,3 +76,24 @@ func (h *PaymentHandler) RefundPayment(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resp)
 }
+
+func (h *PaymentHandler) GetPayments(c *gin.Context) {
+
+	clientID := c.GetInt("user_id")
+
+	resp, err := h.client.GetPayments(
+		context.Background(),
+		&paymentpb.GetPaymentsRequest{
+			ClientId: int32(clientID),
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp.Payments)
+}

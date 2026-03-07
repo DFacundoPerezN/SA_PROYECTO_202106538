@@ -13,6 +13,10 @@ const [users, setUsers] = useState([])
 const [loading, setLoading] = useState(false)
 const [error, setError] = useState('')
 
+// Estados para pagos
+const [payments, setPayments] = useState([])
+const [loadingPayments, setLoadingPayments] = useState(false)
+
 // Estados para reembolsos
 const [cancelledOrders, setCancelledOrders] = useState([])
 const [loadingRefunds, setLoadingRefunds] = useState(false)
@@ -57,6 +61,8 @@ const [restaurantForm, setRestaurantForm] = useState({
       fetchRestaurants()
     } else if (activeTab === 'refunds') {
     fetchCancelledOrders()
+    } else if (activeTab === 'payments') {
+    fetchPayments()
     } else {
       fetchUsers()
     }
@@ -101,6 +107,20 @@ const [restaurantForm, setRestaurantForm] = useState({
       setError('Error al cargar órdenes canceladas')
     } finally {
       setLoadingRefunds(false)
+    }
+  }
+
+  const fetchPayments = async () => {
+    try {
+      setLoadingPayments(true)
+      const response = await api.get('/api/payments')
+      setPayments(response.data || [])
+      setError('')
+    } catch (err) {
+      console.error('Error fetching payments:', err)
+      setError('Error al cargar los pagos')
+    } finally {
+      setLoadingPayments(false)
     }
   }
 
@@ -324,8 +344,14 @@ const handleCloseModal = () => {
           <button 
             className={`tab ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
-          >
+           >
             👥 Usuarios
+          </button>
+          <button 
+            className={`tab ${activeTab === 'payments' ? 'active' : ''}`}
+            onClick={() => setActiveTab('payments')}
+          >
+            💳 Pagos
           </button>
           <button 
             className={`tab ${activeTab === 'refunds' ? 'active' : ''}`}
@@ -452,6 +478,104 @@ const handleCloseModal = () => {
             )}
           </div>
         )}
+
+                {/* Tab: Pagos */}
+        {activeTab === 'payments' && (
+          <div className="tab-content">
+            <div className="section-header">
+              <div>
+                <h2>Historial de Pagos</h2>
+                <p className="section-description">
+                  Visualiza todas las transacciones realizadas
+                </p>
+              </div>
+              <button 
+                className="btn-primary"
+                onClick={fetchPayments}
+                disabled={loadingPayments}
+              >
+                🔄 Actualizar
+              </button>
+            </div>
+
+            {loadingPayments ? (
+              <div className="loading-state">
+                <div className="spinner-large"></div>
+                <p>Cargando pagos...</p>
+              </div>
+            ) : payments.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">💳</div>
+                <p>No hay pagos registrados</p>
+                <small>Los pagos realizados aparecerán aquí</small>
+              </div>
+            ) : (
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID Pago</th>
+                      <th>ID Orden</th>
+                      <th>ID Cliente</th>
+                      <th>Monto</th>
+                      <th>Método</th>
+                      <th>Cupón</th>
+                      <th>Estado</th>
+                      <th>Moneda</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {payments.map(payment => (
+                      <tr key={payment.id}>
+                        <td>
+                          <strong>#{payment.id}</strong>
+                        </td>
+                        <td>
+                          <span className="order-link">
+                            Orden #{payment.order_id}
+                          </span>
+                        </td>
+                        <td>
+                          Cliente #{payment.client_id}
+                        </td>
+                        <td>
+                          <strong className="amount-value">
+                            ${payment.precio_final}
+                          </strong>
+                        </td>
+                        <td>
+                          <span className={`payment-method ${payment.metodo_pago}`}>
+                             {payment.metodo_pago}
+                          </span>
+                        </td>
+                        <td>
+                          {payment.usa_cupon ? (
+                            <span className="cupon-badge">
+                              ✓ Usado
+                            </span>
+                          ) : (
+                            <span className="no-cupon">
+                              No uso
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <span className={`status-badge ${payment.estado === 'PAGADO' ? 'active' : 'inactive'}`}>
+                            {payment.estado}
+                          </span>
+                        </td>
+                        <td>
+                          {payment.moneda}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Tab: Reembolsos */}
         {activeTab === 'refunds' && (
           <div className="tab-content">

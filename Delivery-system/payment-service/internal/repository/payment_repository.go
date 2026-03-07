@@ -76,3 +76,44 @@ func (r *PaymentRepository) UpdateStatus(ctx context.Context, orderId int, newSt
 
 	return nil
 }
+
+func (r *PaymentRepository) GetPayments(ctx context.Context, clientID int) ([]domain.Payment, error) {
+
+	query := `
+	SELECT Id, OrdenId, ClienteId, PrecioFinal, Estado, UsaCupon, MetodoPago, Moneda
+	FROM Pagos
+	---WHERE ClienteId = @p1
+	ORDER BY Id DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, clientID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var payments []domain.Payment
+
+	for rows.Next() {
+		var p domain.Payment
+
+		err := rows.Scan(
+			&p.Id,
+			&p.OrdenId,
+			&p.ClienteId,
+			&p.PrecioFinal,
+			&p.Estado,
+			&p.UsaCupon,
+			&p.MetodoPago,
+			&p.Moneda,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		payments = append(payments, p)
+	}
+
+	return payments, nil
+}
