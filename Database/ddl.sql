@@ -12,21 +12,20 @@ CREATE TABLE Usuario (
     FechaRegistro DATETIME DEFAULT GETDATE()
 );
 
-USE Delivereats_SA_Productos;
-GO
-
-CREATE TABLE RecomendacionProducto (
+CREATE TABLE CalificacionRepartidor (
     Id INT PRIMARY KEY IDENTITY(1,1),
 
     ClienteId INT NOT NULL,
-    ProductoId INT NOT NULL,
+    RepartidorId INT NOT NULL,
 
-    Recomendado BIT NOT NULL DEFAULT 1,
+    Estrellas INT NOT NULL 
+        CHECK (Estrellas BETWEEN 1 AND 5),
+
+    Comentario NVARCHAR(512),
 
     FechaCreacion DATETIME DEFAULT GETDATE(),
 
-    INDEX IX_RecomendacionProducto_Producto (ProductoId),
-    INDEX IX_RecomendacionProducto_Cliente (ClienteId)
+    INDEX IX_CalificacionRepartidor_Repartidor (RepartidorId)
 );
 
 -- RESTURATNES DATABASE
@@ -47,8 +46,6 @@ CREATE TABLE Restaurante (
     CalificacionPromedio DECIMAL(3,2) DEFAULT 0,
     Activo BIT DEFAULT 1
 );
-USE Delivereats_SA_Restaurantes;
-GO
 
 CREATE TABLE CalificacionRestaurante (
     Id INT PRIMARY KEY IDENTITY(1,1),
@@ -85,6 +82,20 @@ CREATE TABLE Producto (
     Disponible BIT DEFAULT 1,
     Categoria NVARCHAR(32),
     FechaCreacion DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE RecomendacionProducto (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+
+    ClienteId INT NOT NULL,
+    ProductoId INT NOT NULL,
+
+    Recomendado BIT NOT NULL DEFAULT 1,
+
+    FechaCreacion DATETIME DEFAULT GETDATE(),
+
+    INDEX IX_RecomendacionProducto_Producto (ProductoId),
+    INDEX IX_RecomendacionProducto_Cliente (ClienteId)
 );
 
 -- ORDENES DATABASE
@@ -147,23 +158,6 @@ CREATE TABLE OrdenCancelada (
     Motivo NVARCHAR(500),
     FechaCancelacion DATETIME DEFAULT GETDATE(),
     INDEX IX_OrdenCancelada_Orden (OrdenId)
-);
-
-USE Delivereats_SA_Productos;
-GO
-
-CREATE TABLE RecomendacionProducto (
-    Id INT PRIMARY KEY IDENTITY(1,1),
-
-    ClienteId INT NOT NULL,
-    ProductoId INT NOT NULL,
-
-    Recomendado BIT NOT NULL DEFAULT 1,
-
-    FechaCreacion DATETIME DEFAULT GETDATE(),
-
-    INDEX IX_RecomendacionProducto_Producto (ProductoId),
-    INDEX IX_RecomendacionProducto_Cliente (ClienteId)
 );
 
 CREATE TABLE ImagenOrden (
