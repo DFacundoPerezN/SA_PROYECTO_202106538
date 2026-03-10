@@ -22,7 +22,7 @@ COPY order-service ./order-service
 # (Opcional) generar stubs si decides hacerlo aquí
 
 WORKDIR /workspace/proto/orderpb
-RUN protoc --go_out=.. --go-grpc_out=.. order.proto
+RUN rm -f *.pb.go && protoc --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. order.proto
 
 # compilar servicio
 
