@@ -6,7 +6,7 @@
 convert-service
 
 # Environment variables
-.env
+#.env
 
 # Go workspace file
 go.work.sum
