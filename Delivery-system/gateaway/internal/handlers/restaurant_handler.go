@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	grpcclient "api-gateway/internal/grpc"
 	"delivery-proto/restaurantpb"
@@ -85,4 +86,50 @@ func (h *RestaurantHandler) CreateRestaurant(c *gin.Context) {
 	}
 
 	c.JSON(201, resp)
+}
+
+func (h *RestaurantHandler) CreateRating(c *gin.Context) {
+
+	clientID := c.GetInt("user_id")
+
+	var req struct {
+		RestaurantID int32  `json:"restaurant_id"`
+		Stars        int32  `json:"stars"`
+		Comment      string `json:"comment"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "body inválido"})
+		return
+	}
+
+	resp, err := h.restaurantClient.CreateRestaurantRating(c, &restaurantpb.CreateRestaurantRatingRequest{
+		ClienteId:     int32(clientID),
+		RestauranteId: req.RestaurantID,
+		Estrellas:     req.Stars,
+		Comentario:    req.Comment,
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp)
+}
+
+func (h *RestaurantHandler) GetRatingAverage(c *gin.Context) {
+
+	restaurantID, _ := strconv.Atoi(c.Param("id"))
+
+	resp, err := h.restaurantClient.GetRestaurantRatingAverage(c, &restaurantpb.GetRestaurantRatingAverageRequest{
+		RestauranteId: int32(restaurantID),
+	})
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp)
 }

@@ -109,3 +109,94 @@ func (r *RestaurantRepository) Exists(ctx context.Context, userID int) (bool, er
 
 	return count > 0, err
 }
+
+func (r *RestaurantRepository) CreateRestaurantRating(
+	ctx context.Context,
+	rating *domain.RestaurantRating,
+) (int, error) {
+
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, err
+	}
+
+	query := `
+	INSERT INTO CalificacionRestaurante
+	(ClienteId, RestauranteId, Estrellas, Comentario)
+	OUTPUT INSERTED.Id
+	VALUES (@p1, @p2, @p3, @p4)
+	`
+
+	var id int
+
+	err = tx.QueryRowContext(
+		ctx,
+		query,
+		rating.ClienteId,
+		rating.RestauranteId,
+		rating.Estrellas,
+		rating.Comentario,
+	).Scan(&id)
+
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	// recalcular promedio
+	err = r.UpdateRestaurantAverage(ctx, tx, rating.RestauranteId)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	tx.Commit()
+
+	return id, nil
+}
+
+func (r *RestaurantRepository) UpdateRestaurantAverage(
+	ctx context.Context,
+	tx *sql.Tx,
+	restaurantID int,
+) error {
+
+	query := `
+	UPDATE Restaurante
+	SET CalificacionPromedio = (
+		SELECT AVG(CAST(Estrellas AS FLOAT))
+		FROM CalificacionRestaurante
+		WHERE RestauranteId = @p1
+	)
+	WHERE Id = @p1
+	`
+
+	_, err := tx.ExecContext(ctx, query, restaurantID)
+
+	return err
+}
+
+func (r *RestaurantRepository) GetRestaurantRatingAverage(
+	ctx context.Context,
+	restaurantID int,
+) (float64, int, error) {
+
+	query := `
+	SELECT 
+		ISNULL(AVG(CAST(Estrellas AS FLOAT)),0),
+		COUNT(*)
+	FROM CalificacionRestaurante
+	WHERE RestauranteId = @p1
+	`
+
+	var avg float64
+	var total int
+
+	err := r.db.QueryRowContext(ctx, query, restaurantID).Scan(&avg, &total)
+
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return avg, total, nil
+}
