@@ -140,6 +140,9 @@ func main() {
 		api.GET("/ratings/driver/:id/average", userHandler.GetRatingAverage)
 		api.GET("/ratings/restaurant/:id/average", restaurantHandler.GetRatingAverage)
 		api.GET("/products/:id/recommendation", catalogHandler.GetRecommendationPercentage)
+
+		api.GET("/restaurants/new", restaurantHandler.GetLatestRestaurants)
+		api.GET("/restaurants/top", restaurantHandler.GetTopRatedRestaurants)
 	}
 
 	// PROTECTED ROUTES

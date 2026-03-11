@@ -133,3 +133,43 @@ func (h *RestaurantHandler) GetRatingAverage(c *gin.Context) {
 
 	c.JSON(200, resp)
 }
+
+func (h *RestaurantHandler) GetLatestRestaurants(c *gin.Context) {
+
+	limitStr := c.DefaultQuery("n", "8")
+	limit, _ := strconv.Atoi(limitStr)
+
+	resp, err := h.restaurantClient.GetLatestRestaurants(
+		c,
+		&restaurantpb.GetLatestRestaurantsRequest{
+			Limit: int32(limit),
+		},
+	)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp.Restaurants)
+}
+
+func (h *RestaurantHandler) GetTopRatedRestaurants(c *gin.Context) {
+
+	limitStr := c.DefaultQuery("n", "8")
+	limit, _ := strconv.Atoi(limitStr)
+
+	resp, err := h.restaurantClient.GetTopRatedRestaurants(
+		c,
+		&restaurantpb.GetTopRatedRestaurantsRequest{
+			Limit: int32(limit),
+		},
+	)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp.Restaurants)
+}

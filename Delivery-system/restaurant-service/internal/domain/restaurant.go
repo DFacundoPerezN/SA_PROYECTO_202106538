@@ -11,6 +11,7 @@ type Restaurant struct {
 	Telefono        string
 	HorarioApertura string
 	HorarioCierre   string
+	Calificacion    float64
 }
 
 type RestaurantRating struct {

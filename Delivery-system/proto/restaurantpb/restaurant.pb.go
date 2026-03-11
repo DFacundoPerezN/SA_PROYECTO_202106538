@@ -569,6 +569,138 @@ func (x *GetRestaurantRatingAverageResponse) GetTotalCalificaciones() int32 {
 	return 0
 }
 
+type GetLatestRestaurantsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetLatestRestaurantsRequest) Reset() {
+	*x = GetLatestRestaurantsRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLatestRestaurantsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLatestRestaurantsRequest) ProtoMessage() {}
+
+func (x *GetLatestRestaurantsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLatestRestaurantsRequest.ProtoReflect.Descriptor instead.
+func (*GetLatestRestaurantsRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetLatestRestaurantsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type GetTopRatedRestaurantsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTopRatedRestaurantsRequest) Reset() {
+	*x = GetTopRatedRestaurantsRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTopRatedRestaurantsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTopRatedRestaurantsRequest) ProtoMessage() {}
+
+func (x *GetTopRatedRestaurantsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTopRatedRestaurantsRequest.ProtoReflect.Descriptor instead.
+func (*GetTopRatedRestaurantsRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetTopRatedRestaurantsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type GetRestaurantsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Restaurants   []*Restaurant          `protobuf:"bytes,1,rep,name=restaurants,proto3" json:"restaurants,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetRestaurantsResponse) Reset() {
+	*x = GetRestaurantsResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetRestaurantsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRestaurantsResponse) ProtoMessage() {}
+
+func (x *GetRestaurantsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRestaurantsResponse.ProtoReflect.Descriptor instead.
+func (*GetRestaurantsResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetRestaurantsResponse) GetRestaurants() []*Restaurant {
+	if x != nil {
+		return x.Restaurants
+	}
+	return nil
+}
+
 var File_restaurantpb_restaurant_proto protoreflect.FileDescriptor
 
 const file_restaurantpb_restaurant_proto_rawDesc = "" +
@@ -614,12 +746,20 @@ const file_restaurantpb_restaurant_proto_rawDesc = "" +
 	"\x0erestaurante_id\x18\x01 \x01(\x05R\rrestauranteId\"s\n" +
 	"\"GetRestaurantRatingAverageResponse\x12\x1a\n" +
 	"\bpromedio\x18\x01 \x01(\x01R\bpromedio\x121\n" +
-	"\x14total_calificaciones\x18\x02 \x01(\x05R\x13totalCalificaciones2\xba\x03\n" +
+	"\x14total_calificaciones\x18\x02 \x01(\x05R\x13totalCalificaciones\"3\n" +
+	"\x1bGetLatestRestaurantsRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"5\n" +
+	"\x1dGetTopRatedRestaurantsRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"T\n" +
+	"\x16GetRestaurantsResponse\x12:\n" +
+	"\vrestaurants\x18\x01 \x03(\v2\x18.restaurantpb.RestaurantR\vrestaurants2\x90\x05\n" +
 	"\x11RestaurantService\x12L\n" +
 	"\x0fListRestaurants\x12\x13.restaurantpb.Empty\x1a$.restaurantpb.RestaurantListResponse\x12a\n" +
 	"\x10CreateRestaurant\x12%.restaurantpb.CreateRestaurantRequest\x1a&.restaurantpb.CreateRestaurantResponse\x12s\n" +
 	"\x16CreateRestaurantRating\x12+.restaurantpb.CreateRestaurantRatingRequest\x1a,.restaurantpb.CreateRestaurantRatingResponse\x12\x7f\n" +
-	"\x1aGetRestaurantRatingAverage\x12/.restaurantpb.GetRestaurantRatingAverageRequest\x1a0.restaurantpb.GetRestaurantRatingAverageResponseB\x1dZ\x1bdelivery-proto/restaurantpbb\x06proto3"
+	"\x1aGetRestaurantRatingAverage\x12/.restaurantpb.GetRestaurantRatingAverageRequest\x1a0.restaurantpb.GetRestaurantRatingAverageResponse\x12g\n" +
+	"\x14GetLatestRestaurants\x12).restaurantpb.GetLatestRestaurantsRequest\x1a$.restaurantpb.GetRestaurantsResponse\x12k\n" +
+	"\x16GetTopRatedRestaurants\x12+.restaurantpb.GetTopRatedRestaurantsRequest\x1a$.restaurantpb.GetRestaurantsResponseB\x1dZ\x1bdelivery-proto/restaurantpbb\x06proto3"
 
 var (
 	file_restaurantpb_restaurant_proto_rawDescOnce sync.Once
@@ -633,7 +773,7 @@ func file_restaurantpb_restaurant_proto_rawDescGZIP() []byte {
 	return file_restaurantpb_restaurant_proto_rawDescData
 }
 
-var file_restaurantpb_restaurant_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_restaurantpb_restaurant_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_restaurantpb_restaurant_proto_goTypes = []any{
 	(*Empty)(nil),                              // 0: restaurantpb.Empty
 	(*Restaurant)(nil),                         // 1: restaurantpb.Restaurant
@@ -644,22 +784,30 @@ var file_restaurantpb_restaurant_proto_goTypes = []any{
 	(*CreateRestaurantRatingResponse)(nil),     // 6: restaurantpb.CreateRestaurantRatingResponse
 	(*GetRestaurantRatingAverageRequest)(nil),  // 7: restaurantpb.GetRestaurantRatingAverageRequest
 	(*GetRestaurantRatingAverageResponse)(nil), // 8: restaurantpb.GetRestaurantRatingAverageResponse
+	(*GetLatestRestaurantsRequest)(nil),        // 9: restaurantpb.GetLatestRestaurantsRequest
+	(*GetTopRatedRestaurantsRequest)(nil),      // 10: restaurantpb.GetTopRatedRestaurantsRequest
+	(*GetRestaurantsResponse)(nil),             // 11: restaurantpb.GetRestaurantsResponse
 }
 var file_restaurantpb_restaurant_proto_depIdxs = []int32{
-	1, // 0: restaurantpb.RestaurantListResponse.restaurants:type_name -> restaurantpb.Restaurant
-	0, // 1: restaurantpb.RestaurantService.ListRestaurants:input_type -> restaurantpb.Empty
-	3, // 2: restaurantpb.RestaurantService.CreateRestaurant:input_type -> restaurantpb.CreateRestaurantRequest
-	5, // 3: restaurantpb.RestaurantService.CreateRestaurantRating:input_type -> restaurantpb.CreateRestaurantRatingRequest
-	7, // 4: restaurantpb.RestaurantService.GetRestaurantRatingAverage:input_type -> restaurantpb.GetRestaurantRatingAverageRequest
-	2, // 5: restaurantpb.RestaurantService.ListRestaurants:output_type -> restaurantpb.RestaurantListResponse
-	4, // 6: restaurantpb.RestaurantService.CreateRestaurant:output_type -> restaurantpb.CreateRestaurantResponse
-	6, // 7: restaurantpb.RestaurantService.CreateRestaurantRating:output_type -> restaurantpb.CreateRestaurantRatingResponse
-	8, // 8: restaurantpb.RestaurantService.GetRestaurantRatingAverage:output_type -> restaurantpb.GetRestaurantRatingAverageResponse
-	5, // [5:9] is the sub-list for method output_type
-	1, // [1:5] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	1,  // 0: restaurantpb.RestaurantListResponse.restaurants:type_name -> restaurantpb.Restaurant
+	1,  // 1: restaurantpb.GetRestaurantsResponse.restaurants:type_name -> restaurantpb.Restaurant
+	0,  // 2: restaurantpb.RestaurantService.ListRestaurants:input_type -> restaurantpb.Empty
+	3,  // 3: restaurantpb.RestaurantService.CreateRestaurant:input_type -> restaurantpb.CreateRestaurantRequest
+	5,  // 4: restaurantpb.RestaurantService.CreateRestaurantRating:input_type -> restaurantpb.CreateRestaurantRatingRequest
+	7,  // 5: restaurantpb.RestaurantService.GetRestaurantRatingAverage:input_type -> restaurantpb.GetRestaurantRatingAverageRequest
+	9,  // 6: restaurantpb.RestaurantService.GetLatestRestaurants:input_type -> restaurantpb.GetLatestRestaurantsRequest
+	10, // 7: restaurantpb.RestaurantService.GetTopRatedRestaurants:input_type -> restaurantpb.GetTopRatedRestaurantsRequest
+	2,  // 8: restaurantpb.RestaurantService.ListRestaurants:output_type -> restaurantpb.RestaurantListResponse
+	4,  // 9: restaurantpb.RestaurantService.CreateRestaurant:output_type -> restaurantpb.CreateRestaurantResponse
+	6,  // 10: restaurantpb.RestaurantService.CreateRestaurantRating:output_type -> restaurantpb.CreateRestaurantRatingResponse
+	8,  // 11: restaurantpb.RestaurantService.GetRestaurantRatingAverage:output_type -> restaurantpb.GetRestaurantRatingAverageResponse
+	11, // 12: restaurantpb.RestaurantService.GetLatestRestaurants:output_type -> restaurantpb.GetRestaurantsResponse
+	11, // 13: restaurantpb.RestaurantService.GetTopRatedRestaurants:output_type -> restaurantpb.GetRestaurantsResponse
+	8,  // [8:14] is the sub-list for method output_type
+	2,  // [2:8] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_restaurantpb_restaurant_proto_init() }
@@ -673,7 +821,7 @@ func file_restaurantpb_restaurant_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_restaurantpb_restaurant_proto_rawDesc), len(file_restaurantpb_restaurant_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
