@@ -17,20 +17,21 @@ func NewOrderGRPCServer(s *service.OrderService) *OrderGRPCServer {
 	return &OrderGRPCServer{service: s}
 }
 
-// CreateOrder valida, calcula el total y encola la orden en RabbitMQ.
-// Responde de forma inmediata con estado "ENCOLADA" sin esperar la persistencia en BD.
+// CreateOrder valida, calcula el total, encola la orden y espera a que
+// el consumer la persista en BD. Devuelve el ID real de la orden.
 func (s *OrderGRPCServer) CreateOrder(
 	ctx context.Context,
 	req *orderpb.CreateOrderRequest,
 ) (*orderpb.CreateOrderResponse, error) {
 
-	if err := s.service.CreateOrder(ctx, req); err != nil {
+	orderID, err := s.service.CreateOrder(ctx, req)
+	if err != nil {
 		return nil, err
 	}
 
 	return &orderpb.CreateOrderResponse{
-		OrderId: 0,      // El ID real se asignará al persistir; no disponible en este punto
-		Estado:  "ENCOLADA",
+		OrderId: int32(orderID),
+		Estado:  "CREADA",
 	}, nil
 }
 

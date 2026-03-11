@@ -2,25 +2,43 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"payment-service/internal/domain"
 	"payment-service/internal/repository"
 )
 
 type PaymentService struct {
 	repo *repository.PaymentRepository
-	//userClient *grpcclient.UserClient
 }
 
 func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {
 	return &PaymentService{repo: repo}
 }
 
-func (s *PaymentService) ProcessPaymentRequest(ctx context.Context, orderID int, paymentMethod string, useCupon bool, clientID int) (int, error) {
+func (s *PaymentService) ProcessPaymentRequest(
+	ctx context.Context,
+	orderID int,
+	paymentMethod string,
+	useCupon bool,
+	clientID int,
+) (int, error) {
+
+	// Validar que el orderID sea válido.
+	// Cuando la orden fue creada con RabbitMQ el gRPC responde OrderId=0
+	// porque el ID real aún no fue asignado por la BD. El cliente debe
+	// esperar a que la orden exista antes de intentar pagar.
+	if orderID <= 0 {
+		return 0, fmt.Errorf("order_id inválido (%d): la orden aún no fue procesada, intente en unos segundos", orderID)
+	}
+
+	if clientID <= 0 {
+		return 0, fmt.Errorf("client_id inválido (%d)", clientID)
+	}
 
 	domainPayment := domain.Payment{
 		OrdenId:     orderID,
 		ClienteId:   clientID,
-		PrecioFinal: 0.0, // Aquí podrías calcular el precio final basado en el pedido, cupones, etc.
+		PrecioFinal: 0.0,
 		UsaCupon:    useCupon,
 		MetodoPago:  paymentMethod,
 	}
