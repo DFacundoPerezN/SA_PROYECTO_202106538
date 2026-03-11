@@ -59,3 +59,35 @@ func (s *RestaurantGRPCServer) CreateRestaurant(
 		Message:      "restaurant created successfully",
 	}, nil
 }
+
+func (s *RestaurantGRPCServer) CreateRestaurantRating(
+	ctx context.Context,
+	req *restaurantpb.CreateRestaurantRatingRequest,
+) (*restaurantpb.CreateRestaurantRatingResponse, error) {
+
+	id, err := s.service.CreateRestaurantRating(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &restaurantpb.CreateRestaurantRatingResponse{
+		RatingId: int32(id),
+		Message:  "Calificación registrada",
+	}, nil
+}
+
+func (s *RestaurantGRPCServer) GetRestaurantRatingAverage(
+	ctx context.Context,
+	req *restaurantpb.GetRestaurantRatingAverageRequest,
+) (*restaurantpb.GetRestaurantRatingAverageResponse, error) {
+
+	avg, total, err := s.service.GetRestaurantRatingAverage(ctx, int(req.RestauranteId))
+	if err != nil {
+		return nil, err
+	}
+
+	return &restaurantpb.GetRestaurantRatingAverageResponse{
+		Promedio:            avg,
+		TotalCalificaciones: int32(total),
+	}, nil
+}

@@ -136,6 +136,9 @@ func main() {
 		api.POST("convert/currency", convertHandler.ConvertCurrency)
 		api.GET("orders/:id/image", orderHandler.GetOrderImage)
 		api.GET("orders/cancelled", orderHandler.GetCancelledOrRejectedOrders)
+
+		api.GET("/ratings/driver/:id/average", userHandler.GetRatingAverage)
+		api.GET("/ratings/restaurant/:id/average", restaurantHandler.GetRatingAverage)
 	}
 
 	// PROTECTED ROUTES
@@ -168,8 +171,8 @@ func main() {
 		protected.PATCH("/payments/:id/refund", paymentHandler.RefundPayment)
 		protected.GET("/payments", paymentHandler.GetPayments)
 
-		protected.POST("/ratings", userHandler.CreateRating)
-		protected.GET("/ratings/driver/:id/average", userHandler.GetRatingAverage)
+		protected.POST("/drivers/ratings", userHandler.CreateRating)
+		protected.POST("/restaurants/ratings", restaurantHandler.CreateRating)
 	}
 
 	// HTTP server
