@@ -42,3 +42,17 @@ func (c *CatalogClient) CreateProduct(
 
 	return c.client.CreateProduct(ctx, req)
 }
+
+func (c *CatalogClient) CreateProductRecommendation(
+	ctx context.Context,
+	req *catalogpb.CreateProductRecommendationRequest,
+) (*catalogpb.CreateProductRecommendationResponse, error) {
+	return c.client.CreateProductRecommendation(ctx, req)
+}
+
+func (c *CatalogClient) GetProductRecommendationPercentage(
+	ctx context.Context,
+	req *catalogpb.GetProductRecommendationPercentageRequest,
+) (*catalogpb.GetProductRecommendationPercentageResponse, error) {
+	return c.client.GetProductRecommendationPercentage(ctx, req)
+}

@@ -49,3 +49,27 @@ func (s *ProductService) CreateProduct(
 		categoria,
 	)
 }
+
+func (s *ProductService) CreateProductRecommendation(
+	ctx context.Context,
+	clienteID int,
+	productID int,
+	recommended bool,
+) (int, error) {
+
+	rec := domain.ProductRecommendation{
+		ClienteId:   clienteID,
+		ProductoId:  productID,
+		Recomendado: recommended,
+	}
+
+	return s.repo.CreateProductRecommendation(ctx, &rec)
+}
+
+func (s *ProductService) GetProductRecommendationPercentage(
+	ctx context.Context,
+	productID int,
+) (float64, int, error) {
+
+	return s.repo.GetProductRecommendationPercentage(ctx, productID)
+}

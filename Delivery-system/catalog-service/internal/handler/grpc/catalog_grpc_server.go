@@ -97,3 +97,45 @@ func (s *CatalogGRPCServer) CreateProduct(
 		Message:   "product created successfully",
 	}, nil
 }
+
+func (s *CatalogGRPCServer) CreateProductRecommendation(
+	ctx context.Context,
+	req *catalogpb.CreateProductRecommendationRequest,
+) (*catalogpb.CreateProductRecommendationResponse, error) {
+
+	id, err := s.service.CreateProductRecommendation(
+		ctx,
+		int(req.ClienteId),
+		int(req.ProductoId),
+		req.Recomendado,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &catalogpb.CreateProductRecommendationResponse{
+		Id:      int32(id),
+		Message: "Recomendación registrada",
+	}, nil
+}
+
+func (s *CatalogGRPCServer) GetProductRecommendationPercentage(
+	ctx context.Context,
+	req *catalogpb.GetProductRecommendationPercentageRequest,
+) (*catalogpb.GetProductRecommendationPercentageResponse, error) {
+
+	percentage, total, err := s.service.GetProductRecommendationPercentage(
+		ctx,
+		int(req.ProductoId),
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &catalogpb.GetProductRecommendationPercentageResponse{
+		Porcentaje:           percentage,
+		TotalRecomendaciones: int32(total),
+	}, nil
+}
