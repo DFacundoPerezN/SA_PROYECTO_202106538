@@ -17,19 +17,20 @@ func NewOrderGRPCServer(s *service.OrderService) *OrderGRPCServer {
 	return &OrderGRPCServer{service: s}
 }
 
+// CreateOrder valida, calcula el total y encola la orden en RabbitMQ.
+// Responde de forma inmediata con estado "ENCOLADA" sin esperar la persistencia en BD.
 func (s *OrderGRPCServer) CreateOrder(
 	ctx context.Context,
 	req *orderpb.CreateOrderRequest,
 ) (*orderpb.CreateOrderResponse, error) {
 
-	orderID, err := s.service.CreateOrder(ctx, req)
-	if err != nil {
+	if err := s.service.CreateOrder(ctx, req); err != nil {
 		return nil, err
 	}
 
 	return &orderpb.CreateOrderResponse{
-		OrderId: int32(orderID),
-		Estado:  "CREADA",
+		OrderId: 0,      // El ID real se asignará al persistir; no disponible en este punto
+		Estado:  "ENCOLADA",
 	}, nil
 }
 
@@ -50,13 +51,6 @@ func (s *OrderGRPCServer) UpdateOrderStatus(
 }
 
 func (s *OrderGRPCServer) CancelOrder(ctx context.Context, req *orderpb.CancelOrderRequest) (*orderpb.CancelOrderResponse, error) {
-	/*fmt.Printf("Received CancelOrder request: order_id=%d, reason=%s, user_id=%d\n", req.OrderId, req.Reason, req.UserId)
-	userID, ok := ctx.Value("user_id").(int)
-	fmt.Printf("Extracted user_id from context: %d (ok=%v)\n", userID, ok)
-	if !ok {
-		return nil, status.Error(codes.Unauthenticated, "user not authenticated")
-	}*/
-
 	_, err := s.service.CancelOrder(ctx, int(req.OrderId), int(req.UserId), req.Reason)
 	if err != nil {
 		return nil, err
@@ -65,7 +59,6 @@ func (s *OrderGRPCServer) CancelOrder(ctx context.Context, req *orderpb.CancelOr
 	return &orderpb.CancelOrderResponse{
 		OrderId:   req.OrderId,
 		NewStatus: "CANCELADA",
-		//CancelledAt: timestamppb.New(cancelledAt),
 	}, nil
 }
 
@@ -80,7 +73,6 @@ func (s *OrderGRPCServer) GetOrdersByClient(
 	}
 
 	var response orderpb.GetOrdersResponse
-
 	for _, o := range orders {
 		response.Orders = append(response.Orders, &orderpb.OrderSummary{
 			Id:                int32(o.Id),
@@ -91,7 +83,6 @@ func (s *OrderGRPCServer) GetOrdersByClient(
 			Estado:            o.Estado,
 			CostoTotal:        o.CostoTotal,
 			DireccionEntrega:  o.DireccionEntrega,
-			//FechaCreacion:     o.FechaHoraCreacion.Format("2026-01-02 15:04:05"),
 		})
 	}
 
@@ -109,7 +100,6 @@ func (s *OrderGRPCServer) GetOrdersByRestaurant(
 	}
 
 	var response orderpb.GetOrdersResponse
-
 	for _, o := range orders {
 		response.Orders = append(response.Orders, &orderpb.OrderSummary{
 			Id:                int32(o.Id),
@@ -120,7 +110,6 @@ func (s *OrderGRPCServer) GetOrdersByRestaurant(
 			Estado:            o.Estado,
 			CostoTotal:        o.CostoTotal,
 			DireccionEntrega:  o.DireccionEntrega,
-			//FechaCreacion:     o.FechaHoraCreacion.Format("2026-01-02 15:04:05"),
 		})
 	}
 
@@ -155,26 +144,20 @@ func (s *OrderGRPCServer) GetFinishedOrders(
 	}
 
 	var protoOrders []*orderpb.OrderSummary
-
 	for _, o := range orders {
 		protoOrders = append(protoOrders, &orderpb.OrderSummary{
-			Id:            int32(o.Id),
-			ClienteId:     int32(o.ClienteId),
-			ClienteNombre: o.ClienteNombre,
-			//ClienteTelefono:   o.ClienteTelefono,
+			Id:                int32(o.Id),
+			ClienteId:         int32(o.ClienteId),
+			ClienteNombre:     o.ClienteNombre,
 			RestauranteId:     int32(o.RestauranteId),
 			RestauranteNombre: o.RestauranteNombre,
 			Estado:            o.Estado,
 			DireccionEntrega:  o.DireccionEntrega,
-			//LatitudEntrega:    o.LatitudEntrega,
-			//LongitudEntrega:   o.LongitudEntrega,
-			CostoTotal: o.CostoTotal,
+			CostoTotal:        o.CostoTotal,
 		})
 	}
 
-	return &orderpb.GetOrdersResponse{
-		Orders: protoOrders,
-	}, nil
+	return &orderpb.GetOrdersResponse{Orders: protoOrders}, nil
 }
 
 func (s *OrderGRPCServer) GetDeliveredOrders(
@@ -188,23 +171,20 @@ func (s *OrderGRPCServer) GetDeliveredOrders(
 	}
 
 	var protoOrders []*orderpb.OrderSummary
-
 	for _, o := range orders {
 		protoOrders = append(protoOrders, &orderpb.OrderSummary{
-			Id:            int32(o.Id),
-			ClienteId:     int32(o.ClienteId),
-			ClienteNombre: o.ClienteNombre,
+			Id:                int32(o.Id),
+			ClienteId:         int32(o.ClienteId),
+			ClienteNombre:     o.ClienteNombre,
 			RestauranteId:     int32(o.RestauranteId),
 			RestauranteNombre: o.RestauranteNombre,
 			Estado:            o.Estado,
 			DireccionEntrega:  o.DireccionEntrega,
-			CostoTotal: o.CostoTotal,
+			CostoTotal:        o.CostoTotal,
 		})
 	}
 
-	return &orderpb.GetOrdersResponse{
-		Orders: protoOrders,
-	}, nil
+	return &orderpb.GetOrdersResponse{Orders: protoOrders}, nil
 }
 
 func (s *OrderGRPCServer) GetOrdersByDriver(
@@ -218,7 +198,6 @@ func (s *OrderGRPCServer) GetOrdersByDriver(
 	}
 
 	var protoOrders []*orderpb.OrderSummary
-
 	for _, o := range orders {
 		protoOrders = append(protoOrders, &orderpb.OrderSummary{
 			Id:                int32(o.Id),
@@ -230,15 +209,11 @@ func (s *OrderGRPCServer) GetOrdersByDriver(
 			RepartidorId:      int32(o.RepartidorId),
 			Estado:            o.Estado,
 			DireccionEntrega:  o.DireccionEntrega,
-			//LatitudEntrega:    o.LatitudEntrega,
-			//LongitudEntrega:   o.LongitudEntrega,
-			CostoTotal: o.CostoTotal,
+			CostoTotal:        o.CostoTotal,
 		})
 	}
 
-	return &orderpb.GetOrdersResponse{
-		Orders: protoOrders,
-	}, nil
+	return &orderpb.GetOrdersResponse{Orders: protoOrders}, nil
 }
 
 func (h *OrderGRPCServer) AddOrderImage(
@@ -251,9 +226,7 @@ func (h *OrderGRPCServer) AddOrderImage(
 		return nil, err
 	}
 
-	return &orderpb.AddOrderImageResponse{
-		Message: "Imagen agregada correctamente",
-	}, nil
+	return &orderpb.AddOrderImageResponse{Message: "Imagen agregada correctamente"}, nil
 }
 
 func (h *OrderGRPCServer) GetOrderImage(
@@ -283,14 +256,10 @@ func (h *OrderGRPCServer) GetCancelledOrRejectedOrders(
 	}
 
 	var responseOrders []*orderpb.CancelledOrRejectedOrder
-
 	for _, o := range orders {
-
-		motivo := ""
+		motivo := "Orden rechazada por el restaurante"
 		if o.Motivo.Valid {
 			motivo = o.Motivo.String
-		} else {
-			motivo = "Orden rechazada por el restaurante"
 		}
 
 		responseOrders = append(responseOrders, &orderpb.CancelledOrRejectedOrder{
@@ -302,7 +271,5 @@ func (h *OrderGRPCServer) GetCancelledOrRejectedOrders(
 		})
 	}
 
-	return &orderpb.GetCancelledOrRejectedOrdersResponse{
-		Orders: responseOrders,
-	}, nil
+	return &orderpb.GetCancelledOrRejectedOrdersResponse{Orders: responseOrders}, nil
 }

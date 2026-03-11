@@ -6,7 +6,6 @@ import (
 	"os"
 	"restaurant-service/internal/database"
 	grpcclient "restaurant-service/internal/grpc"
-	"restaurant-service/internal/messaging"
 
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/joho/godotenv"
@@ -20,8 +19,6 @@ import (
 )
 
 func main() {
-	go messaging.ConsumirOrdenes()
-
 	godotenv.Load()
 	cfg := config.Load()
 
