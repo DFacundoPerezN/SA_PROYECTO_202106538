@@ -373,6 +373,350 @@ func (x *CreateUserResponse) GetTelefono() string {
 	return ""
 }
 
+type ListUsersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	RoleFilter    string                 `protobuf:"bytes,3,opt,name=role_filter,json=roleFilter,proto3" json:"role_filter,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListUsersRequest) Reset() {
+	*x = ListUsersRequest{}
+	mi := &file_userpb_user_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListUsersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListUsersRequest) ProtoMessage() {}
+
+func (x *ListUsersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_userpb_user_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListUsersRequest.ProtoReflect.Descriptor instead.
+func (*ListUsersRequest) Descriptor() ([]byte, []int) {
+	return file_userpb_user_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListUsersRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListUsersRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListUsersRequest) GetRoleFilter() string {
+	if x != nil {
+		return x.RoleFilter
+	}
+	return ""
+}
+
+type ListUsersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Users         []*User                `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListUsersResponse) Reset() {
+	*x = ListUsersResponse{}
+	mi := &file_userpb_user_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListUsersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListUsersResponse) ProtoMessage() {}
+
+func (x *ListUsersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_userpb_user_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListUsersResponse.ProtoReflect.Descriptor instead.
+func (*ListUsersResponse) Descriptor() ([]byte, []int) {
+	return file_userpb_user_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ListUsersResponse) GetUsers() []*User {
+	if x != nil {
+		return x.Users
+	}
+	return nil
+}
+
+func (x *ListUsersResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *ListUsersResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListUsersResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+type CreateDriverRatingRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ClienteId     int32                  `protobuf:"varint,1,opt,name=cliente_id,json=clienteId,proto3" json:"cliente_id,omitempty"`
+	RepartidorId  int32                  `protobuf:"varint,2,opt,name=repartidor_id,json=repartidorId,proto3" json:"repartidor_id,omitempty"`
+	Estrellas     int32                  `protobuf:"varint,3,opt,name=estrellas,proto3" json:"estrellas,omitempty"`
+	Comentario    string                 `protobuf:"bytes,4,opt,name=comentario,proto3" json:"comentario,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateDriverRatingRequest) Reset() {
+	*x = CreateDriverRatingRequest{}
+	mi := &file_userpb_user_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateDriverRatingRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateDriverRatingRequest) ProtoMessage() {}
+
+func (x *CreateDriverRatingRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_userpb_user_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateDriverRatingRequest.ProtoReflect.Descriptor instead.
+func (*CreateDriverRatingRequest) Descriptor() ([]byte, []int) {
+	return file_userpb_user_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *CreateDriverRatingRequest) GetClienteId() int32 {
+	if x != nil {
+		return x.ClienteId
+	}
+	return 0
+}
+
+func (x *CreateDriverRatingRequest) GetRepartidorId() int32 {
+	if x != nil {
+		return x.RepartidorId
+	}
+	return 0
+}
+
+func (x *CreateDriverRatingRequest) GetEstrellas() int32 {
+	if x != nil {
+		return x.Estrellas
+	}
+	return 0
+}
+
+func (x *CreateDriverRatingRequest) GetComentario() string {
+	if x != nil {
+		return x.Comentario
+	}
+	return ""
+}
+
+type CreateDriverRatingResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RatingId      int32                  `protobuf:"varint,1,opt,name=rating_id,json=ratingId,proto3" json:"rating_id,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateDriverRatingResponse) Reset() {
+	*x = CreateDriverRatingResponse{}
+	mi := &file_userpb_user_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateDriverRatingResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateDriverRatingResponse) ProtoMessage() {}
+
+func (x *CreateDriverRatingResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_userpb_user_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateDriverRatingResponse.ProtoReflect.Descriptor instead.
+func (*CreateDriverRatingResponse) Descriptor() ([]byte, []int) {
+	return file_userpb_user_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *CreateDriverRatingResponse) GetRatingId() int32 {
+	if x != nil {
+		return x.RatingId
+	}
+	return 0
+}
+
+func (x *CreateDriverRatingResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type GetDriverRatingAverageRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RepartidorId  int32                  `protobuf:"varint,1,opt,name=repartidor_id,json=repartidorId,proto3" json:"repartidor_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDriverRatingAverageRequest) Reset() {
+	*x = GetDriverRatingAverageRequest{}
+	mi := &file_userpb_user_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDriverRatingAverageRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDriverRatingAverageRequest) ProtoMessage() {}
+
+func (x *GetDriverRatingAverageRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_userpb_user_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDriverRatingAverageRequest.ProtoReflect.Descriptor instead.
+func (*GetDriverRatingAverageRequest) Descriptor() ([]byte, []int) {
+	return file_userpb_user_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetDriverRatingAverageRequest) GetRepartidorId() int32 {
+	if x != nil {
+		return x.RepartidorId
+	}
+	return 0
+}
+
+type GetDriverRatingAverageResponse struct {
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	Promedio            float64                `protobuf:"fixed64,1,opt,name=promedio,proto3" json:"promedio,omitempty"`
+	TotalCalificaciones int32                  `protobuf:"varint,2,opt,name=total_calificaciones,json=totalCalificaciones,proto3" json:"total_calificaciones,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *GetDriverRatingAverageResponse) Reset() {
+	*x = GetDriverRatingAverageResponse{}
+	mi := &file_userpb_user_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDriverRatingAverageResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDriverRatingAverageResponse) ProtoMessage() {}
+
+func (x *GetDriverRatingAverageResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_userpb_user_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDriverRatingAverageResponse.ProtoReflect.Descriptor instead.
+func (*GetDriverRatingAverageResponse) Descriptor() ([]byte, []int) {
+	return file_userpb_user_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetDriverRatingAverageResponse) GetPromedio() float64 {
+	if x != nil {
+		return x.Promedio
+	}
+	return 0
+}
+
+func (x *GetDriverRatingAverageResponse) GetTotalCalificaciones() int32 {
+	if x != nil {
+		return x.TotalCalificaciones
+	}
+	return 0
+}
+
 var File_userpb_user_proto protoreflect.FileDescriptor
 
 const file_userpb_user_proto_rawDesc = "" +
@@ -400,12 +744,41 @@ const file_userpb_user_proto_rawDesc = "" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
 	"\x04role\x18\x03 \x01(\tR\x04role\x12'\n" +
 	"\x0fnombre_completo\x18\x04 \x01(\tR\x0enombreCompleto\x12\x1a\n" +
-	"\btelefono\x18\x05 \x01(\tR\btelefono2\xda\x01\n" +
+	"\btelefono\x18\x05 \x01(\tR\btelefono\"d\n" +
+	"\x10ListUsersRequest\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x1f\n" +
+	"\vrole_filter\x18\x03 \x01(\tR\n" +
+	"roleFilter\"~\n" +
+	"\x11ListUsersResponse\x12\"\n" +
+	"\x05users\x18\x01 \x03(\v2\f.userpb.UserR\x05users\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\"\x9d\x01\n" +
+	"\x19CreateDriverRatingRequest\x12\x1d\n" +
+	"\n" +
+	"cliente_id\x18\x01 \x01(\x05R\tclienteId\x12#\n" +
+	"\rrepartidor_id\x18\x02 \x01(\x05R\frepartidorId\x12\x1c\n" +
+	"\testrellas\x18\x03 \x01(\x05R\testrellas\x12\x1e\n" +
+	"\n" +
+	"comentario\x18\x04 \x01(\tR\n" +
+	"comentario\"S\n" +
+	"\x1aCreateDriverRatingResponse\x12\x1b\n" +
+	"\trating_id\x18\x01 \x01(\x05R\bratingId\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"D\n" +
+	"\x1dGetDriverRatingAverageRequest\x12#\n" +
+	"\rrepartidor_id\x18\x01 \x01(\x05R\frepartidorId\"o\n" +
+	"\x1eGetDriverRatingAverageResponse\x12\x1a\n" +
+	"\bpromedio\x18\x01 \x01(\x01R\bpromedio\x121\n" +
+	"\x14total_calificaciones\x18\x02 \x01(\x05R\x13totalCalificaciones2\xe2\x03\n" +
 	"\vUserService\x12E\n" +
 	"\x0eGetUserByEmail\x12\x1d.userpb.GetUserByEmailRequest\x1a\x14.userpb.UserResponse\x12?\n" +
 	"\vGetUserByID\x12\x1a.userpb.GetUserByIDRequest\x1a\x14.userpb.UserResponse\x12C\n" +
 	"\n" +
-	"CreateUser\x12\x19.userpb.CreateUserRequest\x1a\x1a.userpb.CreateUserResponseB\x17Z\x15delivery-proto/userpbb\x06proto3"
+	"CreateUser\x12\x19.userpb.CreateUserRequest\x1a\x1a.userpb.CreateUserResponse\x12@\n" +
+	"\tListUsers\x12\x18.userpb.ListUsersRequest\x1a\x19.userpb.ListUsersResponse\x12[\n" +
+	"\x12CreateDriverRating\x12!.userpb.CreateDriverRatingRequest\x1a\".userpb.CreateDriverRatingResponse\x12g\n" +
+	"\x16GetDriverRatingAverage\x12%.userpb.GetDriverRatingAverageRequest\x1a&.userpb.GetDriverRatingAverageResponseB\x17Z\x15delivery-proto/userpbb\x06proto3"
 
 var (
 	file_userpb_user_proto_rawDescOnce sync.Once
@@ -419,28 +792,41 @@ func file_userpb_user_proto_rawDescGZIP() []byte {
 	return file_userpb_user_proto_rawDescData
 }
 
-var file_userpb_user_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_userpb_user_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_userpb_user_proto_goTypes = []any{
-	(*User)(nil),                  // 0: userpb.User
-	(*GetUserByEmailRequest)(nil), // 1: userpb.GetUserByEmailRequest
-	(*GetUserByIDRequest)(nil),    // 2: userpb.GetUserByIDRequest
-	(*UserResponse)(nil),          // 3: userpb.UserResponse
-	(*CreateUserRequest)(nil),     // 4: userpb.CreateUserRequest
-	(*CreateUserResponse)(nil),    // 5: userpb.CreateUserResponse
+	(*User)(nil),                           // 0: userpb.User
+	(*GetUserByEmailRequest)(nil),          // 1: userpb.GetUserByEmailRequest
+	(*GetUserByIDRequest)(nil),             // 2: userpb.GetUserByIDRequest
+	(*UserResponse)(nil),                   // 3: userpb.UserResponse
+	(*CreateUserRequest)(nil),              // 4: userpb.CreateUserRequest
+	(*CreateUserResponse)(nil),             // 5: userpb.CreateUserResponse
+	(*ListUsersRequest)(nil),               // 6: userpb.ListUsersRequest
+	(*ListUsersResponse)(nil),              // 7: userpb.ListUsersResponse
+	(*CreateDriverRatingRequest)(nil),      // 8: userpb.CreateDriverRatingRequest
+	(*CreateDriverRatingResponse)(nil),     // 9: userpb.CreateDriverRatingResponse
+	(*GetDriverRatingAverageRequest)(nil),  // 10: userpb.GetDriverRatingAverageRequest
+	(*GetDriverRatingAverageResponse)(nil), // 11: userpb.GetDriverRatingAverageResponse
 }
 var file_userpb_user_proto_depIdxs = []int32{
-	0, // 0: userpb.UserResponse.user:type_name -> userpb.User
-	1, // 1: userpb.UserService.GetUserByEmail:input_type -> userpb.GetUserByEmailRequest
-	2, // 2: userpb.UserService.GetUserByID:input_type -> userpb.GetUserByIDRequest
-	4, // 3: userpb.UserService.CreateUser:input_type -> userpb.CreateUserRequest
-	3, // 4: userpb.UserService.GetUserByEmail:output_type -> userpb.UserResponse
-	3, // 5: userpb.UserService.GetUserByID:output_type -> userpb.UserResponse
-	5, // 6: userpb.UserService.CreateUser:output_type -> userpb.CreateUserResponse
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0,  // 0: userpb.UserResponse.user:type_name -> userpb.User
+	0,  // 1: userpb.ListUsersResponse.users:type_name -> userpb.User
+	1,  // 2: userpb.UserService.GetUserByEmail:input_type -> userpb.GetUserByEmailRequest
+	2,  // 3: userpb.UserService.GetUserByID:input_type -> userpb.GetUserByIDRequest
+	4,  // 4: userpb.UserService.CreateUser:input_type -> userpb.CreateUserRequest
+	6,  // 5: userpb.UserService.ListUsers:input_type -> userpb.ListUsersRequest
+	8,  // 6: userpb.UserService.CreateDriverRating:input_type -> userpb.CreateDriverRatingRequest
+	10, // 7: userpb.UserService.GetDriverRatingAverage:input_type -> userpb.GetDriverRatingAverageRequest
+	3,  // 8: userpb.UserService.GetUserByEmail:output_type -> userpb.UserResponse
+	3,  // 9: userpb.UserService.GetUserByID:output_type -> userpb.UserResponse
+	5,  // 10: userpb.UserService.CreateUser:output_type -> userpb.CreateUserResponse
+	7,  // 11: userpb.UserService.ListUsers:output_type -> userpb.ListUsersResponse
+	9,  // 12: userpb.UserService.CreateDriverRating:output_type -> userpb.CreateDriverRatingResponse
+	11, // 13: userpb.UserService.GetDriverRatingAverage:output_type -> userpb.GetDriverRatingAverageResponse
+	8,  // [8:14] is the sub-list for method output_type
+	2,  // [2:8] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_userpb_user_proto_init() }
@@ -454,7 +840,7 @@ func file_userpb_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_userpb_user_proto_rawDesc), len(file_userpb_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

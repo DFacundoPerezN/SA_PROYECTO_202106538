@@ -101,6 +101,7 @@ func main() {
 
 	userServiceClient := userpb.NewUserServiceClient(userConn)
 	userClient := gatewaygrpc.NewUserClient(userServiceClient)
+	userHandler := handlers.NewUserHandler(userClient)
 
 	authHandler := handlers.NewAuthHandler(authClient, userClient)
 
@@ -166,6 +167,9 @@ func main() {
 		protected.POST("/payments", paymentHandler.ProcessPayment)
 		protected.PATCH("/payments/:id/refund", paymentHandler.RefundPayment)
 		protected.GET("/payments", paymentHandler.GetPayments)
+
+		protected.POST("/ratings", userHandler.CreateRating)
+		protected.GET("/ratings/driver/:id/average", userHandler.GetRatingAverage)
 	}
 
 	// HTTP server

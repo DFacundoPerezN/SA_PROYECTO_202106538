@@ -39,3 +39,30 @@ func (u *UserClient) ListUsers(page, pageSize int32, roleFilter string) (*userpb
 		RoleFilter: roleFilter,
 	})
 }
+
+func (u *UserClient) CreateDriverRating(
+	req *userpb.CreateDriverRatingRequest,
+) (*userpb.CreateDriverRatingResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	return u.client.CreateDriverRating(ctx, &userpb.CreateDriverRatingRequest{
+		ClienteId:    req.ClienteId,
+		RepartidorId: req.RepartidorId,
+		Estrellas:    req.Estrellas,
+		Comentario:   req.Comentario,
+	})
+}
+
+func (u *UserClient) GetDriverRatingAverage(
+	req *userpb.GetDriverRatingAverageRequest,
+) (*userpb.GetDriverRatingAverageResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	return u.client.GetDriverRatingAverage(ctx, &userpb.GetDriverRatingAverageRequest{
+		RepartidorId: req.RepartidorId,
+	})
+}

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"delivery-proto/userpb"
 	"net/http"
 	"strconv"
 
@@ -41,4 +42,56 @@ func (h *UserHandler) ListUsers(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+func (h *UserHandler) CreateRating(c *gin.Context) {
+
+	clientID := c.GetInt("user_id")
+
+	var req struct {
+		DriverID int32  `json:"driver_id"`
+		Stars    int32  `json:"stars"`
+		Comment  string `json:"comment"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "body inválido"})
+		return
+	}
+
+	resp, err := h.userClient.CreateDriverRating(
+		//context.Background(),
+		&userpb.CreateDriverRatingRequest{
+			ClienteId:    int32(clientID),
+			RepartidorId: req.DriverID,
+			Estrellas:    req.Stars,
+			Comentario:   req.Comment,
+		},
+	)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp)
+}
+
+func (h *UserHandler) GetRatingAverage(c *gin.Context) {
+
+	driverID, _ := strconv.Atoi(c.Param("id"))
+
+	resp, err := h.userClient.GetDriverRatingAverage(
+		//context.Background(),
+		&userpb.GetDriverRatingAverageRequest{
+			RepartidorId: int32(driverID),
+		},
+	)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp)
 }

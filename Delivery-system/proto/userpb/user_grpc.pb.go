@@ -19,9 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserService_GetUserByEmail_FullMethodName = "/userpb.UserService/GetUserByEmail"
-	UserService_GetUserByID_FullMethodName    = "/userpb.UserService/GetUserByID"
-	UserService_CreateUser_FullMethodName     = "/userpb.UserService/CreateUser"
+	UserService_GetUserByEmail_FullMethodName         = "/userpb.UserService/GetUserByEmail"
+	UserService_GetUserByID_FullMethodName            = "/userpb.UserService/GetUserByID"
+	UserService_CreateUser_FullMethodName             = "/userpb.UserService/CreateUser"
+	UserService_ListUsers_FullMethodName              = "/userpb.UserService/ListUsers"
+	UserService_CreateDriverRating_FullMethodName     = "/userpb.UserService/CreateDriverRating"
+	UserService_GetDriverRatingAverage_FullMethodName = "/userpb.UserService/GetDriverRatingAverage"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -31,6 +34,9 @@ type UserServiceClient interface {
 	GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
+	CreateDriverRating(ctx context.Context, in *CreateDriverRatingRequest, opts ...grpc.CallOption) (*CreateDriverRatingResponse, error)
+	GetDriverRatingAverage(ctx context.Context, in *GetDriverRatingAverageRequest, opts ...grpc.CallOption) (*GetDriverRatingAverageResponse, error)
 }
 
 type userServiceClient struct {
@@ -71,6 +77,36 @@ func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserReques
 	return out, nil
 }
 
+func (c *userServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListUsersResponse)
+	err := c.cc.Invoke(ctx, UserService_ListUsers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) CreateDriverRating(ctx context.Context, in *CreateDriverRatingRequest, opts ...grpc.CallOption) (*CreateDriverRatingResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateDriverRatingResponse)
+	err := c.cc.Invoke(ctx, UserService_CreateDriverRating_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetDriverRatingAverage(ctx context.Context, in *GetDriverRatingAverageRequest, opts ...grpc.CallOption) (*GetDriverRatingAverageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDriverRatingAverageResponse)
+	err := c.cc.Invoke(ctx, UserService_GetDriverRatingAverage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -78,6 +114,9 @@ type UserServiceServer interface {
 	GetUserByEmail(context.Context, *GetUserByEmailRequest) (*UserResponse, error)
 	GetUserByID(context.Context, *GetUserByIDRequest) (*UserResponse, error)
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
+	CreateDriverRating(context.Context, *CreateDriverRatingRequest) (*CreateDriverRatingResponse, error)
+	GetDriverRatingAverage(context.Context, *GetDriverRatingAverageRequest) (*GetDriverRatingAverageResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -96,6 +135,15 @@ func (UnimplementedUserServiceServer) GetUserByID(context.Context, *GetUserByIDR
 }
 func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedUserServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListUsers not implemented")
+}
+func (UnimplementedUserServiceServer) CreateDriverRating(context.Context, *CreateDriverRatingRequest) (*CreateDriverRatingResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateDriverRating not implemented")
+}
+func (UnimplementedUserServiceServer) GetDriverRatingAverage(context.Context, *GetDriverRatingAverageRequest) (*GetDriverRatingAverageResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetDriverRatingAverage not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -172,6 +220,60 @@ func _UserService_CreateUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).ListUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_ListUsers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).ListUsers(ctx, req.(*ListUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_CreateDriverRating_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateDriverRatingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).CreateDriverRating(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_CreateDriverRating_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).CreateDriverRating(ctx, req.(*CreateDriverRatingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetDriverRatingAverage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDriverRatingAverageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetDriverRatingAverage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetDriverRatingAverage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetDriverRatingAverage(ctx, req.(*GetDriverRatingAverageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +292,18 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateUser",
 			Handler:    _UserService_CreateUser_Handler,
+		},
+		{
+			MethodName: "ListUsers",
+			Handler:    _UserService_ListUsers_Handler,
+		},
+		{
+			MethodName: "CreateDriverRating",
+			Handler:    _UserService_CreateDriverRating_Handler,
+		},
+		{
+			MethodName: "GetDriverRatingAverage",
+			Handler:    _UserService_GetDriverRatingAverage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
