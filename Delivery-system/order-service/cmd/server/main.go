@@ -14,6 +14,7 @@ import (
 	"order-service/internal/database"
 	grpcclient "order-service/internal/grpc"
 	handler "order-service/internal/handler/grpc"
+	"order-service/internal/messaging"
 	"order-service/internal/repository"
 	"order-service/internal/service"
 
@@ -25,8 +26,7 @@ func main() {
 	// ---------------------------
 	// CARGAR .ENV
 	// ---------------------------
-	err := godotenv.Load()
-	if err != nil {
+	if err := godotenv.Load(); err != nil {
 		log.Println(".env not found, using system env")
 	}
 
@@ -35,7 +35,6 @@ func main() {
 	// ---------------------------
 	// CONEXIÓN A SQL SERVER
 	// ---------------------------
-
 	db, err := database.NewSQLServer(database.Config{
 		Host:           cfg.DBHost,
 		Port:           cfg.DBPort,
@@ -47,40 +46,44 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	log.Println("Connected to SQL Server :)")
 
 	// ---------------------------
-	// CLIENTE gRPC → catalog-service
+	// CONEXIÓN A RABBITMQ
 	// ---------------------------
-
-	catalogClientServer := os.Getenv("CATALOG_SERVICE_ADDR")
-	if catalogClientServer == "" {
-		catalogClientServer = "catalog-service:50053"
+	rabbitConn, err := messaging.NewRabbitMQConn()
+	if err != nil {
+		log.Fatalf("No se pudo conectar a RabbitMQ: %v", err)
 	}
+	defer rabbitConn.Close()
 
-	catalogClient, err := grpcclient.NewCatalogClient(catalogClientServer)
+	// ---------------------------
+	// CLIENTES gRPC EXTERNOS
+	// ---------------------------
+	catalogAddr := os.Getenv("CATALOG_SERVICE_ADDR")
+	if catalogAddr == "" {
+		catalogAddr = "catalog-service:50053"
+	}
+	catalogClient, err := grpcclient.NewCatalogClient(catalogAddr)
 	if err != nil {
 		log.Fatalf("could not connect to catalog-service: %v", err)
 	}
+	log.Println("Connected to catalog-service:", catalogAddr)
 
-	log.Println("Connected to catalog-service:", catalogClientServer)
-
-	// ---------------- USER SERVICE ----------------
-	catalogUserServer := os.Getenv("USER_SERVICE_ADDR")
-	if catalogUserServer == "" {
-		catalogUserServer = "user-service:50052"
+	userAddr := os.Getenv("USER_SERVICE_ADDR")
+	if userAddr == "" {
+		userAddr = "user-service:50052"
 	}
-	userClient, err := grpcclient.NewUserClient(catalogUserServer)
+	userClient, err := grpcclient.NewUserClient(userAddr)
 	if err != nil {
 		log.Fatalf("cannot connect to user-service: %v", err)
 	}
 
-	catalogNotiServer := os.Getenv("NOTIFICATION_SERVICE_ADDR")
-	if catalogNotiServer == "" {
-		catalogNotiServer = "notification-service:50056"
+	notiAddr := os.Getenv("NOTIFICATION_SERVICE_ADDR")
+	if notiAddr == "" {
+		notiAddr = "notification-service:50056"
 	}
-	notificationClient, err := grpcclient.NewNotificationClient(catalogNotiServer)
+	notificationClient, err := grpcclient.NewNotificationClient(notiAddr)
 	if err != nil {
 		log.Fatalf("cannot connect to notification-service: %v", err)
 	}
@@ -88,14 +91,30 @@ func main() {
 	// ---------------------------
 	// DEPENDENCY INJECTION
 	// ---------------------------
+	publisher := messaging.NewPublisher(rabbitConn)
 
 	orderRepository := repository.NewOrderRepository(db)
-	orderService := service.NewOrderService(orderRepository, catalogClient, userClient, notificationClient)
-	orderHandler := handler.NewOrderGRPCServer(orderService)
+	orderService := service.NewOrderService(
+		orderRepository,
+		catalogClient,
+		userClient,
+		notificationClient,
+		publisher,
+	)
+
+	// ---------------------------
+	// ARRANCAR CONSUMER (self-loop)
+	// El consumer escucha la cola orders.pending y llama a
+	// orderService.ProcessOrder() para persistir cada orden en BD.
+	// ---------------------------
+	consumer := messaging.NewConsumer(rabbitConn, orderService)
+	go consumer.Start()
+	log.Println("Order consumer escuchando cola 'orders.pending'")
 
 	// ---------------------------
 	// gRPC SERVER
 	// ---------------------------
+	orderHandler := handler.NewOrderGRPCServer(orderService)
 
 	port := os.Getenv("GRPC_PORT")
 	if port == "" {
@@ -108,7 +127,6 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-
 	orderpb.RegisterOrderServiceServer(grpcServer, orderHandler)
 
 	log.Println("Order Service running on port:", port)
