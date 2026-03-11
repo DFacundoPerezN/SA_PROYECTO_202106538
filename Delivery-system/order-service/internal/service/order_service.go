@@ -2,17 +2,19 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"time"
+	"errors"
+
 	catalogpb "delivery-proto/catalogpb"
 	notificationpb "delivery-proto/notificationpb"
 	orderpb "delivery-proto/orderpb"
-	"errors"
-	"fmt"
+
 	"order-service/internal/domain"
 	"order-service/internal/email"
 	catalogclient "order-service/internal/grpc"
 	"order-service/internal/messaging"
 	"order-service/internal/repository"
-	"time"
 )
 
 type OrderService struct {
@@ -39,12 +41,12 @@ func NewOrderService(
 	}
 }
 
-// CreateOrder valida los productos, calcula el total y encola la orden.
-// NO persiste en base de datos: eso lo hace ProcessOrder al consumir la cola.
-// Responde al cliente gRPC de forma inmediata con estado "ENCOLADA".
-func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrderRequest) error {
+// CreateOrder valida los productos, calcula el total, encola la orden
+// y luego hace polling a la BD hasta que el consumer la persista.
+// Retorna el ID real de la orden una vez confirmada en BD.
+func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrderRequest) (int, error) {
 	if len(req.Items) == 0 {
-		return errors.New("la orden no tiene productos")
+		return 0, errors.New("la orden no tiene productos")
 	}
 
 	order := &domain.Order{
@@ -59,7 +61,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrder
 		CostoTotal:        0,
 	}
 
-	// Recolectar IDs de productos para consultar catalog-service en batch
+	// Consultar catalog-service para validar y calcular el total
 	productIDs := make([]int32, 0, len(req.Items))
 	for _, item := range req.Items {
 		productIDs = append(productIDs, item.ProductId)
@@ -67,7 +69,7 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrder
 
 	catalogResp, err := s.catalogClient.GetProductsByIDs(productIDs)
 	if err != nil {
-		return fmt.Errorf("error consultando catalog-service: %w", err)
+		return 0, fmt.Errorf("error consultando catalog-service: %w", err)
 	}
 
 	productsMap := make(map[int32]*catalogpb.Product, len(catalogResp))
@@ -81,20 +83,18 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrder
 	for _, item := range req.Items {
 		product, exists := productsMap[item.ProductId]
 		if !exists {
-			return fmt.Errorf("producto %d no existe", item.ProductId)
+			return 0, fmt.Errorf("producto %d no existe", item.ProductId)
 		}
 		if !product.Disponible {
-			return fmt.Errorf("producto '%s' no está disponible", product.Nombre)
+			return 0, fmt.Errorf("producto '%s' no está disponible", product.Nombre)
 		}
-		// Validar que todos los productos sean del mismo restaurante
 		if restaurantID == -1 {
 			restaurantID = product.RestaurantId
 		} else if restaurantID != product.RestaurantId {
-			return errors.New("todos los productos deben ser del mismo restaurante")
+			return 0, errors.New("todos los productos deben ser del mismo restaurante")
 		}
 
 		total += product.Precio * float64(item.Quantity)
-
 		order.Items = append(order.Items, domain.OrderItem{
 			ProductoId:     item.ProductId,
 			NombreProducto: product.Nombre,
@@ -103,15 +103,52 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrder
 			Comentarios:    item.Comments,
 		})
 	}
-
 	order.CostoTotal = total
 
-	// Publicar en la cola — el consumer persistirá la orden en BD
+	// Publicar en la cola para que el consumer la persista
 	if err := s.publisher.PublicarOrden(order); err != nil {
-		return fmt.Errorf("error encolando la orden: %w", err)
+		return 0, fmt.Errorf("error encolando la orden: %w", err)
 	}
 
-	return nil
+	// Polling: esperar hasta que el consumer inserte la orden en BD
+	// y devolver el ID real al cliente (máx 15 segundos, intentos cada 500ms)
+	orderID, err := s.waitForOrderPersisted(ctx, req.ClientId)
+	if err != nil {
+		return 0, fmt.Errorf("orden encolada pero no confirmada a tiempo: %w", err)
+	}
+
+	return orderID, nil
+}
+
+// waitForOrderPersisted hace polling a la BD hasta encontrar la orden más
+// reciente del cliente, confirmando que el consumer ya la persistió.
+func (s *OrderService) waitForOrderPersisted(ctx context.Context, clientID int32) (int, error) {
+	const (
+		maxWait  = 15 * time.Second
+		interval = 500 * time.Millisecond
+	)
+
+	deadline := time.Now().Add(maxWait)
+
+	for time.Now().Before(deadline) {
+		// Usar contexto con timeout corto para cada intento
+		queryCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
+		id, err := s.repo.GetLatestOrderIDByClient(queryCtx, clientID)
+		cancel()
+
+		if err == nil && id > 0 {
+			return id, nil
+		}
+
+		// Si el contexto padre fue cancelado, salir inmediatamente
+		if ctx.Err() != nil {
+			return 0, ctx.Err()
+		}
+
+		time.Sleep(interval)
+	}
+
+	return 0, fmt.Errorf("timeout esperando confirmación de la orden (cliente %d)", clientID)
 }
 
 // ProcessOrder es llamado por el Consumer al desencolar un mensaje.
@@ -181,7 +218,6 @@ func (s *OrderService) notifyDriverAssigned(orderID int, driverID int) {
 		RestaurantName: order.RestauranteNombre,
 		Products:       protoItems,
 	}
-
 	_ = s.notificationClient.SendDriverAssignedEmail(ctx, req)
 }
 
@@ -225,7 +261,6 @@ func (s *OrderService) sendOrderCreatedEmail(orderID int) {
 	}
 
 	subject, body := email.BuildOrderCreatedEmail(emailData)
-
 	if err := email.NewEmailSender().Send(userRes.User.Email, subject, body); err != nil {
 		fmt.Println("[Email] error enviando correo:", err)
 	}
@@ -234,3 +269,5 @@ func (s *OrderService) sendOrderCreatedEmail(orderID int) {
 func (s *OrderService) GetOrderByID(ctx context.Context, orderID int) (*domain.Order, error) {
 	return s.repo.GetOrderByID(ctx, orderID)
 }
+
+// Necesario para que compile aunque no se use directamente en este archivo

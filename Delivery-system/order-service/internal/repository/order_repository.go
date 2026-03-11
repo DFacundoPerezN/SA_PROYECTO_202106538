@@ -417,3 +417,20 @@ func (r *OrderRepository) GetOrderItems(
 
 	return items, nil
 }
+
+// GetLatestOrderIDByClient devuelve el ID de la orden más reciente de un cliente
+// que fue insertada en los últimos segundos. Se usa para polling post-encolado.
+func (r *OrderRepository) GetLatestOrderIDByClient(ctx context.Context, clientID int32) (int, error) {
+	query := `
+	SELECT TOP 1 Id
+	FROM Orden
+	WHERE ClienteId = @p1
+	ORDER BY FechaHoraCreacion DESC
+	`
+	var id int
+	err := r.db.QueryRowContext(ctx, query, clientID).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
