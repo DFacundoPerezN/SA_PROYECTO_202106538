@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type User struct {
 	ID             int       `json:"id"`
@@ -46,4 +49,6 @@ type UserRepository interface {
 	Count() (int, error)
 	FindAllByRole(role string, limit, offset int) ([]User, error)
 	CountByRole(role string) (int, error)
+	CreateDriverRating(ctx context.Context, rating *DriverRating) (int, error)
+	GetDriverRatingAverage(ctx context.Context, driverID int) (float64, int, error)
 }
