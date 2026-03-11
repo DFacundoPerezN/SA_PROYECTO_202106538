@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"delivery-proto/catalogpb"
 	"net/http"
 	"strconv"
@@ -77,4 +78,54 @@ func (h *CatalogHandler) CreateProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, resp)
+}
+
+func (h *CatalogHandler) CreateRecommendation(c *gin.Context) {
+
+	clientID := c.GetInt("user_id")
+
+	var req struct {
+		ProductID   int32 `json:"product_id"`
+		Recommended bool  `json:"recommended"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "body inválido"})
+		return
+	}
+
+	resp, err := h.client.CreateProductRecommendation(
+		context.Background(),
+		&catalogpb.CreateProductRecommendationRequest{
+			ClienteId:   int32(clientID),
+			ProductoId:  req.ProductID,
+			Recomendado: req.Recommended,
+		},
+	)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp)
+}
+
+func (h *CatalogHandler) GetRecommendationPercentage(c *gin.Context) {
+
+	productID, _ := strconv.Atoi(c.Param("id"))
+
+	resp, err := h.client.GetProductRecommendationPercentage(
+		context.Background(),
+		&catalogpb.GetProductRecommendationPercentageRequest{
+			ProductoId: int32(productID),
+		},
+	)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp)
 }

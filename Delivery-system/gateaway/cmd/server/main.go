@@ -139,6 +139,7 @@ func main() {
 
 		api.GET("/ratings/driver/:id/average", userHandler.GetRatingAverage)
 		api.GET("/ratings/restaurant/:id/average", restaurantHandler.GetRatingAverage)
+		api.GET("/products/:id/recommendation", catalogHandler.GetRecommendationPercentage)
 	}
 
 	// PROTECTED ROUTES
@@ -173,6 +174,7 @@ func main() {
 
 		protected.POST("/drivers/ratings", userHandler.CreateRating)
 		protected.POST("/restaurants/ratings", restaurantHandler.CreateRating)
+		protected.POST("/products/recommendations", catalogHandler.CreateRecommendation)
 	}
 
 	// HTTP server

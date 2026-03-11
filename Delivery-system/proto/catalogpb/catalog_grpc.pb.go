@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CatalogService_GetProductsByRestaurant_FullMethodName = "/catalog.CatalogService/GetProductsByRestaurant"
-	CatalogService_GetProductsByIDs_FullMethodName        = "/catalog.CatalogService/GetProductsByIDs"
-	CatalogService_GetProduct_FullMethodName              = "/catalog.CatalogService/GetProduct"
-	CatalogService_CreateProduct_FullMethodName           = "/catalog.CatalogService/CreateProduct"
+	CatalogService_GetProductsByRestaurant_FullMethodName            = "/catalog.CatalogService/GetProductsByRestaurant"
+	CatalogService_GetProductsByIDs_FullMethodName                   = "/catalog.CatalogService/GetProductsByIDs"
+	CatalogService_GetProduct_FullMethodName                         = "/catalog.CatalogService/GetProduct"
+	CatalogService_CreateProduct_FullMethodName                      = "/catalog.CatalogService/CreateProduct"
+	CatalogService_CreateProductRecommendation_FullMethodName        = "/catalog.CatalogService/CreateProductRecommendation"
+	CatalogService_GetProductRecommendationPercentage_FullMethodName = "/catalog.CatalogService/GetProductRecommendationPercentage"
 )
 
 // CatalogServiceClient is the client API for CatalogService service.
@@ -33,6 +35,8 @@ type CatalogServiceClient interface {
 	GetProductsByIDs(ctx context.Context, in *GetProductsByIDsRequest, opts ...grpc.CallOption) (*GetProductsByIDsResponse, error)
 	GetProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*GetProductResponse, error)
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
+	CreateProductRecommendation(ctx context.Context, in *CreateProductRecommendationRequest, opts ...grpc.CallOption) (*CreateProductRecommendationResponse, error)
+	GetProductRecommendationPercentage(ctx context.Context, in *GetProductRecommendationPercentageRequest, opts ...grpc.CallOption) (*GetProductRecommendationPercentageResponse, error)
 }
 
 type catalogServiceClient struct {
@@ -83,6 +87,26 @@ func (c *catalogServiceClient) CreateProduct(ctx context.Context, in *CreateProd
 	return out, nil
 }
 
+func (c *catalogServiceClient) CreateProductRecommendation(ctx context.Context, in *CreateProductRecommendationRequest, opts ...grpc.CallOption) (*CreateProductRecommendationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateProductRecommendationResponse)
+	err := c.cc.Invoke(ctx, CatalogService_CreateProductRecommendation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *catalogServiceClient) GetProductRecommendationPercentage(ctx context.Context, in *GetProductRecommendationPercentageRequest, opts ...grpc.CallOption) (*GetProductRecommendationPercentageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetProductRecommendationPercentageResponse)
+	err := c.cc.Invoke(ctx, CatalogService_GetProductRecommendationPercentage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CatalogServiceServer is the server API for CatalogService service.
 // All implementations must embed UnimplementedCatalogServiceServer
 // for forward compatibility.
@@ -91,6 +115,8 @@ type CatalogServiceServer interface {
 	GetProductsByIDs(context.Context, *GetProductsByIDsRequest) (*GetProductsByIDsResponse, error)
 	GetProduct(context.Context, *GetProductRequest) (*GetProductResponse, error)
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
+	CreateProductRecommendation(context.Context, *CreateProductRecommendationRequest) (*CreateProductRecommendationResponse, error)
+	GetProductRecommendationPercentage(context.Context, *GetProductRecommendationPercentageRequest) (*GetProductRecommendationPercentageResponse, error)
 	mustEmbedUnimplementedCatalogServiceServer()
 }
 
@@ -112,6 +138,12 @@ func (UnimplementedCatalogServiceServer) GetProduct(context.Context, *GetProduct
 }
 func (UnimplementedCatalogServiceServer) CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateProduct not implemented")
+}
+func (UnimplementedCatalogServiceServer) CreateProductRecommendation(context.Context, *CreateProductRecommendationRequest) (*CreateProductRecommendationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateProductRecommendation not implemented")
+}
+func (UnimplementedCatalogServiceServer) GetProductRecommendationPercentage(context.Context, *GetProductRecommendationPercentageRequest) (*GetProductRecommendationPercentageResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetProductRecommendationPercentage not implemented")
 }
 func (UnimplementedCatalogServiceServer) mustEmbedUnimplementedCatalogServiceServer() {}
 func (UnimplementedCatalogServiceServer) testEmbeddedByValue()                        {}
@@ -206,6 +238,42 @@ func _CatalogService_CreateProduct_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CatalogService_CreateProductRecommendation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProductRecommendationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).CreateProductRecommendation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_CreateProductRecommendation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).CreateProductRecommendation(ctx, req.(*CreateProductRecommendationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CatalogService_GetProductRecommendationPercentage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductRecommendationPercentageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CatalogServiceServer).GetProductRecommendationPercentage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CatalogService_GetProductRecommendationPercentage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CatalogServiceServer).GetProductRecommendationPercentage(ctx, req.(*GetProductRecommendationPercentageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CatalogService_ServiceDesc is the grpc.ServiceDesc for CatalogService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +296,14 @@ var CatalogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateProduct",
 			Handler:    _CatalogService_CreateProduct_Handler,
+		},
+		{
+			MethodName: "CreateProductRecommendation",
+			Handler:    _CatalogService_CreateProductRecommendation_Handler,
+		},
+		{
+			MethodName: "GetProductRecommendationPercentage",
+			Handler:    _CatalogService_GetProductRecommendationPercentage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

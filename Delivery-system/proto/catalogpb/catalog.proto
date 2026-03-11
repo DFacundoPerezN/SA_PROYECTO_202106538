@@ -15,6 +15,9 @@ service CatalogService {
 
   rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
 
+  rpc CreateProductRecommendation(CreateProductRecommendationRequest) returns (CreateProductRecommendationResponse);
+
+  rpc GetProductRecommendationPercentage(GetProductRecommendationPercentageRequest) returns (GetProductRecommendationPercentageResponse);
 }
 
 message GetCatalogRequest {
@@ -74,4 +77,24 @@ message CreateProductRequest {
 message CreateProductResponse {
   int32 product_id = 1;
   string message = 2;
+}
+
+message CreateProductRecommendationRequest {
+  int32 cliente_id = 1;
+  int32 producto_id = 2;
+  bool recomendado = 3;
+}
+
+message CreateProductRecommendationResponse {
+  int32 id = 1;
+  string message = 2;
+}
+
+message GetProductRecommendationPercentageRequest {
+  int32 producto_id = 1;
+}
+
+message GetProductRecommendationPercentageResponse {
+  double porcentaje = 1;
+  int32 total_recomendaciones = 2;
 }
