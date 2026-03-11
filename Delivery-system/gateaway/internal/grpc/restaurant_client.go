@@ -46,3 +46,11 @@ func (c *RestaurantClient) CreateRestaurantRating(ctx context.Context, req *rest
 func (c *RestaurantClient) GetRestaurantRatingAverage(ctx context.Context, req *restaurantpb.GetRestaurantRatingAverageRequest) (*restaurantpb.GetRestaurantRatingAverageResponse, error) {
 	return c.client.GetRestaurantRatingAverage(ctx, req)
 }
+
+func (c *RestaurantClient) GetLatestRestaurants(ctx context.Context, req *restaurantpb.GetLatestRestaurantsRequest) (*restaurantpb.GetRestaurantsResponse, error) {
+	return c.client.GetLatestRestaurants(ctx, req)
+}
+
+func (c *RestaurantClient) GetTopRatedRestaurants(ctx context.Context, req *restaurantpb.GetTopRatedRestaurantsRequest) (*restaurantpb.GetRestaurantsResponse, error) {
+	return c.client.GetTopRatedRestaurants(ctx, req)
+}

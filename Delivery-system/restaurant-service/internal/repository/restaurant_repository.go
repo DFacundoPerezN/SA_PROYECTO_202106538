@@ -200,3 +200,89 @@ func (r *RestaurantRepository) GetRestaurantRatingAverage(
 
 	return avg, total, nil
 }
+
+func (r *RestaurantRepository) GetLatestRestaurants(
+	ctx context.Context,
+	limit int,
+) ([]domain.Restaurant, error) {
+
+	query := `
+	SELECT TOP (@p1)
+		Id,
+		Nombre,
+		Direccion,
+		CalificacionPromedio
+	FROM Restaurante
+	ORDER BY Id DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var restaurants []domain.Restaurant
+
+	for rows.Next() {
+		var res domain.Restaurant
+
+		err := rows.Scan(
+			&res.ID,
+			&res.Nombre,
+			&res.Direccion,
+			&res.Calificacion,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		restaurants = append(restaurants, res)
+	}
+
+	return restaurants, nil
+}
+
+func (r *RestaurantRepository) GetTopRatedRestaurants(
+	ctx context.Context,
+	limit int,
+) ([]domain.Restaurant, error) {
+
+	query := `
+	SELECT TOP (@p1)
+		Id,
+		Nombre,
+		Direccion,
+		CalificacionPromedio
+	FROM Restaurante
+	ORDER BY CalificacionPromedio DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var restaurants []domain.Restaurant
+
+	for rows.Next() {
+		var res domain.Restaurant
+
+		err := rows.Scan(
+			&res.ID,
+			&res.Nombre,
+			&res.Direccion,
+			&res.Calificacion,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		restaurants = append(restaurants, res)
+	}
+
+	return restaurants, nil
+}

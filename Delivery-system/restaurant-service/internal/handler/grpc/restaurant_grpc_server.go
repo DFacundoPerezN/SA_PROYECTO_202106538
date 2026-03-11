@@ -91,3 +91,57 @@ func (s *RestaurantGRPCServer) GetRestaurantRatingAverage(
 		TotalCalificaciones: int32(total),
 	}, nil
 }
+
+func (s *RestaurantGRPCServer) GetLatestRestaurants(
+	ctx context.Context,
+	req *restaurantpb.GetLatestRestaurantsRequest,
+) (*restaurantpb.GetRestaurantsResponse, error) {
+
+	restaurants, err := s.service.GetLatestRestaurants(ctx, int(req.Limit))
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*restaurantpb.Restaurant
+
+	for _, r := range restaurants {
+
+		result = append(result, &restaurantpb.Restaurant{
+			Id:           int32(r.ID),
+			Nombre:       r.Nombre,
+			Direccion:    r.Direccion,
+			Calificacion: r.Calificacion,
+		})
+	}
+
+	return &restaurantpb.GetRestaurantsResponse{
+		Restaurants: result,
+	}, nil
+}
+
+func (s *RestaurantGRPCServer) GetTopRatedRestaurants(
+	ctx context.Context,
+	req *restaurantpb.GetTopRatedRestaurantsRequest,
+) (*restaurantpb.GetRestaurantsResponse, error) {
+
+	restaurants, err := s.service.GetTopRatedRestaurants(ctx, int(req.Limit))
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*restaurantpb.Restaurant
+
+	for _, r := range restaurants {
+
+		result = append(result, &restaurantpb.Restaurant{
+			Id:           int32(r.ID),
+			Nombre:       r.Nombre,
+			Direccion:    r.Direccion,
+			Calificacion: r.Calificacion,
+		})
+	}
+
+	return &restaurantpb.GetRestaurantsResponse{
+		Restaurants: result,
+	}, nil
+}

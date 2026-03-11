@@ -5,12 +5,16 @@ package restaurantpb;
 option go_package = "delivery-proto/restaurantpb";
 
 service RestaurantService {
-    rpc ListRestaurants (Empty) returns (RestaurantListResponse);
-    rpc CreateRestaurant(CreateRestaurantRequest)    returns (CreateRestaurantResponse);
+  rpc ListRestaurants (Empty) returns (RestaurantListResponse);
+  rpc CreateRestaurant(CreateRestaurantRequest)    returns (CreateRestaurantResponse);
 
-    rpc CreateRestaurantRating(CreateRestaurantRatingRequest) returns (CreateRestaurantRatingResponse);
+  rpc CreateRestaurantRating(CreateRestaurantRatingRequest) returns (CreateRestaurantRatingResponse);
 
-    rpc GetRestaurantRatingAverage(GetRestaurantRatingAverageRequest) returns (GetRestaurantRatingAverageResponse);
+  rpc GetRestaurantRatingAverage(GetRestaurantRatingAverageRequest) returns (GetRestaurantRatingAverageResponse);
+
+  rpc GetLatestRestaurants(GetLatestRestaurantsRequest) returns (GetRestaurantsResponse);
+
+  rpc GetTopRatedRestaurants(GetTopRatedRestaurantsRequest) returns (GetRestaurantsResponse);
 }
 
 message Empty {}
@@ -67,4 +71,16 @@ message GetRestaurantRatingAverageRequest {
 message GetRestaurantRatingAverageResponse {
   double promedio = 1;
   int32 total_calificaciones = 2;
+}
+
+message GetLatestRestaurantsRequest {
+  int32 limit = 1;
+}
+
+message GetTopRatedRestaurantsRequest {
+  int32 limit = 1;
+}
+
+message GetRestaurantsResponse {
+  repeated Restaurant restaurants = 1;
 }
