@@ -173,3 +173,116 @@ func (h *RestaurantHandler) GetTopRatedRestaurants(c *gin.Context) {
 
 	c.JSON(200, resp.Restaurants)
 }
+
+// ─── Promociones ─────────────────────────────────────────────────────────────
+
+// POST /api/restaurants/:id/promociones
+func (h *RestaurantHandler) CreatePromocion(c *gin.Context) {
+	restaurantID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"error": "id inválido"})
+		return
+	}
+
+	var body struct {
+		Titulo      string  `json:"titulo"`
+		Descripcion string  `json:"descripcion"`
+		Tipo        string  `json:"tipo"`
+		Valor       float64 `json:"valor"`
+		FechaInicio string  `json:"fecha_inicio"`
+		FechaFin    string  `json:"fecha_fin"`
+	}
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := h.restaurantClient.CreatePromocion(c, &restaurantpb.CreatePromocionRequest{
+		RestauranteId: int32(restaurantID),
+		Titulo:        body.Titulo,
+		Descripcion:   body.Descripcion,
+		Tipo:          body.Tipo,
+		Valor:         body.Valor,
+		FechaInicio:   body.FechaInicio,
+		FechaFin:      body.FechaFin,
+	})
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(201, resp)
+}
+
+// GET /api/promociones
+// Query params:
+//   - restaurante_id  int    (0 = todos)
+//   - solo_activas    bool
+//   - tipo            string ("PORCENTAJE" | "ENVIO_GRATIS")
+//   - fecha_desde     string (ISO 8601)
+//   - fecha_hasta     string (ISO 8601)
+func (h *RestaurantHandler) GetPromociones(c *gin.Context) {
+	restauranteID, _ := strconv.Atoi(c.DefaultQuery("restaurante_id", "0"))
+	soloActivas := c.DefaultQuery("solo_activas", "false") == "true"
+
+	resp, err := h.restaurantClient.GetPromociones(c, &restaurantpb.GetPromocionesRequest{
+		RestauranteId: int32(restauranteID),
+		SoloActivas:   soloActivas,
+		Tipo:          c.DefaultQuery("tipo", ""),
+		FechaDesde:    c.DefaultQuery("fecha_desde", ""),
+		FechaHasta:    c.DefaultQuery("fecha_hasta", ""),
+	})
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	if resp.Promociones == nil {
+		c.JSON(200, gin.H{"promociones": []interface{}{}})
+		return
+	}
+
+	c.JSON(200, gin.H{"promociones": resp.Promociones})
+}
+
+// PUT /api/promociones/:id
+func (h *RestaurantHandler) UpdatePromocion(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(400, gin.H{"error": "id inválido"})
+		return
+	}
+
+	var body struct {
+		Titulo      string  `json:"titulo"`
+		Descripcion string  `json:"descripcion"`
+		Tipo        string  `json:"tipo"`
+		Valor       float64 `json:"valor"`
+		FechaInicio string  `json:"fecha_inicio"`
+		FechaFin    string  `json:"fecha_fin"`
+		Activa      bool    `json:"activa"`
+	}
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := h.restaurantClient.UpdatePromocion(c, &restaurantpb.UpdatePromocionRequest{
+		Id:          int32(id),
+		Titulo:      body.Titulo,
+		Descripcion: body.Descripcion,
+		Tipo:        body.Tipo,
+		Valor:       body.Valor,
+		FechaInicio: body.FechaInicio,
+		FechaFin:    body.FechaFin,
+		Activa:      body.Activa,
+	})
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp)
+}

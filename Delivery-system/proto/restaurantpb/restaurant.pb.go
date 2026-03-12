@@ -833,3 +833,163 @@ func file_restaurantpb_restaurant_proto_init() {
 	file_restaurantpb_restaurant_proto_goTypes = nil
 	file_restaurantpb_restaurant_proto_depIdxs = nil
 }
+
+// ─── Promocion messages (hand-written, complement to generated code) ──────────
+
+type Promocion struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	RestauranteId int32                  `protobuf:"varint,2,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	Titulo        string                 `protobuf:"bytes,3,opt,name=titulo,proto3" json:"titulo,omitempty"`
+	Descripcion   string                 `protobuf:"bytes,4,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	Tipo          string                 `protobuf:"bytes,5,opt,name=tipo,proto3" json:"tipo,omitempty"`
+	Valor         float64                `protobuf:"fixed64,6,opt,name=valor,proto3" json:"valor,omitempty"`
+	FechaInicio   string                 `protobuf:"bytes,7,opt,name=fecha_inicio,json=fechaInicio,proto3" json:"fecha_inicio,omitempty"`
+	FechaFin      string                 `protobuf:"bytes,8,opt,name=fecha_fin,json=fechaFin,proto3" json:"fecha_fin,omitempty"`
+	Activa        bool                   `protobuf:"varint,9,opt,name=activa,proto3" json:"activa,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Promocion) Reset()         {}
+func (x *Promocion) String() string { return protoimpl.X.MessageStringOf(x) }
+func (x *Promocion) ProtoMessage()  {}
+func (x *Promocion) ProtoReflect() protoreflect.Message {
+	return nil
+}
+
+func (x *Promocion) GetId() int32            { return x.Id }
+func (x *Promocion) GetRestauranteId() int32 { return x.RestauranteId }
+func (x *Promocion) GetTitulo() string       { return x.Titulo }
+func (x *Promocion) GetDescripcion() string  { return x.Descripcion }
+func (x *Promocion) GetTipo() string         { return x.Tipo }
+func (x *Promocion) GetValor() float64       { return x.Valor }
+func (x *Promocion) GetFechaInicio() string  { return x.FechaInicio }
+func (x *Promocion) GetFechaFin() string     { return x.FechaFin }
+func (x *Promocion) GetActiva() bool         { return x.Activa }
+
+// CreatePromocionRequest
+type CreatePromocionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RestauranteId int32                  `protobuf:"varint,1,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	Titulo        string                 `protobuf:"bytes,2,opt,name=titulo,proto3" json:"titulo,omitempty"`
+	Descripcion   string                 `protobuf:"bytes,3,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	Tipo          string                 `protobuf:"bytes,4,opt,name=tipo,proto3" json:"tipo,omitempty"`
+	Valor         float64                `protobuf:"fixed64,5,opt,name=valor,proto3" json:"valor,omitempty"`
+	FechaInicio   string                 `protobuf:"bytes,6,opt,name=fecha_inicio,json=fechaInicio,proto3" json:"fecha_inicio,omitempty"`
+	FechaFin      string                 `protobuf:"bytes,7,opt,name=fecha_fin,json=fechaFin,proto3" json:"fecha_fin,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreatePromocionRequest) Reset()         {}
+func (x *CreatePromocionRequest) String() string { return protoimpl.X.MessageStringOf(x) }
+func (x *CreatePromocionRequest) ProtoMessage()  {}
+func (x *CreatePromocionRequest) ProtoReflect() protoreflect.Message { return nil }
+
+func (x *CreatePromocionRequest) GetRestauranteId() int32 { return x.RestauranteId }
+func (x *CreatePromocionRequest) GetTitulo() string       { return x.Titulo }
+func (x *CreatePromocionRequest) GetDescripcion() string  { return x.Descripcion }
+func (x *CreatePromocionRequest) GetTipo() string         { return x.Tipo }
+func (x *CreatePromocionRequest) GetValor() float64       { return x.Valor }
+func (x *CreatePromocionRequest) GetFechaInicio() string  { return x.FechaInicio }
+func (x *CreatePromocionRequest) GetFechaFin() string     { return x.FechaFin }
+
+// CreatePromocionResponse
+type CreatePromocionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreatePromocionResponse) Reset()         {}
+func (t *CreatePromocionResponse) String() string { return protoimpl.X.MessageStringOf(t) }
+func (t *CreatePromocionResponse) ProtoMessage()  {}
+func (t *CreatePromocionResponse) ProtoReflect() protoreflect.Message { return nil }
+
+func (t *CreatePromocionResponse) GetId() int32        { return t.Id }
+func (t *CreatePromocionResponse) GetMessage() string  { return t.Message }
+
+// GetPromocionesRequest
+type GetPromocionesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RestauranteId int32                  `protobuf:"varint,1,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	SoloActivas   bool                   `protobuf:"varint,2,opt,name=solo_activas,json=soloActivas,proto3" json:"solo_activas,omitempty"`
+	Tipo          string                 `protobuf:"bytes,3,opt,name=tipo,proto3" json:"tipo,omitempty"`
+	FechaDesde    string                 `protobuf:"bytes,4,opt,name=fecha_desde,json=fechaDesde,proto3" json:"fecha_desde,omitempty"`
+	FechaHasta    string                 `protobuf:"bytes,5,opt,name=fecha_hasta,json=fechaHasta,proto3" json:"fecha_hasta,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPromocionesRequest) Reset()         {}
+func (x *GetPromocionesRequest) String() string { return protoimpl.X.MessageStringOf(x) }
+func (x *GetPromocionesRequest) ProtoMessage()  {}
+func (x *GetPromocionesRequest) ProtoReflect() protoreflect.Message { return nil }
+
+func (x *GetPromocionesRequest) GetRestauranteId() int32 { return x.RestauranteId }
+func (x *GetPromocionesRequest) GetSoloActivas() bool    { return x.SoloActivas }
+func (x *GetPromocionesRequest) GetTipo() string         { return x.Tipo }
+func (x *GetPromocionesRequest) GetFechaDesde() string   { return x.FechaDesde }
+func (x *GetPromocionesRequest) GetFechaHasta() string   { return x.FechaHasta }
+
+// GetPromocionesResponse
+type GetPromocionesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Promociones   []*Promocion           `protobuf:"bytes,1,rep,name=promociones,proto3" json:"promociones,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPromocionesResponse) Reset()         {}
+func (x *GetPromocionesResponse) String() string { return protoimpl.X.MessageStringOf(x) }
+func (x *GetPromocionesResponse) ProtoMessage()  {}
+func (x *GetPromocionesResponse) ProtoReflect() protoreflect.Message { return nil }
+
+func (x *GetPromocionesResponse) GetPromociones() []*Promocion { return x.Promociones }
+
+// UpdatePromocionRequest
+type UpdatePromocionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Titulo        string                 `protobuf:"bytes,2,opt,name=titulo,proto3" json:"titulo,omitempty"`
+	Descripcion   string                 `protobuf:"bytes,3,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	Tipo          string                 `protobuf:"bytes,4,opt,name=tipo,proto3" json:"tipo,omitempty"`
+	Valor         float64                `protobuf:"fixed64,5,opt,name=valor,proto3" json:"valor,omitempty"`
+	FechaInicio   string                 `protobuf:"bytes,6,opt,name=fecha_inicio,json=fechaInicio,proto3" json:"fecha_inicio,omitempty"`
+	FechaFin      string                 `protobuf:"bytes,7,opt,name=fecha_fin,json=fechaFin,proto3" json:"fecha_fin,omitempty"`
+	Activa        bool                   `protobuf:"varint,8,opt,name=activa,proto3" json:"activa,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdatePromocionRequest) Reset()         {}
+func (x *UpdatePromocionRequest) String() string { return protoimpl.X.MessageStringOf(x) }
+func (x *UpdatePromocionRequest) ProtoMessage()  {}
+func (x *UpdatePromocionRequest) ProtoReflect() protoreflect.Message { return nil }
+
+func (x *UpdatePromocionRequest) GetId() int32           { return x.Id }
+func (x *UpdatePromocionRequest) GetTitulo() string      { return x.Titulo }
+func (x *UpdatePromocionRequest) GetDescripcion() string { return x.Descripcion }
+func (x *UpdatePromocionRequest) GetTipo() string        { return x.Tipo }
+func (x *UpdatePromocionRequest) GetValor() float64      { return x.Valor }
+func (x *UpdatePromocionRequest) GetFechaInicio() string { return x.FechaInicio }
+func (x *UpdatePromocionRequest) GetFechaFin() string    { return x.FechaFin }
+func (x *UpdatePromocionRequest) GetActiva() bool        { return x.Activa }
+
+// UpdatePromocionResponse
+type UpdatePromocionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdatePromocionResponse) Reset()         {}
+func (x *UpdatePromocionResponse) String() string { return protoimpl.X.MessageStringOf(x) }
+func (x *UpdatePromocionResponse) ProtoMessage()  {}
+func (x *UpdatePromocionResponse) ProtoReflect() protoreflect.Message { return nil }
+
+func (x *UpdatePromocionResponse) GetMessage() string { return x.Message }

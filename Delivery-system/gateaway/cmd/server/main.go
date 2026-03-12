@@ -144,6 +144,9 @@ func main() {
 		api.GET("/restaurants/new", restaurantHandler.GetLatestRestaurants)
 		api.GET("/restaurants/top", restaurantHandler.GetTopRatedRestaurants)
 		api.GET("/restaurants/top-orders", orderHandler.GetTopRestaurantsByOrders)
+
+		// Promociones (lectura pública con filtros)
+		api.GET("/promociones", restaurantHandler.GetPromociones)
 	}
 
 	// PROTECTED ROUTES
@@ -161,6 +164,10 @@ func main() {
 		})
 
 		protected.POST("/restaurants", restaurantHandler.CreateRestaurant)
+
+		// Promociones (escritura protegida)
+		protected.POST("/restaurants/:id/promociones", restaurantHandler.CreatePromocion)
+		protected.PUT("/promociones/:id", restaurantHandler.UpdatePromocion)
 
 		protected.POST("/orders", orderHandler.CreateOrder)
 		protected.PATCH("/orders/:id/status", orderHandler.UpdateStatus)
