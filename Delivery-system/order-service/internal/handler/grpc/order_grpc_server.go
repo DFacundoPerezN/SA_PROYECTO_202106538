@@ -191,14 +191,14 @@ func (s *OrderGRPCServer) GetDeliveredOrders(
 
 	for _, o := range orders {
 		protoOrders = append(protoOrders, &orderpb.OrderSummary{
-			Id:            int32(o.Id),
-			ClienteId:     int32(o.ClienteId),
-			ClienteNombre: o.ClienteNombre,
+			Id:                int32(o.Id),
+			ClienteId:         int32(o.ClienteId),
+			ClienteNombre:     o.ClienteNombre,
 			RestauranteId:     int32(o.RestauranteId),
 			RestauranteNombre: o.RestauranteNombre,
 			Estado:            o.Estado,
 			DireccionEntrega:  o.DireccionEntrega,
-			CostoTotal: o.CostoTotal,
+			CostoTotal:        o.CostoTotal,
 		})
 	}
 
