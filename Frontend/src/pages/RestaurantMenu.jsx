@@ -230,10 +230,10 @@ const RestaurantMenu = () => {
       }
 
       console.log('Creando orden con datos:', orderData)
-      /*const response = await orderService.createOrder(orderData)
+      const response = await orderService.createOrder(orderData)
       
       // Guardar el order_id para el pago
-      setCreatedOrderId(response.order_id)*/
+      setCreatedOrderId(response.order_id)
       
       // Cerrar carrito y abrir modal de pago
       setShowCart(false)
