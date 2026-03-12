@@ -498,14 +498,15 @@ func (x *GetProductResponse) GetRestauranteId() int32 {
 }
 
 type CreateProductRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Nombre        string                 `protobuf:"bytes,1,opt,name=nombre,proto3" json:"nombre,omitempty"`
-	Descripcion   string                 `protobuf:"bytes,2,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
-	RestauranteId int32                  `protobuf:"varint,3,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
-	Precio        float64                `protobuf:"fixed64,4,opt,name=precio,proto3" json:"precio,omitempty"`
-	Categoria     string                 `protobuf:"bytes,5,opt,name=categoria,proto3" json:"categoria,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Nombre            string                 `protobuf:"bytes,1,opt,name=nombre,proto3" json:"nombre,omitempty"`
+	Descripcion       string                 `protobuf:"bytes,2,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	RestauranteId     int32                  `protobuf:"varint,3,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	Precio            float64                `protobuf:"fixed64,4,opt,name=precio,proto3" json:"precio,omitempty"`
+	Categoria         string                 `protobuf:"bytes,5,opt,name=categoria,proto3" json:"categoria,omitempty"`
+	RestauranteNombre string                 `protobuf:"bytes,6,opt,name=restaurante_nombre,json=restauranteNombre,proto3" json:"restaurante_nombre,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *CreateProductRequest) Reset() {
@@ -569,6 +570,13 @@ func (x *CreateProductRequest) GetPrecio() float64 {
 func (x *CreateProductRequest) GetCategoria() string {
 	if x != nil {
 		return x.Categoria
+	}
+	return ""
+}
+
+func (x *CreateProductRequest) GetRestauranteNombre() string {
+	if x != nil {
+		return x.RestauranteNombre
 	}
 	return ""
 }
@@ -870,13 +878,14 @@ const file_catalogpb_catalog_proto_rawDesc = "" +
 	"\n" +
 	"disponible\x18\x04 \x01(\bR\n" +
 	"disponible\x12%\n" +
-	"\x0erestaurante_id\x18\x05 \x01(\x05R\rrestauranteId\"\xad\x01\n" +
+	"\x0erestaurante_id\x18\x05 \x01(\x05R\rrestauranteId\"\xdc\x01\n" +
 	"\x14CreateProductRequest\x12\x16\n" +
 	"\x06nombre\x18\x01 \x01(\tR\x06nombre\x12 \n" +
 	"\vdescripcion\x18\x02 \x01(\tR\vdescripcion\x12%\n" +
 	"\x0erestaurante_id\x18\x03 \x01(\x05R\rrestauranteId\x12\x16\n" +
 	"\x06precio\x18\x04 \x01(\x01R\x06precio\x12\x1c\n" +
-	"\tcategoria\x18\x05 \x01(\tR\tcategoria\"P\n" +
+	"\tcategoria\x18\x05 \x01(\tR\tcategoria\x12-\n" +
+	"\x12restaurante_nombre\x18\x06 \x01(\tR\x11restauranteNombre\"P\n" +
 	"\x15CreateProductResponse\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\x05R\tproductId\x12\x18\n" +

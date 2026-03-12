@@ -72,6 +72,7 @@ message CreateProductRequest {
   int32 restaurante_id = 3;
   double precio = 4;
   string categoria = 5;
+  string restaurante_nombre = 6;
 }
 
 message CreateProductResponse {
