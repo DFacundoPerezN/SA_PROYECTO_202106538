@@ -34,6 +34,8 @@ service OrderService {
   rpc AddOrderImage(AddOrderImageRequest) returns (AddOrderImageResponse);
 
   rpc GetOrderImage(GetOrderImageRequest) returns (GetOrderImageResponse);
+
+  rpc GetTopRestaurantsByOrders(GetTopRestaurantsByOrdersRequest) returns (GetTopRestaurantsByOrdersResponse);
 }
 
 message OrderItem {
@@ -160,4 +162,18 @@ message CancelledOrRejectedOrder {
 
 message GetCancelledOrRejectedOrdersResponse {
   repeated CancelledOrRejectedOrder orders = 1;
+}
+
+message GetTopRestaurantsByOrdersRequest {
+  int32 limit = 1;
+}
+
+message TopRestaurantOrders {
+  int32 restaurante_id = 1;
+  string restaurante_nombre = 2;
+  int32 total_ordenes = 3;
+}
+
+message GetTopRestaurantsByOrdersResponse {
+  repeated TopRestaurantOrders restaurants = 1;
 }

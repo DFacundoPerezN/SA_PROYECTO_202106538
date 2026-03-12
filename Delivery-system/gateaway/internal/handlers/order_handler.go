@@ -269,3 +269,18 @@ func (h *OrderHandler) GetCancelledOrRejectedOrders(c *gin.Context) {
 	}
 	c.JSON(200, resp.Orders)
 }
+
+func (h *OrderHandler) GetTopRestaurantsByOrders(c *gin.Context) {
+
+	limitStr := c.DefaultQuery("n", "7")
+	limit, _ := strconv.Atoi(limitStr)
+
+	resp, err := h.orderClient.GetTopRestaurantsByOrders(limit)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp.Restaurants)
+}

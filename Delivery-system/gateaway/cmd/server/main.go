@@ -143,6 +143,7 @@ func main() {
 
 		api.GET("/restaurants/new", restaurantHandler.GetLatestRestaurants)
 		api.GET("/restaurants/top", restaurantHandler.GetTopRatedRestaurants)
+		api.GET("/restaurants/top-orders", orderHandler.GetTopRestaurantsByOrders)
 	}
 
 	// PROTECTED ROUTES
