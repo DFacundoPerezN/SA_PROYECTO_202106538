@@ -65,3 +65,33 @@ func (s *RestaurantService) CreateRestaurant(ctx context.Context, req *restauran
 
 	return int(req.UserId), nil
 }
+
+func (s *RestaurantService) CreateRestaurantRating(ctx context.Context, req *restaurantpb.CreateRestaurantRatingRequest) (int, error) {
+
+	return s.repo.CreateRestaurantRating(ctx, &domain.RestaurantRating{
+		RestauranteId: int(req.RestauranteId),
+		ClienteId:     int(req.ClienteId),
+		Estrellas:     int(req.Estrellas),
+		Comentario:    req.Comentario,
+	})
+}
+
+func (s *RestaurantService) GetRestaurantRatingAverage(ctx context.Context, restaurantID int) (float64, int, error) {
+	return s.repo.GetRestaurantRatingAverage(ctx, restaurantID)
+}
+
+func (s *RestaurantService) GetLatestRestaurants(
+	ctx context.Context,
+	limit int,
+) ([]domain.Restaurant, error) {
+
+	return s.repo.GetLatestRestaurants(ctx, limit)
+}
+
+func (s *RestaurantService) GetTopRatedRestaurants(
+	ctx context.Context,
+	limit int,
+) ([]domain.Restaurant, error) {
+
+	return s.repo.GetTopRatedRestaurants(ctx, limit)
+}

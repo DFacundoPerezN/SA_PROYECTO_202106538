@@ -30,6 +30,7 @@ func (s *ProductService) CreateProduct(
 	restauranteID int,
 	precio float64,
 	categoria string,
+	restauranteNombre string,
 ) (int, error) {
 
 	if nombre == "" {
@@ -40,6 +41,14 @@ func (s *ProductService) CreateProduct(
 		return 0, errors.New("precio invalido")
 	}
 
+	if restauranteID <= 0 {
+		return 0, errors.New("restauranteID invalido")
+	}
+
+	if restauranteNombre == "" {
+		return 0, errors.New("restauranteNombre requerido")
+	}
+
 	return s.repo.CreateProduct(
 		ctx,
 		nombre,
@@ -47,5 +56,30 @@ func (s *ProductService) CreateProduct(
 		restauranteID,
 		precio,
 		categoria,
+		restauranteNombre,
 	)
+}
+
+func (s *ProductService) CreateProductRecommendation(
+	ctx context.Context,
+	clienteID int,
+	productID int,
+	recommended bool,
+) (int, error) {
+
+	rec := domain.ProductRecommendation{
+		ClienteId:   clienteID,
+		ProductoId:  productID,
+		Recomendado: recommended,
+	}
+
+	return s.repo.CreateProductRecommendation(ctx, &rec)
+}
+
+func (s *ProductService) GetProductRecommendationPercentage(
+	ctx context.Context,
+	productID int,
+) (float64, int, error) {
+
+	return s.repo.GetProductRecommendationPercentage(ctx, productID)
 }

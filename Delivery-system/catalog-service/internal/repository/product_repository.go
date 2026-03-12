@@ -110,6 +110,7 @@ func (r *ProductRepository) CreateProduct(
 	restauranteID int,
 	precio float64,
 	categoria string,
+	restauranteNombre string,
 ) (int, error) {
 
 	query := `
@@ -119,10 +120,11 @@ func (r *ProductRepository) CreateProduct(
         Precio,
         RestauranteId,
         Categoria,
-        Disponible
+        Disponible,
+        RestauranteNombre
     )
     OUTPUT INSERTED.Id
-    VALUES (@p1,@p2,@p3,@p4,@p5,1)
+    VALUES (@p1,@p2,@p3,@p4,@p5,1,@p6)
     `
 
 	var id int
@@ -135,6 +137,7 @@ func (r *ProductRepository) CreateProduct(
 		precio,
 		restauranteID,
 		categoria,
+		restauranteNombre,
 	).Scan(&id)
 
 	if err != nil {
