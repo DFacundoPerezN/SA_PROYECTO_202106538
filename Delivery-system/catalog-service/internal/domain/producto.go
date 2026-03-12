@@ -3,13 +3,14 @@ package domain
 import "time"
 
 type Product struct {
-	ID            int
-	RestauranteID int
-	Nombre        string
-	Descripcion   string
-	Precio        float64
-	Disponible    bool
-	Categoria     string
+	ID                int
+	RestauranteID     int
+	Nombre            string
+	Descripcion       string
+	Precio            float64
+	Disponible        bool
+	Categoria         string
+	RestauranteNombre string
 }
 
 type ProductRecommendation struct {

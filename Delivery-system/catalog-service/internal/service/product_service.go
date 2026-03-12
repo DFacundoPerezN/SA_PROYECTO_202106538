@@ -30,6 +30,7 @@ func (s *ProductService) CreateProduct(
 	restauranteID int,
 	precio float64,
 	categoria string,
+	restauranteNombre string,
 ) (int, error) {
 
 	if nombre == "" {
@@ -40,6 +41,14 @@ func (s *ProductService) CreateProduct(
 		return 0, errors.New("precio invalido")
 	}
 
+	if restauranteID <= 0 {
+		return 0, errors.New("restauranteID invalido")
+	}
+
+	if restauranteNombre == "" {
+		return 0, errors.New("restauranteNombre requerido")
+	}
+
 	return s.repo.CreateProduct(
 		ctx,
 		nombre,
@@ -47,6 +56,7 @@ func (s *ProductService) CreateProduct(
 		restauranteID,
 		precio,
 		categoria,
+		restauranteNombre,
 	)
 }
 

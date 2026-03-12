@@ -86,6 +86,7 @@ func (s *CatalogGRPCServer) CreateProduct(
 		int(req.RestauranteId),
 		req.Precio,
 		req.Categoria,
+		req.RestauranteNombre,
 	)
 
 	if err != nil {
