@@ -45,11 +45,12 @@ func (h *CatalogHandler) GetProductsByRestaurant(c *gin.Context) {
 }
 
 type CreateProductBody struct {
-	Nombre        string  `json:"nombre"`
-	Descripcion   string  `json:"descripcion"`
-	RestauranteId int32   `json:"restaurante_id"`
-	Precio        float64 `json:"precio"`
-	Categoria     string  `json:"categoria"`
+	Nombre            string  `json:"nombre"`
+	Descripcion       string  `json:"descripcion"`
+	RestauranteId     int32   `json:"restaurante_id"`
+	Precio            float64 `json:"precio"`
+	Categoria         string  `json:"categoria"`
+	RestauranteNombre string  `json:"restaurante_nombre"`
 }
 
 func (h *CatalogHandler) CreateProduct(c *gin.Context) {
@@ -64,11 +65,12 @@ func (h *CatalogHandler) CreateProduct(c *gin.Context) {
 	resp, err := h.client.CreateProduct(
 		c.Request.Context(),
 		&catalogpb.CreateProductRequest{
-			Nombre:        body.Nombre,
-			Descripcion:   body.Descripcion,
-			RestauranteId: body.RestauranteId,
-			Precio:        body.Precio,
-			Categoria:     body.Categoria,
+			Nombre:            body.Nombre,
+			Descripcion:       body.Descripcion,
+			RestauranteId:     body.RestauranteId,
+			Precio:            body.Precio,
+			Categoria:         body.Categoria,
+			RestauranteNombre: body.RestauranteNombre,
 		},
 	)
 
