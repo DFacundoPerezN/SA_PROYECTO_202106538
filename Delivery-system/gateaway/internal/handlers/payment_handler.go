@@ -27,7 +27,7 @@ func (h *PaymentHandler) ProcessPayment(c *gin.Context) {
 		OrderID       int32   `json:"order_id"`
 		PaymentMethod string  `json:"payment_method"`
 		UseCupon      bool    `json:"use_cupon"`
-		Amount        float64 `json:"amount"` // (si decides mantenerlo)
+		Amount        float64 `json:"amount"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -39,7 +39,7 @@ func (h *PaymentHandler) ProcessPayment(c *gin.Context) {
 		context.Background(),
 		&paymentpb.ProcessPaymentRequest{
 			OrderId: req.OrderID,
-			//Amount:        req.Amount,
+			Amount:        req.Amount,
 			PaymentMethod: req.PaymentMethod,
 			UseCupon:      req.UseCupon,
 			ClientId:      int32(ClientID),
@@ -82,8 +82,6 @@ func (h *PaymentHandler) GetPayments(c *gin.Context) {
 
 	clientID := c.GetInt("user_id")
 	role := c.GetString("role")
-
-	fmt.Printf("Usuario ID: %d, Role: %s\n", clientID, role)
     
     var reqClientID int32
 

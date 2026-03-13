@@ -21,6 +21,7 @@ func (s *PaymentService) ProcessPaymentRequest(
 	paymentMethod string,
 	useCupon bool,
 	clientID int,
+	amount float64,
 ) (int, error) {
 
 	// Validar que el orderID sea válido.
@@ -38,7 +39,7 @@ func (s *PaymentService) ProcessPaymentRequest(
 	domainPayment := domain.Payment{
 		OrdenId:     orderID,
 		ClienteId:   clientID,
-		PrecioFinal: 0.0,
+		PrecioFinal: amount,
 		UsaCupon:    useCupon,
 		MetodoPago:  paymentMethod,
 	}

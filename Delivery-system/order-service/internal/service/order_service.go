@@ -103,6 +103,8 @@ func (s *OrderService) CreateOrder(ctx context.Context, req *orderpb.CreateOrder
 			Comentarios:    item.Comments,
 		})
 	}
+	
+	total -= req.DiscountAmount
 	order.CostoTotal = total
 
 	// Publicar en la cola para que el consumer la persista

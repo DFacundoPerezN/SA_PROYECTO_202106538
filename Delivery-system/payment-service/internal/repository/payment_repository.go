@@ -18,6 +18,7 @@ func NewPaymentRepository(db *sql.DB) *PaymentRepository {
 
 func (r *PaymentRepository) CreatePayment(ctx context.Context, p *domain.Payment) (int, error) {
 
+
 	// Verificar si ya existe un pago para esta orden.
 	// Esto evita el error de constraint UQ_Pago_Orden en caso de reintentos.
 	existing, err := r.getPaymentByOrderID(ctx, p.OrdenId)

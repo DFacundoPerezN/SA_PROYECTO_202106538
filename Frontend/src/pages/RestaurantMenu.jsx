@@ -168,6 +168,7 @@ const RestaurantMenu = () => {
         cliente_nombre: user?.name || 'Cliente',
         cliente_telefono: deliveryForm.cliente_telefono,
         nombre_restaurante: restaurant?.nombre || '',
+        monto_descuento: descuentoMonto,
       }
       const response = await orderService.createOrder(orderData)
       setCreatedOrderId(response.order_id)
@@ -198,7 +199,6 @@ const RestaurantMenu = () => {
         amount: total, // total ya con descuento aplicado
       }
 
-      console.log(paymentData);
       const response = await api.post('/api/payments', paymentData)
       const promoMsg = promoAplicada
         ? `\n\n✨ Descuento aplicado: ${promoAplicada.tipo === 'PORCENTAJE' ? `${promoAplicada.valor}% (−$${descuentoMonto.toFixed(2)})` : 'Envío gratis (−$1.50)'}`

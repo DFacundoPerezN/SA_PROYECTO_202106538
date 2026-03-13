@@ -24,10 +24,6 @@ func (s *PaymentGRPCServer) ProcessPayment(
 	req *paymentpb.ProcessPaymentRequest,
 ) (*paymentpb.ProcessPaymentResponse, error) {
 
-	// Validar order_id antes de llegar al service.
-	// Cuando la orden se crea con RabbitMQ, el gateway recibe OrderId=0
-	// porque el ID real aún no fue persistido. El cliente debe reintentar
-	// con el ID real de la orden.
 	if req.OrderId <= 0 {
 		return nil, status.Errorf(
 			codes.InvalidArgument,
@@ -46,6 +42,7 @@ func (s *PaymentGRPCServer) ProcessPayment(
 		req.PaymentMethod,
 		req.UseCupon,
 		int(req.ClientId),
+		req.Amount,
 	)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "error procesando el pago: %v", err)
