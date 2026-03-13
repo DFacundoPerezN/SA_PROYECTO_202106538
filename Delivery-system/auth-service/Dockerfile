@@ -11,24 +11,33 @@ RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
 ENV PATH="$PATH:/go/bin"
 
-WORKDIR /app
+WORKDIR /workspace
 
 # copiar proto
 
+COPY go.work ./
 COPY proto ./proto
-
-# copiar SOLO el servicio
-
 COPY auth-service ./auth-service
 
-# generar stubs
+WORKDIR /workspace/proto/auth
+RUN protoc --go_out=. --go_opt=paths=source_relative \
+           --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+           auth.proto
 
-WORKDIR /app/proto/auth
-RUN protoc --go_out=. --go-grpc_out=. auth.proto
+WORKDIR /workspace/auth-service
 
-# ahora entramos al servicio
+# desactivar workspace
 
-WORKDIR /app/auth-service
+ENV GOWORK=off
+
+# Mostrar qué archivos hay (para debug)
+RUN ls -la /workspace/proto/auth/
+
+# Asegurar que go.mod tiene la referencia correcta
+RUN go mod edit -replace delivery-proto/auth=/workspace/proto/auth
+
+RUN go mod tidy
+RUN go build -o auth-server ./cmd/server
 
 # MUY IMPORTANTE: desactivar workspace
 
@@ -42,7 +51,9 @@ RUN go build -o auth-server ./cmd/server
 FROM alpine:3.19
 
 WORKDIR /app
-COPY --from=builder /app/auth-service/auth-server .
+
+COPY --from=builder /workspace/auth-service/auth-server .
 
 EXPOSE 50051
+
 CMD ["./auth-server"]

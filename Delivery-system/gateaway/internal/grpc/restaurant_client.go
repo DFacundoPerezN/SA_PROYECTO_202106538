@@ -54,3 +54,17 @@ func (c *RestaurantClient) GetLatestRestaurants(ctx context.Context, req *restau
 func (c *RestaurantClient) GetTopRatedRestaurants(ctx context.Context, req *restaurantpb.GetTopRatedRestaurantsRequest) (*restaurantpb.GetRestaurantsResponse, error) {
 	return c.client.GetTopRatedRestaurants(ctx, req)
 }
+
+// ─── Promociones ─────────────────────────────────────────────────────────────
+
+func (c *RestaurantClient) CreatePromocion(ctx context.Context, req *restaurantpb.CreatePromocionRequest) (*restaurantpb.CreatePromocionResponse, error) {
+	return c.client.CreatePromocion(ctx, req)
+}
+
+func (c *RestaurantClient) GetPromociones(ctx context.Context, req *restaurantpb.GetPromocionesRequest) (*restaurantpb.GetPromocionesResponse, error) {
+	return c.client.GetPromociones(ctx, req)
+}
+
+func (c *RestaurantClient) UpdatePromocion(ctx context.Context, req *restaurantpb.UpdatePromocionRequest) (*restaurantpb.UpdatePromocionResponse, error) {
+	return c.client.UpdatePromocion(ctx, req)
+}

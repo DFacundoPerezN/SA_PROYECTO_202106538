@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-// Configura aquí la URL de tu backend 20.49.4.20
+// Configura aquí la URL de tu backend
 const API_BASE_URL = 'http://localhost:8080'
 
 const api = axios.create({
@@ -29,37 +29,28 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token inválido o expirado
       localStorage.removeItem('token')
       localStorage.removeItem('name')
       localStorage.removeItem('role')
-      //window.location.href = '/login'
     }
     return Promise.reject(error)
   }
 )
 
 export const authService = {
-  // Login
   login: async (email, password) => {
     const response = await api.post('/api/auth/login', { email, password })
     return response.data
   },
-
-  // Registro
   register: async (userData) => {
     const response = await api.post('/api/users', userData)
     return response.data
   },
-
-  // Logout
   logout: () => {
     localStorage.removeItem('token')
     localStorage.removeItem('name')
     localStorage.removeItem('role')
   },
-
-  // Obtener usuario actual
   getCurrentUser: () => {
     const userStr = localStorage.getItem('user')
     if (userStr) {
@@ -72,31 +63,54 @@ export const authService = {
     }
     return null
   },
-
-  // Verificar si está autenticado
   isAuthenticated: () => {
     return !!localStorage.getItem('token')
   },
 }
 
 export const restaurantService = {
-  // Obtener todos los restaurantes
   getAll: async () => {
     const response = await api.get('/api/restaurants')
     return response.data
   },
-
-  // Crear restaurante
   create: async (restaurantData) => {
     const response = await api.post('/api/restaurants', restaurantData)
     return response.data
   },
-
-  // Obtener restaurante por ID
   getById: async (id) => {
     const response = await api.get(`/api/restaurants/${id}`)
     return response.data
-  }
+  },
+}
+
+// ─── Servicio de Promociones ──────────────────────────────────────────────────
+export const promocionService = {
+  // GET con filtros opcionales
+  // Params: { restaurante_id, solo_activas, tipo, fecha_desde, fecha_hasta }
+  getAll: async (params = {}) => {
+    const response = await api.get('/api/promociones', { params })
+    return response.data // { promociones: [...] }
+  },
+
+  // Helper para el cliente: activas de un restaurante específico
+  getActivasByRestaurante: async (restauranteId) => {
+    const response = await api.get('/api/promociones', {
+      params: { restaurante_id: restauranteId, solo_activas: true },
+    })
+    return response.data.promociones || []
+  },
+
+  // POST /api/restaurants/:id/promociones  (protegido)
+  create: async (restauranteId, data) => {
+    const response = await api.post(`/api/restaurants/${restauranteId}/promociones`, data)
+    return response.data
+  },
+
+  // PUT /api/promociones/:id  (protegido)
+  update: async (id, data) => {
+    const response = await api.put(`/api/promociones/${id}`, data)
+    return response.data
+  },
 }
 
 export default api

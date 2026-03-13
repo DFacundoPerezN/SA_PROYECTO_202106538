@@ -18,6 +18,7 @@ func NewPaymentRepository(db *sql.DB) *PaymentRepository {
 
 func (r *PaymentRepository) CreatePayment(ctx context.Context, p *domain.Payment) (int, error) {
 
+
 	// Verificar si ya existe un pago para esta orden.
 	// Esto evita el error de constraint UQ_Pago_Orden en caso de reintentos.
 	existing, err := r.getPaymentByOrderID(ctx, p.OrdenId)
@@ -127,41 +128,44 @@ func (r *PaymentRepository) UpdateStatus(ctx context.Context, orderId int, newSt
 
 func (r *PaymentRepository) GetPayments(ctx context.Context, clientID int) ([]domain.Payment, error) {
 
-	query := `
-	SELECT Id, OrdenId, ClienteId, PrecioFinal, Estado, UsaCupon, MetodoPago, Moneda
-	FROM Pagos
-	WHERE ClienteId = @p1
-	ORDER BY Id DESC
-	`
+    var (
+        rows *sql.Rows
+        err  error
+    )
 
-	rows, err := r.db.QueryContext(ctx, query, clientID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+    if clientID > 0 {
+        query := `
+        SELECT Id, OrdenId, ClienteId, PrecioFinal, Estado, UsaCupon, MetodoPago, Moneda
+        FROM Pagos
+        WHERE ClienteId = @p1
+        ORDER BY Id DESC
+        `
+        rows, err = r.db.QueryContext(ctx, query, clientID)
+    } else {
+        query := `
+        SELECT Id, OrdenId, ClienteId, PrecioFinal, Estado, UsaCupon, MetodoPago, Moneda
+        FROM Pagos
+        ORDER BY Id DESC
+        `
+        rows, err = r.db.QueryContext(ctx, query)
+    }
 
-	var payments []domain.Payment
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
 
-	for rows.Next() {
-		var p domain.Payment
-
-		err := rows.Scan(
-			&p.Id,
-			&p.OrdenId,
-			&p.ClienteId,
-			&p.PrecioFinal,
-			&p.Estado,
-			&p.UsaCupon,
-			&p.MetodoPago,
-			&p.Moneda,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		payments = append(payments, p)
-	}
-
-	return payments, nil
+    var payments []domain.Payment
+    for rows.Next() {
+        var p domain.Payment
+        err := rows.Scan(
+            &p.Id, &p.OrdenId, &p.ClienteId, &p.PrecioFinal,
+            &p.Estado, &p.UsaCupon, &p.MetodoPago, &p.Moneda,
+        )
+        if err != nil {
+            return nil, err
+        }
+        payments = append(payments, p)
+    }
+    return payments, nil
 }

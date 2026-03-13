@@ -22,15 +22,21 @@ COPY payment-service ./payment-service
 # (Opcional) generar stubs si decides hacerlo aquí
 
 WORKDIR /workspace/proto/paymentpb
-RUN protoc --go_out=.. --go-grpc_out=.. payment.proto
+RUN protoc --go_out=. --go_opt=paths=source_relative \
+           --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+           payment.proto
 
-# compilar servicio
 
 WORKDIR /workspace/payment-service
 
 # desactivar workspace
-
 ENV GOWORK=off
+
+# Mostrar qué archivos hay (para debug)
+RUN ls -la /workspace/proto/paymentpb/
+
+# Asegurar que go.mod tiene la referencia correcta
+RUN go mod edit -replace delivery-proto/paymentpb=/workspace/proto/paymentpb
 
 RUN go mod tidy
 RUN go build -o payment-server ./cmd/server

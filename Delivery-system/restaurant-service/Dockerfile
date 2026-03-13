@@ -20,17 +20,22 @@ COPY proto ./proto
 COPY restaurant-service ./restaurant-service
 
 # (Opcional) generar stubs si decides hacerlo aquí
-
 WORKDIR /workspace/proto/restaurantpb
-RUN protoc --go_out=.. --go-grpc_out=.. restaurant.proto
-
-# compilar servicio
+RUN protoc --go_out=. --go_opt=paths=source_relative \
+           --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+           restaurant.proto
 
 WORKDIR /workspace/restaurant-service
 
 # desactivar workspace
 
 ENV GOWORK=off
+
+# Mostrar qué archivos hay (para debug)
+RUN ls -la /workspace/proto/restaurantpb/
+
+# Asegurar que go.mod tiene la referencia correcta
+RUN go mod edit -replace delivery-proto/restaurantpb=/workspace/proto/restaurantpb
 
 RUN go mod tidy
 RUN go build -o restaurant-server ./cmd/server

@@ -15,6 +15,11 @@ service RestaurantService {
   rpc GetLatestRestaurants(GetLatestRestaurantsRequest) returns (GetRestaurantsResponse);
 
   rpc GetTopRatedRestaurants(GetTopRatedRestaurantsRequest) returns (GetRestaurantsResponse);
+
+  // Promociones
+  rpc CreatePromocion(CreatePromocionRequest)   returns (CreatePromocionResponse);
+  rpc GetPromociones(GetPromocionesRequest)     returns (GetPromocionesResponse);
+  rpc UpdatePromocion(UpdatePromocionRequest)   returns (UpdatePromocionResponse);
 }
 
 message Empty {}
@@ -83,4 +88,62 @@ message GetTopRatedRestaurantsRequest {
 
 message GetRestaurantsResponse {
   repeated Restaurant restaurants = 1;
+}
+// ─── Promocion ───────────────────────────────────────────────────────────────
+
+message Promocion {
+  int32  id             = 1;
+  int32  restaurante_id = 2;
+  string titulo         = 3;
+  string descripcion    = 4;
+  string tipo           = 5;   // "PORCENTAJE" | "ENVIO_GRATIS"
+  double valor          = 6;
+  string fecha_inicio   = 7;   // ISO 8601
+  string fecha_fin      = 8;   // ISO 8601
+  bool   activa         = 9;
+}
+
+// CreatePromocion
+message CreatePromocionRequest {
+  int32  restaurante_id = 1;
+  string titulo         = 2;
+  string descripcion    = 3;
+  string tipo           = 4;
+  double valor          = 5;
+  string fecha_inicio   = 6;
+  string fecha_fin      = 7;
+}
+
+message CreatePromocionResponse {
+  int32  id      = 1;
+  string message = 2;
+}
+
+// GetPromociones (con filtros)
+message GetPromocionesRequest {
+  int32  restaurante_id = 1;   // 0 = todos los restaurantes
+  bool   solo_activas   = 2;   // true = WHERE Activa = 1
+  string tipo           = 3;   // "" = todos los tipos
+  string fecha_desde    = 4;   // "" = sin límite inferior  (ISO 8601)
+  string fecha_hasta    = 5;   // "" = sin límite superior  (ISO 8601)
+}
+
+message GetPromocionesResponse {
+  repeated Promocion promociones = 1;
+}
+
+// UpdatePromocion
+message UpdatePromocionRequest {
+  int32  id           = 1;
+  string titulo       = 2;
+  string descripcion  = 3;
+  string tipo         = 4;
+  double valor        = 5;
+  string fecha_inicio = 6;
+  string fecha_fin    = 7;
+  bool   activa       = 8;
+}
+
+message UpdatePromocionResponse {
+  string message = 1;
 }
