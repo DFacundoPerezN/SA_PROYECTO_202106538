@@ -113,4 +113,44 @@ export const promocionService = {
   },
 }
 
+// ─── Servicio de Cupones ──────────────────────────────────────────────────────
+export const cuponService = {
+  // GET /api/cupones con filtros opcionales
+  getAll: async (params = {}) => {
+    const response = await api.get('/api/cupones', { params })
+    return response.data // { cupones: [...] }
+  },
+
+  // POST /api/restaurants/:id/cupones  (protegido — restaurante)
+  create: async (restauranteId, data) => {
+    const response = await api.post(`/api/restaurants/${restauranteId}/cupones`, data)
+    return response.data
+  },
+
+  // PUT /api/cupones/:id  (protegido — restaurante, sin campo autorizado)
+  update: async (id, data) => {
+    const response = await api.put(`/api/cupones/${id}`, data)
+    return response.data
+  },
+
+  // PATCH /api/cupones/:id/autorizar  (protegido — solo admin)
+  autorizar: async (id, autorizado) => {
+    const response = await api.patch(`/api/cupones/${id}/autorizar`, { autorizado })
+    return response.data
+  },
+
+  // Incrementar el número de usos del cupón (protegido — solo backend)
+  incrementUso: async (id) => {
+    console.log(`Incrementando uso del cupón ID ${id} en backend...`)
+    const response = await api.post(`/api/cupones/${id}/incrementar-uso`)
+    return response.data
+  },
+
+  verificarExpiracion: async (id) => {
+    console.log(`Verificando expiración del cupón ID ${id} en backend...`)
+    const response = await api.post(`/api/cupones/${id}/verificar-expiracion`)
+    return response.data
+  },
+}
+
 export default api
