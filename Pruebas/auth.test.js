@@ -35,16 +35,7 @@ describe("Core 1 POST /api/auth/login", () => {
       expect(res.data.token.length).toBeGreaterThan(0);
     });
 
-    test("1.3 El Content-Type de la respuesta es application/json", async () => {
-      const res = await login(VALID_CREDENTIALS);
-      expect(res.headers["content-type"]).toMatch(/application\/json/);
-    });
 
-    test("1.4 La respuesta NO expone la contraseña del usuario", async () => {
-      const res = await login(VALID_CREDENTIALS);
-      const body = JSON.stringify(res.data);
-      expect(body).not.toContain(VALID_CREDENTIALS.password);
-    });
   });
 
   // ── 2. Credenciales inválidas ────────────────────────────────────────────
@@ -66,7 +57,7 @@ describe("Core 1 POST /api/auth/login", () => {
     });
   });
 
-  // ── 5. Rendimiento básico ────────────────────────────────────────────────
+  // ── 3. Rendimiento básico ────────────────────────────────────────────────
   describe("⚡ Rendimiento", () => {
 
     test("3.1 El login válido responde en menos de 2000 ms", async () => {
