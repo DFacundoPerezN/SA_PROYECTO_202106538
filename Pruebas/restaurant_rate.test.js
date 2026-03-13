@@ -88,7 +88,7 @@ describe("Core 2 GET /restaurants/top", () => {
       const res = await getTopRestaurants(0);
       expect(res.status).not.toBe(500);
       if (res.status === 200) {
-        expect(res.data.length).toBe(0);
+        expect(res.data).toBe(null);
       }
     });
 

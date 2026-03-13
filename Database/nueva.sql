@@ -40,10 +40,7 @@ ON Promocion(Tipo)
 WHERE Tipo = 'PORCENTAJE'; 
 GO
 
--- Agregar tabla Cupon a la base de datos Delivereats_SA_Pagos para gestionar cupones de descuento
-
-USE DATABASE Delivereats_SA_Pagos;
-GO
+-- Agregar tabla Cupon a la base de datos Delivereats_SA_Restaurantes para gestionar cupones de descuento
 
 CREATE TABLE Cupon (
     Id              INT IDENTITY PRIMARY KEY,
