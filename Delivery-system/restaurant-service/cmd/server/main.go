@@ -50,6 +50,9 @@ func main() {
 	promocionRepo := repository.NewPromocionRepository(db)
 	promocionSvc := service.NewPromocionService(promocionRepo)
 
+	cuponRepo := repository.NewCuponRepository(db)
+	cuponSvc := service.NewCuponService(cuponRepo)
+
 	lis, err := net.Listen("tcp", ":50054")
 	if err != nil {
 		log.Fatal(err)
@@ -59,7 +62,7 @@ func main() {
 
 	restaurantpb.RegisterRestaurantServiceServer(
 		grpcServer,
-		handler.NewRestaurantGRPCServer(svc, promocionSvc),
+		handler.NewRestaurantGRPCServer(svc, promocionSvc, cuponSvc),
 	)
 
 	log.Println("Restaurant Service running on :50054")

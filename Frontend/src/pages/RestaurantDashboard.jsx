@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { authService, promocionService } from '../services/api'
+import { authService, promocionService, cuponService } from '../services/api'
 import api from '../services/api'
 import styles from '../styles/RestaurantDashboard.module.css'
 
@@ -49,6 +49,23 @@ const RestaurantDashboard = () => {
     fecha_inicio: toInputDate(new Date().toISOString()), fecha_fin: '', activa: true,
   }
   const [promoForm, setPromoForm] = useState(emptyPromoForm)
+
+  // ── Cupones state ─────────────────────────────────────────────────────────
+  const [cupones, setCupones] = useState([])
+  const [cuponLoading, setCuponLoading] = useState(false)
+  const [cuponError, setCuponError] = useState('')
+  const [cuponSuccess, setCuponSuccess] = useState('')
+  const [showCuponModal, setShowCuponModal] = useState(false)
+  const [editingCupon, setEditingCupon] = useState(null)
+  const [cuponFilter, setCuponFilter] = useState('TODOS')
+
+  const emptyCuponForm = {
+    codigo: '', titulo: '', descripcion: '', valor: '',
+    uso_maximo: '1',
+    fecha_inicio: toInputDate(new Date().toISOString()),
+    fecha_expiracion: '', activo: true,
+  }
+  const [cuponForm, setCuponForm] = useState(emptyCuponForm)
 
   useEffect(() => { fetchRestaurantId() }, [])
   useEffect(() => { if (restaurantId) fetchOrders() }, [restaurantId])
@@ -145,6 +162,7 @@ const RestaurantDashboard = () => {
     setActiveTab(tab)
     if (tab === 'products' && products.length === 0) fetchProducts()
     if (tab === 'promociones' && promociones.length === 0) fetchPromociones()
+    if (tab === 'cupones' && cupones.length === 0) fetchCupones()
   }
 
   // ── Promociones ──────────────────────────────────────────────────────────────
@@ -200,6 +218,87 @@ const RestaurantDashboard = () => {
     return true
   })
 
+  // ── Cupones ───────────────────────────────────────────────────────────────
+  const isCuponVigente = (c) => c.activo && new Date(c.fecha_expiracion) >= new Date()
+
+  const fetchCupones = async () => {
+    if (!restaurantId) return
+    setCuponLoading(true); setCuponError('')
+    try {
+      const result = await cuponService.getAll({ restaurante_id: restaurantId })
+      setCupones(result.cupones || [])
+    } catch (err) {
+      setCuponError('Error al cargar los cupones')
+    } finally {
+      setCuponLoading(false)
+    }
+  }
+
+  const openCreateCuponModal = () => {
+    setEditingCupon(null)
+    setCuponForm(emptyCuponForm)
+    setCuponError(''); setCuponSuccess('')
+    setShowCuponModal(true)
+  }
+
+  const openEditCuponModal = (cupon) => {
+    setEditingCupon(cupon)
+    setCuponForm({
+      codigo: cupon.codigo,
+      titulo: cupon.titulo,
+      descripcion: cupon.descripcion || '',
+      valor: String(cupon.valor),
+      uso_maximo: String(cupon.uso_maximo),
+      fecha_inicio: toInputDate(cupon.fecha_inicio),
+      fecha_expiracion: toInputDate(cupon.fecha_expiracion),
+      activo: cupon.activo,
+    })
+    setCuponError(''); setCuponSuccess('')
+    setShowCuponModal(true)
+  }
+
+  const handleCuponSubmit = async (e) => {
+    e.preventDefault()
+    if (!cuponForm.codigo || !cuponForm.titulo || !cuponForm.fecha_expiracion) {
+      setCuponError('Código, título y fecha de expiración son obligatorios'); return
+    }
+    if (parseFloat(cuponForm.valor) < 0) { setCuponError('El valor no puede ser negativo'); return }
+    if (parseInt(cuponForm.uso_maximo) < 1) { setCuponError('El uso máximo debe ser al menos 1'); return }
+    setCuponLoading(true); setCuponError('')
+    try {
+      const payload = {
+        titulo: cuponForm.titulo,
+        descripcion: cuponForm.descripcion,
+        valor: parseFloat(cuponForm.valor) || 0,
+        uso_maximo: parseInt(cuponForm.uso_maximo),
+        fecha_inicio: toISODate(cuponForm.fecha_inicio),
+        fecha_expiracion: toISODate(cuponForm.fecha_expiracion),
+        activo: cuponForm.activo,
+      }
+      if (editingCupon) {
+        await cuponService.update(editingCupon.id, payload)
+        setCuponSuccess('✓ Cupón actualizado correctamente')
+      } else {
+        await cuponService.create(restaurantId, { ...payload, codigo: cuponForm.codigo })
+        setCuponSuccess('✓ Cupón creado correctamente')
+      }
+      setShowCuponModal(false)
+      fetchCupones()
+    } catch (err) {
+      setCuponError(err.response?.data?.error || 'Error al guardar el cupón')
+    } finally {
+      setCuponLoading(false)
+    }
+  }
+
+  const filteredCupones = cupones.filter(c => {
+    if (cuponFilter === 'VIGENTES') return isCuponVigente(c)
+    if (cuponFilter === 'VENCIDOS') return !isCuponVigente(c)
+    if (cuponFilter === 'AUTORIZADOS') return c.autorizado
+    if (cuponFilter === 'PENDIENTES') return !c.autorizado
+    return true
+  })
+
   return (
     <div className={styles.container}>
       <nav className={styles.nav}>
@@ -224,12 +323,17 @@ const RestaurantDashboard = () => {
 
         {/* Tabs */}
         <div className={styles.tabs}>
-          {[['orders','📋 Órdenes'],['products','🍔 Productos'],['promociones','🏷️ Promociones']].map(([key, label]) => (
+          {[['orders','📋 Órdenes'],['products','🍔 Productos'],['promociones','🏷️ Promociones'],['cupones','🎟️ Cupones']].map(([key, label]) => (
             <button key={key} className={`${styles.tabBtn} ${activeTab === key ? styles.tabActive : ''}`} onClick={() => handleTabChange(key)}>
               {label}
               {key === 'promociones' && promociones.filter(isPromocionVigente).length > 0 && (
                 <span style={{ marginLeft:'6px', background:'#ff6b35', color:'#fff', borderRadius:'10px', padding:'1px 7px', fontSize:'0.7rem', fontWeight:700 }}>
                   {promociones.filter(isPromocionVigente).length}
+                </span>
+              )}
+              {key === 'cupones' && cupones.filter(c => !c.autorizado).length > 0 && (
+                <span style={{ marginLeft:'6px', background:'#f59e0b', color:'#fff', borderRadius:'10px', padding:'1px 7px', fontSize:'0.7rem', fontWeight:700 }}>
+                  {cupones.filter(c => !c.autorizado).length}
                 </span>
               )}
             </button>
@@ -379,6 +483,88 @@ const RestaurantDashboard = () => {
             )}
           </>
         )}
+
+        {/* ── TAB CUPONES ── */}
+        {activeTab === 'cupones' && (
+          <>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.5rem', flexWrap:'wrap', gap:'0.75rem' }}>
+              <div>
+                <h2 style={{ margin:0, fontSize:'1.25rem', color:'#333' }}>Mis Cupones</h2>
+                <p style={{ margin:'4px 0 0', fontSize:'0.85rem', color:'#666' }}>
+                  {cupones.filter(isCuponVigente).length} vigentes · {cupones.filter(c => c.autorizado).length} autorizados · {cupones.length} total
+                </p>
+              </div>
+              <button className={`${styles.btn} ${styles.btnAccept}`} onClick={openCreateCuponModal}>+ Nuevo Cupón</button>
+            </div>
+
+            {cuponSuccess && <div className={`${styles.alert} ${styles.alertSuccess}`} style={{ marginBottom:'1rem' }}>{cuponSuccess}</div>}
+            {cuponError && !showCuponModal && <div className={`${styles.alert} ${styles.alertError}`} style={{ marginBottom:'1rem' }}>{cuponError}</div>}
+
+            <div className={styles.filters} style={{ marginBottom:'1.5rem' }}>
+              {[['TODOS','Todos'],['VIGENTES','✅ Vigentes'],['VENCIDOS','⛔ Vencidos'],['AUTORIZADOS','✔️ Autorizados'],['PENDIENTES','⏳ Pendientes']].map(([val,label]) => (
+                <button key={val} className={`${styles.filterBtn} ${cuponFilter === val ? styles.active : ''}`} onClick={() => setCuponFilter(val)}>{label}</button>
+              ))}
+            </div>
+
+            {cuponLoading ? (
+              <div className={styles.loading}><div className={styles.spinner}></div><p>Cargando cupones...</p></div>
+            ) : filteredCupones.length === 0 ? (
+              <div className={styles.empty}>
+                <div className={styles.emptyIcon}>🎟️</div>
+                <p>No hay cupones {cuponFilter !== 'TODOS' ? 'con este filtro' : 'creados aún'}</p>
+                <small>Crea tu primer cupón para ofrecer descuentos a tus clientes</small>
+                <button className={`${styles.btn} ${styles.btnAccept}`} style={{ marginTop:'1rem' }} onClick={openCreateCuponModal}>+ Crear Cupón</button>
+              </div>
+            ) : (
+              <div className={styles.productGrid}>
+                {filteredCupones.map(cupon => {
+                  const vigente = isCuponVigente(cupon)
+                  const usosRestantes = cupon.uso_maximo - cupon.usos_actuales
+                  return (
+                    <div key={cupon.id} className={styles.productCard} style={{ borderLeft:`4px solid ${vigente ? (cupon.autorizado ? '#4caf50' : '#f59e0b') : '#ccc'}`, opacity: vigente ? 1 : 0.72 }}>
+                      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'0.5rem', gap:'6px', flexWrap:'wrap' }}>
+                        <span style={{ fontSize:'0.7rem', fontWeight:700, fontFamily:'monospace', background:'#f3f4f6', color:'#374151', padding:'2px 8px', borderRadius:'4px', border:'1px solid #e5e7eb' }}>
+                          {cupon.codigo}
+                        </span>
+                        <div style={{ display:'flex', gap:'4px' }}>
+                          <span style={{ fontSize:'0.68rem', padding:'2px 7px', borderRadius:'4px', fontWeight:600, background: cupon.autorizado ? '#e8f5e9' : '#fff3e0', color: cupon.autorizado ? '#2e7d32' : '#e65100' }}>
+                            {cupon.autorizado ? '✔ Autorizado' : '⏳ Pendiente'}
+                          </span>
+                          <span style={{ fontSize:'0.68rem', padding:'2px 7px', borderRadius:'4px', fontWeight:600, background: vigente ? '#e8f5e9' : '#f5f5f5', color: vigente ? '#2e7d32' : '#9e9e9e' }}>
+                            {vigente ? '● Vigente' : '○ Vencido'}
+                          </span>
+                        </div>
+                      </div>
+                      <h4 style={{ marginBottom:'0.25rem' }}>{cupon.titulo}</h4>
+                      {cupon.descripcion && <p className={styles.productDesc}>{cupon.descripcion}</p>}
+                      <div style={{ margin:'0.75rem 0', padding:'0.5rem', background:'#f9f9f9', borderRadius:'6px', textAlign:'center' }}>
+                        <span style={{ fontSize:'1.75rem', fontWeight:700, color:'#ff6b35' }}>
+                          {cupon.valor > 0 ? `${cupon.valor}% OFF` : '🚚 Envío gratis'}
+                        </span>
+                      </div>
+                      <div style={{ marginBottom:'0.5rem' }}>
+                        <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'#555', marginBottom:'4px' }}>
+                          <span>Usos: {cupon.usos_actuales} / {cupon.uso_maximo}</span>
+                          <span style={{ color: usosRestantes <= 0 ? '#e53935' : '#388e3c', fontWeight:600 }}>
+                            {usosRestantes > 0 ? `${usosRestantes} restantes` : 'Agotado'}
+                          </span>
+                        </div>
+                        <div style={{ height:'4px', borderRadius:'4px', background:'#e5e7eb', overflow:'hidden' }}>
+                          <div style={{ height:'100%', width:`${Math.min((cupon.usos_actuales / cupon.uso_maximo) * 100, 100)}%`, background: usosRestantes <= 0 ? '#e53935' : '#4caf50', borderRadius:'4px' }} />
+                        </div>
+                      </div>
+                      <div style={{ fontSize:'0.78rem', color:'#666', marginBottom:'0.75rem' }}>
+                        <div>📅 Inicio: {new Date(cupon.fecha_inicio).toLocaleDateString('es-GT')}</div>
+                        <div>📅 Expira: {new Date(cupon.fecha_expiracion).toLocaleDateString('es-GT')}</div>
+                      </div>
+                      <button className={`${styles.btn} ${styles.btnNext}`} style={{ width:'100%', marginTop:'auto' }} onClick={() => openEditCuponModal(cupon)}>✏️ Editar</button>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Modal: Cancelar Orden */}
@@ -470,6 +656,97 @@ const RestaurantDashboard = () => {
               <div className={styles.modalActions} style={{ marginTop:'1rem' }}>
                 <button type="button" className={styles.btnSecondary} onClick={() => setShowPromoModal(false)}>Cancelar</button>
                 <button type="submit" className={`${styles.btn} ${styles.btnAccept}`} disabled={promoLoading}>{promoLoading ? 'Guardando...' : editingPromo ? 'Guardar Cambios' : 'Crear Promoción'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Crear / Editar Cupón */}
+      {showCuponModal && (
+        <div className={styles.modal} onClick={() => setShowCuponModal(false)}>
+          <div className={styles.modalContent} style={{ maxWidth:'500px' }} onClick={e => e.stopPropagation()}>
+            <h3 className={styles.modalHeader}>{editingCupon ? `✏️ Editar Cupón #${editingCupon.id}` : '🎟️ Nuevo Cupón'}</h3>
+
+            {cuponError && <div className={`${styles.alert} ${styles.alertError}`} style={{ margin:'0 0 1rem' }}>{cuponError}</div>}
+
+            <form onSubmit={handleCuponSubmit} style={{ padding:'0 0.25rem' }}>
+              {/* Código — solo al crear */}
+              {!editingCupon && (
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Código *</label>
+                  <input
+                    type="text"
+                    className={styles.formInput}
+                    value={cuponForm.codigo}
+                    onChange={e => setCuponForm({...cuponForm, codigo: e.target.value.toUpperCase()})}
+                    placeholder="Ej: VERANO20"
+                    maxLength={32}
+                    style={{ fontFamily:'monospace', letterSpacing:'1px' }}
+                    required
+                  />
+                  <small style={{ color:'#888', fontSize:'0.75rem' }}>Único por restaurante. Solo letras y números.</small>
+                </div>
+              )}
+              {editingCupon && (
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Código</label>
+                  <input type="text" className={styles.formInput} value={cuponForm.codigo} disabled style={{ fontFamily:'monospace', background:'#f5f5f5', color:'#888' }} />
+                  <small style={{ color:'#888', fontSize:'0.75rem' }}>El código no puede modificarse una vez creado.</small>
+                </div>
+              )}
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Título *</label>
+                <input type="text" className={styles.formInput} value={cuponForm.titulo} onChange={e => setCuponForm({...cuponForm, titulo: e.target.value})} placeholder="Ej: 20% de descuento en tu orden" maxLength={100} required />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Descripción</label>
+                <textarea className={styles.formInput} rows="2" value={cuponForm.descripcion} onChange={e => setCuponForm({...cuponForm, descripcion: e.target.value})} placeholder="Describe brevemente el cupón" maxLength={255} />
+              </div>
+
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.75rem' }}>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Descuento (%) *</label>
+                  <input type="number" className={styles.formInput} value={cuponForm.valor} onChange={e => setCuponForm({...cuponForm, valor: e.target.value})} placeholder="20" min="0" max="100" step="0.01" required />
+                  <small style={{ color:'#888', fontSize:'0.75rem' }}>0 = envío gratis</small>
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Usos máximos *</label>
+                  <input type="number" className={styles.formInput} value={cuponForm.uso_maximo} onChange={e => setCuponForm({...cuponForm, uso_maximo: e.target.value})} placeholder="1" min="1" required />
+                </div>
+              </div>
+
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.75rem' }}>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Fecha inicio</label>
+                  <input type="date" className={styles.formInput} value={cuponForm.fecha_inicio} onChange={e => setCuponForm({...cuponForm, fecha_inicio: e.target.value})} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Fecha expiración *</label>
+                  <input type="date" className={styles.formInput} value={cuponForm.fecha_expiracion} onChange={e => setCuponForm({...cuponForm, fecha_expiracion: e.target.value})} required />
+                </div>
+              </div>
+
+              {editingCupon && (
+                <div className={styles.formGroup} style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
+                  <input type="checkbox" id="cuponActivo" checked={cuponForm.activo} onChange={e => setCuponForm({...cuponForm, activo: e.target.checked})} style={{ width:'16px', height:'16px', cursor:'pointer' }} />
+                  <label htmlFor="cuponActivo" className={styles.formLabel} style={{ margin:0, cursor:'pointer' }}>Cupón activo</label>
+                </div>
+              )}
+
+              {!editingCupon && (
+                <div style={{ padding:'0.75rem', background:'#fff3e0', borderRadius:'6px', marginBottom:'0.75rem', fontSize:'0.82rem', color:'#e65100' }}>
+                  ⏳ El cupón quedará <strong>pendiente de autorización</strong> por el administrador antes de poder ser usado.
+                </div>
+              )}
+
+              <div className={styles.modalActions} style={{ marginTop:'1rem' }}>
+                <button type="button" className={styles.btnSecondary} onClick={() => setShowCuponModal(false)}>Cancelar</button>
+                <button type="submit" className={`${styles.btn} ${styles.btnAccept}`} disabled={cuponLoading}>
+                  {cuponLoading ? 'Guardando...' : editingCupon ? 'Guardar Cambios' : 'Crear Cupón'}
+                </button>
               </div>
             </form>
           </div>

@@ -148,6 +148,9 @@ func main() {
 		api.GET("/restaurants/category/:category", catalogHandler.GetRestaurantsByCategory)
         
 		api.GET("/promociones", restaurantHandler.GetPromociones)
+
+		// Cupones (lectura pública con filtros)
+		api.GET("/cupones", restaurantHandler.GetCupones)
 	}
 
 	// PROTECTED ROUTES
@@ -169,6 +172,17 @@ func main() {
 		// Promociones (escritura protegida)
 		protected.POST("/restaurants/:id/promociones", restaurantHandler.CreatePromocion)
 		protected.PUT("/promociones/:id", restaurantHandler.UpdatePromocion)
+
+		// Cupones — restaurante crea y edita sus cupones (sin poder autorizar)
+		protected.POST("/restaurants/:id/cupones", restaurantHandler.CreateCupon)
+		protected.PUT("/cupones/:id", restaurantHandler.UpdateCupon)
+
+		// Cupones — solo administrador puede autorizar/desautorizar
+		protected.PATCH("/cupones/:id/autorizar", restaurantHandler.AutorizarCupon)
+
+		// Cupones — acciones de ciclo de vida, solo cliente autenticado
+		protected.POST("/cupones/:id/incrementar-uso", restaurantHandler.IncrementarUsoCupon)
+		protected.POST("/cupones/:id/verificar-expiracion", restaurantHandler.VerificarExpiracionCupon)
 
 		protected.POST("/orders", orderHandler.CreateOrder)
 		protected.PATCH("/orders/:id/status", orderHandler.UpdateStatus)
