@@ -17,6 +17,7 @@ message ProcessPaymentRequest {
   string payment_method = 2; 
   bool use_cupon = 3; 
   int32 client_id = 4;
+  double amount = 5;
 }
 
 message ProcessPaymentResponse {

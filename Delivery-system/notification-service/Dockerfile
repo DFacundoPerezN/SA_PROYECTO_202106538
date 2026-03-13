@@ -22,15 +22,21 @@ COPY notification-service ./notification-service
 # (Opcional) generar stubs si decides hacerlo aquí
 
 WORKDIR /workspace/proto/notificationpb
-RUN protoc --go_out=.. --go-grpc_out=.. notification.proto
-
-# compilar servicio
+RUN protoc --go_out=. --go_opt=paths=source_relative \
+           --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+           notification.proto
 
 WORKDIR /workspace/notification-service
 
 # desactivar workspace
 
 ENV GOWORK=off
+
+# Mostrar qué archivos hay (para debug)
+RUN ls -la /workspace/proto/notificationpb/
+
+# Asegurar que go.mod tiene la referencia correcta
+RUN go mod edit -replace delivery-proto/notificationpb=/workspace/proto/notificationpb
 
 RUN go mod tidy
 RUN go build -o notification-server ./cmd/server

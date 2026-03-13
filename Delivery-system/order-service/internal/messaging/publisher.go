@@ -2,6 +2,7 @@ package messaging
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"order-service/internal/domain"
@@ -9,47 +10,51 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func PublicarOrden(event *domain.Order) error {
-	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
-	if err != nil {
-		return err
-	}
-	defer conn.Close()
+// Publisher publica órdenes en la cola de RabbitMQ.
+// Usa la conexión persistente compartida en lugar de abrir una nueva por cada mensaje.
+type Publisher struct {
+	conn *RabbitMQConn
+}
 
-	ch, err := conn.Channel()
+// NewPublisher crea un Publisher con la conexión inyectada.
+func NewPublisher(conn *RabbitMQConn) *Publisher {
+	return &Publisher{conn: conn}
+}
+
+// PublicarOrden serializa la orden y la publica en la cola orders.pending.
+// Abre un canal por publicación (liviano) y lo cierra al terminar.
+func (p *Publisher) PublicarOrden(order *domain.Order) error {
+	ch, err := p.conn.Channel()
 	if err != nil {
-		return err
+		return fmt.Errorf("[Publisher] error abriendo canal: %w", err)
 	}
 	defer ch.Close()
 
-	q, err := ch.QueueDeclare(
-		"orden.creada",
-		true,
-		false,
-		false,
-		false,
-		nil,
-	)
+	q, err := declareQueue(ch)
 	if err != nil {
-		return err
+		return fmt.Errorf("[Publisher] error declarando cola: %w", err)
 	}
-	log.Printf("Intentando publicar orden en la cola")
-	body, _ := json.Marshal(event)
+
+	body, err := json.Marshal(order)
+	if err != nil {
+		return fmt.Errorf("[Publisher] error serializando orden: %w", err)
+	}
 
 	err = ch.Publish(
-		"",
-		q.Name,
-		false,
-		false,
+		"",     // exchange directo
+		q.Name, // routing key = nombre de la cola
+		false,  // mandatory
+		false,  // immediate
 		amqp.Publishing{
-			ContentType: "application/json",
-			Body:        body,
+			ContentType:  "application/json",
+			DeliveryMode: amqp.Persistent, // el mensaje sobrevive a reinicios de RabbitMQ
+			Body:         body,
 		},
 	)
-
-	if err == nil {
-		log.Println("¡Evento publicado en RabbitMQ! :o")
+	if err != nil {
+		return fmt.Errorf("[Publisher] error publicando en cola: %w", err)
 	}
 
-	return err
+	log.Printf("[Publisher] Orden encolada en '%s' para cliente: %s", QueueName, order.ClienteNombre)
+	return nil
 }

@@ -6,7 +6,6 @@ import (
 	"os"
 	"restaurant-service/internal/database"
 	grpcclient "restaurant-service/internal/grpc"
-	"restaurant-service/internal/messaging"
 
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/joho/godotenv"
@@ -20,8 +19,6 @@ import (
 )
 
 func main() {
-	go messaging.ConsumirOrdenes()
-
 	godotenv.Load()
 	cfg := config.Load()
 
@@ -50,6 +47,9 @@ func main() {
 	repo := repository.NewRestaurantRepository(db)
 	svc := service.NewRestaurantService(repo, userClient)
 
+	promocionRepo := repository.NewPromocionRepository(db)
+	promocionSvc := service.NewPromocionService(promocionRepo)
+
 	lis, err := net.Listen("tcp", ":50054")
 	if err != nil {
 		log.Fatal(err)
@@ -59,7 +59,7 @@ func main() {
 
 	restaurantpb.RegisterRestaurantServiceServer(
 		grpcServer,
-		handler.NewRestaurantGRPCServer(svc),
+		handler.NewRestaurantGRPCServer(svc, promocionSvc),
 	)
 
 	log.Println("Restaurant Service running on :50054")

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"payment-service/internal/domain"
 )
 
@@ -16,10 +17,28 @@ func NewPaymentRepository(db *sql.DB) *PaymentRepository {
 }
 
 func (r *PaymentRepository) CreatePayment(ctx context.Context, p *domain.Payment) (int, error) {
+
+
+	// Verificar si ya existe un pago para esta orden.
+	// Esto evita el error de constraint UQ_Pago_Orden en caso de reintentos.
+	existing, err := r.getPaymentByOrderID(ctx, p.OrdenId)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return 0, fmt.Errorf("error verificando pago existente: %w", err)
+	}
+	if existing != nil {
+		// Ya existe un pago para esta orden: devolver el ID existente en lugar de fallar
+		return existing.Id, nil
+	}
+
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return 0, err
 	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
 
 	query := `
 	INSERT INTO Pagos
@@ -29,7 +48,6 @@ func (r *PaymentRepository) CreatePayment(ctx context.Context, p *domain.Payment
 	`
 
 	var id int
-
 	err = tx.QueryRowContext(
 		ctx,
 		query,
@@ -41,15 +59,46 @@ func (r *PaymentRepository) CreatePayment(ctx context.Context, p *domain.Payment
 	).Scan(&id)
 
 	if err != nil {
-		tx.Rollback()
-		return 0, err
+		return 0, fmt.Errorf("error insertando pago: %w", err)
 	}
 
-	if err := tx.Commit(); err != nil {
-		return 0, err
+	if err = tx.Commit(); err != nil {
+		return 0, fmt.Errorf("error confirmando transacción: %w", err)
 	}
 
 	return id, nil
+}
+
+// getPaymentByOrderID busca un pago existente para una orden.
+// Retorna sql.ErrNoRows si no existe ninguno.
+func (r *PaymentRepository) getPaymentByOrderID(ctx context.Context, orderID int) (*domain.Payment, error) {
+	query := `
+	SELECT Id, OrdenId, ClienteId, PrecioFinal, Estado, UsaCupon, MetodoPago, Moneda
+	FROM Pagos
+	WHERE OrdenId = @p1
+	`
+
+	row := r.db.QueryRowContext(ctx, query, orderID)
+
+	var p domain.Payment
+	err := row.Scan(
+		&p.Id,
+		&p.OrdenId,
+		&p.ClienteId,
+		&p.PrecioFinal,
+		&p.Estado,
+		&p.UsaCupon,
+		&p.MetodoPago,
+		&p.Moneda,
+	)
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, sql.ErrNoRows
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &p, nil
 }
 
 func (r *PaymentRepository) UpdateStatus(ctx context.Context, orderId int, newStatus string) error {
@@ -79,41 +128,44 @@ func (r *PaymentRepository) UpdateStatus(ctx context.Context, orderId int, newSt
 
 func (r *PaymentRepository) GetPayments(ctx context.Context, clientID int) ([]domain.Payment, error) {
 
-	query := `
-	SELECT Id, OrdenId, ClienteId, PrecioFinal, Estado, UsaCupon, MetodoPago, Moneda
-	FROM Pagos
-	---WHERE ClienteId = @p1
-	ORDER BY Id DESC
-	`
+    var (
+        rows *sql.Rows
+        err  error
+    )
 
-	rows, err := r.db.QueryContext(ctx, query, clientID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+    if clientID > 0 {
+        query := `
+        SELECT Id, OrdenId, ClienteId, PrecioFinal, Estado, UsaCupon, MetodoPago, Moneda
+        FROM Pagos
+        WHERE ClienteId = @p1
+        ORDER BY Id DESC
+        `
+        rows, err = r.db.QueryContext(ctx, query, clientID)
+    } else {
+        query := `
+        SELECT Id, OrdenId, ClienteId, PrecioFinal, Estado, UsaCupon, MetodoPago, Moneda
+        FROM Pagos
+        ORDER BY Id DESC
+        `
+        rows, err = r.db.QueryContext(ctx, query)
+    }
 
-	var payments []domain.Payment
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
 
-	for rows.Next() {
-		var p domain.Payment
-
-		err := rows.Scan(
-			&p.Id,
-			&p.OrdenId,
-			&p.ClienteId,
-			&p.PrecioFinal,
-			&p.Estado,
-			&p.UsaCupon,
-			&p.MetodoPago,
-			&p.Moneda,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		payments = append(payments, p)
-	}
-
-	return payments, nil
+    var payments []domain.Payment
+    for rows.Next() {
+        var p domain.Payment
+        err := rows.Scan(
+            &p.Id, &p.OrdenId, &p.ClienteId, &p.PrecioFinal,
+            &p.Estado, &p.UsaCupon, &p.MetodoPago, &p.Moneda,
+        )
+        if err != nil {
+            return nil, err
+        }
+        payments = append(payments, p)
+    }
+    return payments, nil
 }
