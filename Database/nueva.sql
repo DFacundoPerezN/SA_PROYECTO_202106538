@@ -42,12 +42,6 @@ GO
 
 -- Agregar tabla Cupon a la base de datos Delivereats_SA_Restaurantes para gestionar cupones de descuento
 
-USE DATABASE Delivereats_SA_Restaurantes;
-GO
-
-USE DATABASE Delivereats_SA_Restaurantes;
-GO
-
 CREATE TABLE Cupon (
     Id              INT IDENTITY PRIMARY KEY,
     RestauranteId   INT           NOT NULL,
