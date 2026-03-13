@@ -83,3 +83,11 @@ func (s *ProductService) GetProductRecommendationPercentage(
 
 	return s.repo.GetProductRecommendationPercentage(ctx, productID)
 }
+
+func (s *ProductService) GetRestaurantsByCategory(
+	ctx context.Context,
+	category string,
+) ([]domain.RestaurantCategory, error) {
+
+	return s.repo.GetRestaurantsByCategory(ctx, category)
+}

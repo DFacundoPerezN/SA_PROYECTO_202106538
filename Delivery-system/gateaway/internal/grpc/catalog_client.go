@@ -56,3 +56,10 @@ func (c *CatalogClient) GetProductRecommendationPercentage(
 ) (*catalogpb.GetProductRecommendationPercentageResponse, error) {
 	return c.client.GetProductRecommendationPercentage(ctx, req)
 }
+
+func (c *CatalogClient) GetRestaurantsByCategory(
+	ctx context.Context,
+	req *catalogpb.GetRestaurantsByCategoryRequest,
+) (*catalogpb.GetRestaurantsByCategoryResponse, error) {
+	return c.client.GetRestaurantsByCategory(ctx, req)
+}

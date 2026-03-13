@@ -131,3 +131,30 @@ func (h *CatalogHandler) GetRecommendationPercentage(c *gin.Context) {
 
 	c.JSON(200, resp)
 }
+
+func (h *CatalogHandler) GetRestaurantsByCategory(c *gin.Context) {
+	category := c.Param("category")
+
+	if category == "" {
+		category = c.Query("category")
+	}
+
+	if category == "" {
+		c.JSON(400, gin.H{"error": "category es requerido"})
+		return
+	}
+
+	resp, err := h.client.GetRestaurantsByCategory(
+		context.Background(),
+		&catalogpb.GetRestaurantsByCategoryRequest{
+			Categoria: category,
+		},
+	)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp.Restaurants)
+}
