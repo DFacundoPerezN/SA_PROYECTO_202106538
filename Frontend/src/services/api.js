@@ -113,4 +113,31 @@ export const promocionService = {
   },
 }
 
+// ─── Servicio de Cupones ──────────────────────────────────────────────────────
+export const cuponService = {
+  // GET /api/cupones con filtros opcionales
+  getAll: async (params = {}) => {
+    const response = await api.get('/api/cupones', { params })
+    return response.data // { cupones: [...] }
+  },
+
+  // POST /api/restaurants/:id/cupones  (protegido — restaurante)
+  create: async (restauranteId, data) => {
+    const response = await api.post(`/api/restaurants/${restauranteId}/cupones`, data)
+    return response.data
+  },
+
+  // PUT /api/cupones/:id  (protegido — restaurante, sin campo autorizado)
+  update: async (id, data) => {
+    const response = await api.put(`/api/cupones/${id}`, data)
+    return response.data
+  },
+
+  // PATCH /api/cupones/:id/autorizar  (protegido — solo admin)
+  autorizar: async (id, autorizado) => {
+    const response = await api.patch(`/api/cupones/${id}/autorizar`, { autorizado })
+    return response.data
+  },
+}
+
 export default api

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { authService, restaurantService } from '../services/api'
+import { authService, restaurantService, cuponService } from '../services/api'
 import api from '../services/api'
 import '../styles/Dashboard.css'
 
@@ -20,6 +20,14 @@ const [loadingPayments, setLoadingPayments] = useState(false)
 // Estados para reembolsos
 const [cancelledOrders, setCancelledOrders] = useState([])
 const [loadingRefunds, setLoadingRefunds] = useState(false)
+
+// Estados para cupones (admin)
+const [cupones, setCupones] = useState([])
+const [loadingCupones, setLoadingCupones] = useState(false)
+const [cuponFiltro, setCuponFiltro] = useState('TODOS')
+const [cuponRestauranteFilter, setCuponRestauranteFilter] = useState('')
+const [cuponSuccess, setCuponSuccess] = useState('')
+const [cuponError, setCuponError] = useState('')
 
 // Modal para ver órdenes del usuario
 const [showUserOrdersModal, setShowUserOrdersModal] = useState(false)
@@ -60,9 +68,11 @@ const [restaurantForm, setRestaurantForm] = useState({
     if (activeTab === 'restaurants') {
       fetchRestaurants()
     } else if (activeTab === 'refunds') {
-    fetchCancelledOrders()
+      fetchCancelledOrders()
     } else if (activeTab === 'payments') {
-    fetchPayments()
+      fetchPayments()
+    } else if (activeTab === 'cupones') {
+      fetchCupones()
     } else {
       fetchUsers()
     }
@@ -306,6 +316,46 @@ const handleCloseModal = () => {
   resetForm()
 }
 
+// ── Cupones (admin) ────────────────────────────────────────────────────────
+const fetchCupones = async () => {
+  setLoadingCupones(true)
+  setCuponError('')
+  setCuponSuccess('')
+  try {
+    const params = {}
+    if (cuponRestauranteFilter) params.restaurante_id = cuponRestauranteFilter
+    if (cuponFiltro === 'AUTORIZADOS') params.solo_autorizados = true
+    const result = await cuponService.getAll(params)
+    setCupones(result.cupones || [])
+  } catch (err) {
+    setCuponError('Error al cargar los cupones')
+  } finally {
+    setLoadingCupones(false)
+  }
+}
+
+const handleAutorizarCupon = async (cuponId, autorizado) => {
+  const accion = autorizado ? 'autorizar' : 'desautorizar'
+  if (!window.confirm(`¿Deseas ${accion} el cupón #${cuponId}?`)) return
+  try {
+    await cuponService.autorizar(cuponId, autorizado)
+    setCuponSuccess(`✓ Cupón #${cuponId} ${autorizado ? 'autorizado' : 'desautorizado'} exitosamente`)
+    fetchCupones()
+  } catch (err) {
+    setCuponError(err.response?.data?.error || 'Error al actualizar el cupón')
+  }
+}
+
+const isCuponVigente = (c) => c.activo && new Date(c.fecha_expiracion) >= new Date()
+
+const filteredCupones = cupones.filter(c => {
+  if (cuponFiltro === 'AUTORIZADOS') return c.autorizado
+  if (cuponFiltro === 'PENDIENTES') return !c.autorizado
+  if (cuponFiltro === 'VIGENTES') return isCuponVigente(c)
+  if (cuponFiltro === 'VENCIDOS') return !isCuponVigente(c)
+  return true
+})
+
   // Filtrar usuarios tipo RESTAURANTE
   const restaurantUsers = users.filter(u => u.role === 'RESTAURANTE')
 
@@ -358,6 +408,18 @@ const handleCloseModal = () => {
             onClick={() => setActiveTab('refunds')}
           >
             💰 Reembolsos
+          </button>
+          <button
+            className={`tab ${activeTab === 'cupones' ? 'active' : ''}`}
+            onClick={() => setActiveTab('cupones')}
+            style={{ position: 'relative' }}
+          >
+            🎟️ Cupones
+            {cupones.filter(c => !c.autorizado).length > 0 && (
+              <span style={{ marginLeft:'6px', background:'#f59e0b', color:'#fff', borderRadius:'10px', padding:'1px 7px', fontSize:'0.7rem', fontWeight:700 }}>
+                {cupones.filter(c => !c.autorizado).length}
+              </span>
+            )}
           </button>
         </div>
 
@@ -671,6 +733,144 @@ const handleCloseModal = () => {
             )}
           </div>
         )}
+
+        {/* Tab: Cupones */}
+        {activeTab === 'cupones' && (
+          <div className="tab-content">
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px', flexWrap:'wrap', gap:'12px' }}>
+              <div>
+                <h2>Gestión de Cupones</h2>
+                <p style={{ color:'var(--text-secondary)', fontSize:'0.9rem', marginTop:'0.5rem' }}>
+                  Autoriza o rechaza los cupones creados por los restaurantes
+                </p>
+              </div>
+              <button className="btn-primary" onClick={fetchCupones} disabled={loadingCupones}>🔄 Actualizar</button>
+            </div>
+
+            {cuponSuccess && <div className="alert alert-success" style={{ marginBottom:'16px', padding:'12px 16px', background:'#e8f5e9', border:'1px solid #a5d6a7', borderRadius:'8px', color:'#2e7d32' }}>{cuponSuccess}</div>}
+            {cuponError && <div className="alert alert-error" style={{ marginBottom:'16px' }}>{cuponError}</div>}
+
+            {/* Filtros */}
+            <div style={{ display:'flex', gap:'8px', flexWrap:'wrap', marginBottom:'20px', alignItems:'center' }}>
+              <div className="tabs" style={{ margin:0, gap:'6px' }}>
+                {[['TODOS','Todos'],['PENDIENTES','⏳ Pendientes'],['AUTORIZADOS','✔️ Autorizados'],['VIGENTES','✅ Vigentes'],['VENCIDOS','⛔ Vencidos']].map(([val, label]) => (
+                  <button
+                    key={val}
+                    className={`tab ${cuponFiltro === val ? 'active' : ''}`}
+                    style={{ padding:'6px 14px', fontSize:'0.85rem' }}
+                    onClick={() => setCuponFiltro(val)}
+                  >{label}</button>
+                ))}
+              </div>
+              <input
+                type="number"
+                placeholder="Filtrar por restaurante ID"
+                value={cuponRestauranteFilter}
+                onChange={e => setCuponRestauranteFilter(e.target.value)}
+                style={{ padding:'7px 12px', borderRadius:'8px', border:'1px solid #ddd', fontSize:'0.85rem', width:'200px' }}
+              />
+            </div>
+
+            {loadingCupones ? (
+              <div className="loading-state">
+                <div className="spinner-large"></div>
+                <p>Cargando cupones...</p>
+              </div>
+            ) : filteredCupones.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">🎟️</div>
+                <p>No hay cupones {cuponFiltro !== 'TODOS' ? 'con este filtro' : 'registrados'}</p>
+                <small>Los cupones creados por los restaurantes aparecerán aquí para su autorización</small>
+              </div>
+            ) : (
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Restaurante</th>
+                      <th>Código</th>
+                      <th>Título</th>
+                      <th>Descuento</th>
+                      <th>Usos</th>
+                      <th>Expira</th>
+                      <th>Estado</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredCupones.map(cupon => {
+                      const vigente = isCuponVigente(cupon)
+                      return (
+                        <tr key={cupon.id}>
+                          <td><strong>#{cupon.id}</strong></td>
+                          <td>Rest. #{cupon.restaurante_id}</td>
+                          <td>
+                            <span style={{ fontFamily:'monospace', fontWeight:700, background:'#f3f4f6', padding:'2px 8px', borderRadius:'4px', border:'1px solid #e5e7eb', fontSize:'0.85rem' }}>
+                              {cupon.codigo}
+                            </span>
+                          </td>
+                          <td>
+                            <div style={{ maxWidth:'180px' }}>
+                              <strong style={{ display:'block' }}>{cupon.titulo}</strong>
+                              {cupon.descripcion && <small style={{ color:'var(--text-secondary)' }}>{cupon.descripcion}</small>}
+                            </div>
+                          </td>
+                          <td>
+                            <span style={{ fontWeight:700, color:'#ff6b35', fontSize:'1rem' }}>
+                              {cupon.valor > 0 ? `${cupon.valor}%` : '🚚 Gratis'}
+                            </span>
+                          </td>
+                          <td>
+                            <span style={{ fontSize:'0.85rem' }}>
+                              {cupon.usos_actuales}/{cupon.uso_maximo}
+                            </span>
+                          </td>
+                          <td>
+                            <span style={{ fontSize:'0.85rem', color: vigente ? 'inherit' : 'var(--text-secondary)' }}>
+                              {new Date(cupon.fecha_expiracion).toLocaleDateString('es-GT')}
+                              {!vigente && <span style={{ display:'block', fontSize:'0.75rem', color:'var(--error)' }}>Vencido</span>}
+                            </span>
+                          </td>
+                          <td>
+                            <div style={{ display:'flex', flexDirection:'column', gap:'3px' }}>
+                              <span className={`status-badge ${cupon.autorizado ? 'active' : 'inactive'}`}>
+                                {cupon.autorizado ? '✔ Autorizado' : '⏳ Pendiente'}
+                              </span>
+                              <span className={`status-badge ${cupon.activo ? 'active' : 'inactive'}`} style={{ fontSize:'0.7rem' }}>
+                                {cupon.activo ? 'Activo' : 'Inactivo'}
+                              </span>
+                            </div>
+                          </td>
+                          <td>
+                            {!cupon.autorizado ? (
+                              <button
+                                className="btn-primary"
+                                onClick={() => handleAutorizarCupon(cupon.id, true)}
+                                style={{ padding:'7px 14px', fontSize:'0.82rem', background:'linear-gradient(135deg, #4caf50, #45a049)', whiteSpace:'nowrap' }}
+                              >
+                                ✔ Autorizar
+                              </button>
+                            ) : (
+                              <button
+                                className="btn-secondary"
+                                onClick={() => handleAutorizarCupon(cupon.id, false)}
+                                style={{ padding:'7px 14px', fontSize:'0.82rem', background:'linear-gradient(135deg, #ef5350, #e53935)', color:'#fff', border:'none', borderRadius:'8px', cursor:'pointer', whiteSpace:'nowrap' }}
+                              >
+                                ✕ Revocar
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
 
       </div>
 
