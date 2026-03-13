@@ -20,6 +20,16 @@ service RestaurantService {
   rpc CreatePromocion(CreatePromocionRequest)   returns (CreatePromocionResponse);
   rpc GetPromociones(GetPromocionesRequest)     returns (GetPromocionesResponse);
   rpc UpdatePromocion(UpdatePromocionRequest)   returns (UpdatePromocionResponse);
+
+  // Cupones
+  rpc CreateCupon(CreateCuponRequest)       returns (CreateCuponResponse);
+  rpc GetCupones(GetCuponesRequest)         returns (GetCuponesResponse);
+  rpc UpdateCupon(UpdateCuponRequest)       returns (UpdateCuponResponse);
+  rpc AutorizarCupon(AutorizarCuponRequest) returns (AutorizarCuponResponse);
+
+  // Operaciones de ciclo de vida del cupón (cliente autenticado)
+  rpc IncrementarUsoCupon(IncrementarUsoCuponRequest) returns (IncrementarUsoCuponResponse);
+  rpc VerificarExpiracionCupon(VerificarExpiracionCuponRequest) returns (VerificarExpiracionCuponResponse);
 }
 
 message Empty {}
@@ -146,4 +156,100 @@ message UpdatePromocionRequest {
 
 message UpdatePromocionResponse {
   string message = 1;
+}
+
+// ─── Cupon ───────────────────────────────────────────────────────────────────
+
+message Cupon {
+  int32  id               = 1;
+  int32  restaurante_id   = 2;
+  string codigo           = 3;
+  string titulo           = 4;
+  string descripcion      = 5;
+  double valor            = 6;
+  int32  uso_maximo       = 7;
+  int32  usos_actuales    = 8;
+  string fecha_inicio     = 9;   // ISO 8601
+  string fecha_expiracion = 10;  // ISO 8601
+  bool   autorizado       = 11;
+  bool   activo           = 12;
+}
+
+// CreateCupon — lo hace el restaurante
+message CreateCuponRequest {
+  int32  restaurante_id   = 1;
+  string codigo           = 2;
+  string titulo           = 3;
+  string descripcion      = 4;
+  double valor            = 5;
+  int32  uso_maximo       = 6;
+  string fecha_inicio     = 7;  // ISO 8601, opcional (default NOW)
+  string fecha_expiracion = 8;  // ISO 8601, requerido
+}
+
+message CreateCuponResponse {
+  int32  id      = 1;
+  string message = 2;
+}
+
+// GetCupones — con filtros combinables
+message GetCuponesRequest {
+  int32  restaurante_id   = 1;  // 0 = todos
+  bool   solo_activos     = 2;
+  bool   solo_autorizados = 3;
+  string codigo           = 4;  // "" = sin filtro (búsqueda exacta)
+  string fecha_desde      = 5;  // "" = sin límite inferior (ISO 8601)
+  string fecha_hasta      = 6;  // "" = sin límite superior (ISO 8601)
+}
+
+message GetCuponesResponse {
+  repeated Cupon cupones = 1;
+}
+
+// UpdateCupon — lo hace el restaurante (no puede cambiar Autorizado)
+message UpdateCuponRequest {
+  int32  id               = 1;
+  string titulo           = 2;
+  string descripcion      = 3;
+  double valor            = 4;
+  int32  uso_maximo       = 5;
+  string fecha_inicio     = 6;
+  string fecha_expiracion = 7;
+  bool   activo           = 8;
+}
+
+message UpdateCuponResponse {
+  string message = 1;
+}
+
+// AutorizarCupon — exclusivo del administrador
+message AutorizarCuponRequest {
+  int32 id         = 1;
+  bool  autorizado = 2;
+}
+
+message AutorizarCuponResponse {
+  string message = 1;
+}
+
+// ─── IncrementarUsoCupon ──────────────────────────────────────────────────────
+
+message IncrementarUsoCuponRequest {
+  int32 id = 1;
+}
+
+message IncrementarUsoCuponResponse {
+  string message      = 1;
+  bool   desactivado  = 2;   // true si alcanzó UsoMaximo y se desactivó
+}
+
+// ─── VerificarExpiracionCupon ─────────────────────────────────────────────────
+
+message VerificarExpiracionCuponRequest {
+  int32 id = 1;
+}
+
+message VerificarExpiracionCuponResponse {
+  string message   = 1;
+  bool   vencido   = 2;   // true si FechaExpiracion < NOW y se desactivó
 }

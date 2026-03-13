@@ -32,6 +32,14 @@ type RestaurantServiceClient interface {
 	CreatePromocion(ctx context.Context, in *CreatePromocionRequest, opts ...grpc.CallOption) (*CreatePromocionResponse, error)
 	GetPromociones(ctx context.Context, in *GetPromocionesRequest, opts ...grpc.CallOption) (*GetPromocionesResponse, error)
 	UpdatePromocion(ctx context.Context, in *UpdatePromocionRequest, opts ...grpc.CallOption) (*UpdatePromocionResponse, error)
+	// Cupones
+	CreateCupon(ctx context.Context, in *CreateCuponRequest, opts ...grpc.CallOption) (*CreateCuponResponse, error)
+	GetCupones(ctx context.Context, in *GetCuponesRequest, opts ...grpc.CallOption) (*GetCuponesResponse, error)
+	UpdateCupon(ctx context.Context, in *UpdateCuponRequest, opts ...grpc.CallOption) (*UpdateCuponResponse, error)
+	AutorizarCupon(ctx context.Context, in *AutorizarCuponRequest, opts ...grpc.CallOption) (*AutorizarCuponResponse, error)
+	// Operaciones de ciclo de vida del cupón (cliente autenticado)
+	IncrementarUsoCupon(ctx context.Context, in *IncrementarUsoCuponRequest, opts ...grpc.CallOption) (*IncrementarUsoCuponResponse, error)
+	VerificarExpiracionCupon(ctx context.Context, in *VerificarExpiracionCuponRequest, opts ...grpc.CallOption) (*VerificarExpiracionCuponResponse, error)
 }
 
 type restaurantServiceClient struct {
@@ -123,6 +131,60 @@ func (c *restaurantServiceClient) UpdatePromocion(ctx context.Context, in *Updat
 	return out, nil
 }
 
+func (c *restaurantServiceClient) CreateCupon(ctx context.Context, in *CreateCuponRequest, opts ...grpc.CallOption) (*CreateCuponResponse, error) {
+	out := new(CreateCuponResponse)
+	err := c.cc.Invoke(ctx, "/restaurantpb.RestaurantService/CreateCupon", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *restaurantServiceClient) GetCupones(ctx context.Context, in *GetCuponesRequest, opts ...grpc.CallOption) (*GetCuponesResponse, error) {
+	out := new(GetCuponesResponse)
+	err := c.cc.Invoke(ctx, "/restaurantpb.RestaurantService/GetCupones", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *restaurantServiceClient) UpdateCupon(ctx context.Context, in *UpdateCuponRequest, opts ...grpc.CallOption) (*UpdateCuponResponse, error) {
+	out := new(UpdateCuponResponse)
+	err := c.cc.Invoke(ctx, "/restaurantpb.RestaurantService/UpdateCupon", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *restaurantServiceClient) AutorizarCupon(ctx context.Context, in *AutorizarCuponRequest, opts ...grpc.CallOption) (*AutorizarCuponResponse, error) {
+	out := new(AutorizarCuponResponse)
+	err := c.cc.Invoke(ctx, "/restaurantpb.RestaurantService/AutorizarCupon", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *restaurantServiceClient) IncrementarUsoCupon(ctx context.Context, in *IncrementarUsoCuponRequest, opts ...grpc.CallOption) (*IncrementarUsoCuponResponse, error) {
+	out := new(IncrementarUsoCuponResponse)
+	err := c.cc.Invoke(ctx, "/restaurantpb.RestaurantService/IncrementarUsoCupon", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *restaurantServiceClient) VerificarExpiracionCupon(ctx context.Context, in *VerificarExpiracionCuponRequest, opts ...grpc.CallOption) (*VerificarExpiracionCuponResponse, error) {
+	out := new(VerificarExpiracionCuponResponse)
+	err := c.cc.Invoke(ctx, "/restaurantpb.RestaurantService/VerificarExpiracionCupon", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RestaurantServiceServer is the server API for RestaurantService service.
 // All implementations should embed UnimplementedRestaurantServiceServer
 // for forward compatibility
@@ -137,6 +199,14 @@ type RestaurantServiceServer interface {
 	CreatePromocion(context.Context, *CreatePromocionRequest) (*CreatePromocionResponse, error)
 	GetPromociones(context.Context, *GetPromocionesRequest) (*GetPromocionesResponse, error)
 	UpdatePromocion(context.Context, *UpdatePromocionRequest) (*UpdatePromocionResponse, error)
+	// Cupones
+	CreateCupon(context.Context, *CreateCuponRequest) (*CreateCuponResponse, error)
+	GetCupones(context.Context, *GetCuponesRequest) (*GetCuponesResponse, error)
+	UpdateCupon(context.Context, *UpdateCuponRequest) (*UpdateCuponResponse, error)
+	AutorizarCupon(context.Context, *AutorizarCuponRequest) (*AutorizarCuponResponse, error)
+	// Operaciones de ciclo de vida del cupón (cliente autenticado)
+	IncrementarUsoCupon(context.Context, *IncrementarUsoCuponRequest) (*IncrementarUsoCuponResponse, error)
+	VerificarExpiracionCupon(context.Context, *VerificarExpiracionCuponRequest) (*VerificarExpiracionCuponResponse, error)
 }
 
 // UnimplementedRestaurantServiceServer should be embedded to have forward compatible implementations.
@@ -169,6 +239,24 @@ func (UnimplementedRestaurantServiceServer) GetPromociones(context.Context, *Get
 }
 func (UnimplementedRestaurantServiceServer) UpdatePromocion(context.Context, *UpdatePromocionRequest) (*UpdatePromocionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePromocion not implemented")
+}
+func (UnimplementedRestaurantServiceServer) CreateCupon(context.Context, *CreateCuponRequest) (*CreateCuponResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCupon not implemented")
+}
+func (UnimplementedRestaurantServiceServer) GetCupones(context.Context, *GetCuponesRequest) (*GetCuponesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCupones not implemented")
+}
+func (UnimplementedRestaurantServiceServer) UpdateCupon(context.Context, *UpdateCuponRequest) (*UpdateCuponResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCupon not implemented")
+}
+func (UnimplementedRestaurantServiceServer) AutorizarCupon(context.Context, *AutorizarCuponRequest) (*AutorizarCuponResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AutorizarCupon not implemented")
+}
+func (UnimplementedRestaurantServiceServer) IncrementarUsoCupon(context.Context, *IncrementarUsoCuponRequest) (*IncrementarUsoCuponResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncrementarUsoCupon not implemented")
+}
+func (UnimplementedRestaurantServiceServer) VerificarExpiracionCupon(context.Context, *VerificarExpiracionCuponRequest) (*VerificarExpiracionCuponResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerificarExpiracionCupon not implemented")
 }
 
 // UnsafeRestaurantServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -344,6 +432,114 @@ func _RestaurantService_UpdatePromocion_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RestaurantService_CreateCupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCuponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RestaurantServiceServer).CreateCupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/restaurantpb.RestaurantService/CreateCupon",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RestaurantServiceServer).CreateCupon(ctx, req.(*CreateCuponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RestaurantService_GetCupones_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCuponesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RestaurantServiceServer).GetCupones(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/restaurantpb.RestaurantService/GetCupones",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RestaurantServiceServer).GetCupones(ctx, req.(*GetCuponesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RestaurantService_UpdateCupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCuponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RestaurantServiceServer).UpdateCupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/restaurantpb.RestaurantService/UpdateCupon",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RestaurantServiceServer).UpdateCupon(ctx, req.(*UpdateCuponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RestaurantService_AutorizarCupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AutorizarCuponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RestaurantServiceServer).AutorizarCupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/restaurantpb.RestaurantService/AutorizarCupon",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RestaurantServiceServer).AutorizarCupon(ctx, req.(*AutorizarCuponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RestaurantService_IncrementarUsoCupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IncrementarUsoCuponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RestaurantServiceServer).IncrementarUsoCupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/restaurantpb.RestaurantService/IncrementarUsoCupon",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RestaurantServiceServer).IncrementarUsoCupon(ctx, req.(*IncrementarUsoCuponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RestaurantService_VerificarExpiracionCupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerificarExpiracionCuponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RestaurantServiceServer).VerificarExpiracionCupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/restaurantpb.RestaurantService/VerificarExpiracionCupon",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RestaurantServiceServer).VerificarExpiracionCupon(ctx, req.(*VerificarExpiracionCuponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RestaurantService_ServiceDesc is the grpc.ServiceDesc for RestaurantService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -386,6 +582,30 @@ var RestaurantService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdatePromocion",
 			Handler:    _RestaurantService_UpdatePromocion_Handler,
+		},
+		{
+			MethodName: "CreateCupon",
+			Handler:    _RestaurantService_CreateCupon_Handler,
+		},
+		{
+			MethodName: "GetCupones",
+			Handler:    _RestaurantService_GetCupones_Handler,
+		},
+		{
+			MethodName: "UpdateCupon",
+			Handler:    _RestaurantService_UpdateCupon_Handler,
+		},
+		{
+			MethodName: "AutorizarCupon",
+			Handler:    _RestaurantService_AutorizarCupon_Handler,
+		},
+		{
+			MethodName: "IncrementarUsoCupon",
+			Handler:    _RestaurantService_IncrementarUsoCupon_Handler,
+		},
+		{
+			MethodName: "VerificarExpiracionCupon",
+			Handler:    _RestaurantService_VerificarExpiracionCupon_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
