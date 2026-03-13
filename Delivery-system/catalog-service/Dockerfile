@@ -22,12 +22,22 @@ COPY catalog-service ./catalog-service
 # generar stubs gRPC
 
 WORKDIR /workspace/proto/catalogpb
-RUN protoc --go_out=.. --go-grpc_out=.. catalog.proto
+RUN protoc --go_out=. --go_opt=paths=source_relative \
+           --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+           catalog.proto
 
-# compilar servicio
 
 WORKDIR /workspace/catalog-service
+
+# desactivar workspace
 ENV GOWORK=off
+
+# Mostrar qué archivos hay (para debug)
+RUN ls -la /workspace/proto/catalogpb/
+
+# Asegurar que go.mod tiene la referencia correcta
+RUN go mod edit -replace delivery-proto/catalogpb=/workspace/proto/catalogpb
+
 RUN go mod tidy
 RUN go build -o catalog-server ./cmd/server
 

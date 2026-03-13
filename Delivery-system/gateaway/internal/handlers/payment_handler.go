@@ -8,6 +8,7 @@ import (
 	paymentpb "delivery-proto/paymentpb"
 
 	"github.com/gin-gonic/gin"
+	"fmt"
 )
 
 type PaymentHandler struct {
@@ -80,11 +81,24 @@ func (h *PaymentHandler) RefundPayment(c *gin.Context) {
 func (h *PaymentHandler) GetPayments(c *gin.Context) {
 
 	clientID := c.GetInt("user_id")
+	role := c.GetString("role")
+
+	fmt.Printf("Usuario ID: %d, Role: %s\n", clientID, role)
+    
+    var reqClientID int32
+
+	if role == "ADMINISTRADOR" {
+        reqClientID = 0
+        fmt.Println("Admin: obteniendo TODOS los pagos")
+    } else {
+        reqClientID = int32(clientID)
+        fmt.Printf("Usuario normal: obteniendo pagos solo para ID %d\n", clientID)
+    }
 
 	resp, err := h.client.GetPayments(
 		context.Background(),
 		&paymentpb.GetPaymentsRequest{
-			ClientId: int32(clientID),
+			ClientId: reqClientID,
 		},
 	)
 

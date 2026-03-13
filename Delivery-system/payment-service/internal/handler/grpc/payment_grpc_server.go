@@ -88,7 +88,6 @@ func (s *PaymentGRPCServer) GetPayments(
 	}
 
 	var response []*paymentpb.Payment
-
 	for _, p := range payments {
 		response = append(response, &paymentpb.Payment{
 			Id:          int32(p.Id),
