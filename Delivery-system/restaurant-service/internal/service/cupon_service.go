@@ -193,3 +193,57 @@ func (s *CuponService) AutorizarCupon(
 	}
 	return nil
 }
+
+// ─── IncrementarUsoCupon — cliente autenticado ────────────────────────────────
+
+func (s *CuponService) IncrementarUsoCupon(
+	ctx context.Context,
+	req *restaurantpb.IncrementarUsoCuponRequest,
+) (*restaurantpb.IncrementarUsoCuponResponse, error) {
+
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "id inválido")
+	}
+
+	result, err := s.repo.IncrementarUso(ctx, int(req.Id))
+	if err != nil {
+		return nil, status.Error(codes.Internal, "error al incrementar uso: "+err.Error())
+	}
+
+	msg := "Uso registrado correctamente"
+	if result.Desactivado {
+		msg = "Uso registrado. El cupón ha alcanzado su límite y ha sido desactivado"
+	}
+
+	return &restaurantpb.IncrementarUsoCuponResponse{
+		Message:     msg,
+		Desactivado: result.Desactivado,
+	}, nil
+}
+
+// ─── VerificarExpiracionCupon — cliente autenticado ───────────────────────────
+
+func (s *CuponService) VerificarExpiracionCupon(
+	ctx context.Context,
+	req *restaurantpb.VerificarExpiracionCuponRequest,
+) (*restaurantpb.VerificarExpiracionCuponResponse, error) {
+
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "id inválido")
+	}
+
+	result, err := s.repo.VerificarExpiracion(ctx, int(req.Id))
+	if err != nil {
+		return nil, status.Error(codes.Internal, "error al verificar expiración: "+err.Error())
+	}
+
+	msg := "El cupón está vigente"
+	if result.Vencido {
+		msg = "El cupón ha vencido y ha sido desactivado"
+	}
+
+	return &restaurantpb.VerificarExpiracionCuponResponse{
+		Message: msg,
+		Vencido: result.Vencido,
+	}, nil
+}

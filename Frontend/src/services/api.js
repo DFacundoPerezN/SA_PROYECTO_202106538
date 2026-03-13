@@ -138,6 +138,19 @@ export const cuponService = {
     const response = await api.patch(`/api/cupones/${id}/autorizar`, { autorizado })
     return response.data
   },
+
+  // Incrementar el número de usos del cupón (protegido — solo backend)
+  incrementUso: async (id) => {
+    console.log(`Incrementando uso del cupón ID ${id} en backend...`)
+    const response = await api.post(`/api/cupones/${id}/incrementar-uso`)
+    return response.data
+  },
+
+  verificarExpiracion: async (id) => {
+    console.log(`Verificando expiración del cupón ID ${id} en backend...`)
+    const response = await api.post(`/api/cupones/${id}/verificar-expiracion`)
+    return response.data
+  },
 }
 
 export default api

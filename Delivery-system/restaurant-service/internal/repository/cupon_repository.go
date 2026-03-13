@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"restaurant-service/internal/domain"
 	"strings"
+	"time"
 )
 
 type CuponRepository struct {
@@ -215,4 +216,98 @@ func (r *CuponRepository) Autorizar(ctx context.Context, id int, autorizado bool
 	}
 
 	return nil
+}
+
+// ─── IncrementarUso — suma 1 a UsosActuales y desactiva si alcanzó UsoMaximo ─
+
+// IncrementarUsoResult contiene el estado resultante tras el incremento.
+type IncrementarUsoResult struct {
+	Desactivado bool
+}
+
+func (r *CuponRepository) IncrementarUso(ctx context.Context, id int) (IncrementarUsoResult, error) {
+	// Incrementar UsosActuales en 1 y desactivar si UsosActuales == UsoMaximo.
+	// La comparación se hace DESPUÉS del incremento dentro de la misma sentencia.
+	query := `
+	UPDATE Cupon
+	SET
+		UsosActuales = UsosActuales + 1,
+		Activo = CASE WHEN (UsosActuales + 1) >= UsoMaximo THEN 0 ELSE Activo END
+	OUTPUT INSERTED.Activo, INSERTED.UsosActuales, INSERTED.UsoMaximo
+	WHERE Id = @p1 AND Activo = 1
+	`
+
+	var activo bool
+	var usosActuales, usoMaximo int
+	err := r.db.QueryRowContext(ctx, query, id).Scan(&activo, &usosActuales, &usoMaximo)
+	if err == sql.ErrNoRows {
+		return IncrementarUsoResult{}, fmt.Errorf("cupon %d not found or already inactive", id)
+	}
+	if err != nil {
+		return IncrementarUsoResult{}, err
+	}
+
+	return IncrementarUsoResult{
+		Desactivado: !activo,
+	}, nil
+}
+
+// ─── VerificarExpiracion — desactiva el cupón si FechaExpiracion < NOW ────────
+
+type VerificarExpiracionResult struct {
+	Vencido bool
+}
+
+// ─── VerificarExpiracionCupon — cliente autenticado ───────────────────────────
+
+func (r *CuponRepository) VerificarExpiracion(ctx context.Context, id int) (VerificarExpiracionResult, error) {
+	// Primero intentamos desactivar si está vencido
+	query := `
+	UPDATE Cupon
+	SET Activo = 0
+	OUTPUT INSERTED.FechaExpiracion
+	WHERE Id = @p1 AND Activo = 1 AND FechaExpiracion < GETDATE()
+	`
+
+	var fechaExpiracion interface{}
+	err := r.db.QueryRowContext(ctx, query, id).Scan(&fechaExpiracion)
+	if err == nil {
+		// Se actualizó correctamente -> estaba vencido y activo
+		return VerificarExpiracionResult{Vencido: true}, nil
+	}
+	
+	if err != sql.ErrNoRows {
+		return VerificarExpiracionResult{}, err
+	}
+
+	// No se actualizó ninguna fila. Consultamos el estado actual del cupón
+	var estado struct {
+		Activo          bool
+		FechaExpiracion time.Time
+	}
+	
+	chkQuery := `
+	SELECT Activo, FechaExpiracion 
+	FROM Cupon 
+	WHERE Id = @p1
+	`
+	
+	err = r.db.QueryRowContext(ctx, chkQuery, id).Scan(&estado.Activo, &estado.FechaExpiracion)
+	if err == sql.ErrNoRows {
+		return VerificarExpiracionResult{}, fmt.Errorf("cupon %d not found", id)
+	}
+	if err != nil {
+		return VerificarExpiracionResult{}, err
+	}
+
+	// Determinamos si está vencido basado en la fecha actual
+	vencido := estado.FechaExpiracion.Before(time.Now())
+	
+	// Si está inactivo pero la fecha ya pasó, consideramos que está vencido
+	if !estado.Activo && vencido {
+		return VerificarExpiracionResult{Vencido: true}, nil
+	}
+	
+	// Si está activo pero no vencido, o inactivo por otra razón
+	return VerificarExpiracionResult{Vencido: false}, nil
 }

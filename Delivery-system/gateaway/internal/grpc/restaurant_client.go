@@ -86,3 +86,11 @@ func (c *RestaurantClient) UpdateCupon(ctx context.Context, req *restaurantpb.Up
 func (c *RestaurantClient) AutorizarCupon(ctx context.Context, req *restaurantpb.AutorizarCuponRequest) (*restaurantpb.AutorizarCuponResponse, error) {
 	return c.client.AutorizarCupon(ctx, req)
 }
+
+func (c *RestaurantClient) IncrementarUsoCupon(ctx context.Context, req *restaurantpb.IncrementarUsoCuponRequest) (*restaurantpb.IncrementarUsoCuponResponse, error) {
+	return c.client.IncrementarUsoCupon(ctx, req)
+}
+
+func (c *RestaurantClient) VerificarExpiracionCupon(ctx context.Context, req *restaurantpb.VerificarExpiracionCuponRequest) (*restaurantpb.VerificarExpiracionCuponResponse, error) {
+	return c.client.VerificarExpiracionCupon(ctx, req)
+}

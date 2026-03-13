@@ -437,3 +437,55 @@ func (h *RestaurantHandler) AutorizarCupon(c *gin.Context) {
 
 	c.JSON(200, resp)
 }
+
+// POST /api/cupones/:id/incrementar-uso
+// Acceso: solo cliente autenticado
+func (h *RestaurantHandler) IncrementarUsoCupon(c *gin.Context) {
+	role, _ := c.Get("role")
+	if role != "CLIENTE" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "acceso denegado: solo clientes pueden usar esta acción"})
+		return
+	}
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil || id <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id inválido"})
+		return
+	}
+
+	resp, err := h.restaurantClient.IncrementarUsoCupon(c, &restaurantpb.IncrementarUsoCuponRequest{
+		Id: int32(id),
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+// POST /api/cupones/:id/verificar-expiracion
+// Acceso: solo cliente autenticado
+func (h *RestaurantHandler) VerificarExpiracionCupon(c *gin.Context) {
+	role, _ := c.Get("role")
+	if role != "CLIENTE" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "acceso denegado: solo clientes pueden usar esta acción"})
+		return
+	}
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil || id <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id inválido"})
+		return
+	}
+
+	resp, err := h.restaurantClient.VerificarExpiracionCupon(c, &restaurantpb.VerificarExpiracionCuponRequest{
+		Id: int32(id),
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
