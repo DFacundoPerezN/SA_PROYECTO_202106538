@@ -806,7 +806,7 @@ const filteredCupones = cupones.filter(c => {
                           <td><strong>#{cupon.id}</strong></td>
                           <td>Rest. #{cupon.restaurante_id}</td>
                           <td>
-                            <span style={{ fontFamily:'monospace', fontWeight:700, background:'#f3f4f6', padding:'2px 8px', borderRadius:'4px', border:'1px solid #e5e7eb', fontSize:'0.85rem' }}>
+                            <span style={{ fontFamily:'monospace', fontWeight:700, background:'#f3f4f6', color: '#333', padding:'2px 8px', borderRadius:'4px', border:'1px solid #e5e7eb', fontSize:'0.85rem' }}>
                               {cupon.codigo}
                             </span>
                           </td>
