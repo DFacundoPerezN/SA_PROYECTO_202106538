@@ -34,6 +34,7 @@ type CreateOrderBody struct {
 	Latitud           float64           `json:"latitud"`
 	Longitud          float64           `json:"longitud"`
 	Items             []CreateOrderItem `json:"items"`
+	MontoDescuento    float64           `json:"monto_descuento"` // ← NUEVO para recibir el descuento calculado en el frontend
 }
 
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
@@ -46,8 +47,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	}
 
 	userID := c.GetInt("user_id")
-
-	//fmt.Printf("Received CreateOrder request from user %d: %+v\n", userID, body)
+	
 	var items []*orderpb.OrderItem
 
 	for _, i := range body.Items {
@@ -57,6 +57,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 			Comments:  i.Comentarios,
 		})
 	}
+
 
 	req := &orderpb.CreateOrderRequest{
 		ClientId:       int32(userID),
@@ -68,6 +69,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		Lat:            body.Latitud,
 		Lng:            body.Longitud,
 		Items:          items,
+		DiscountAmount: body.MontoDescuento, // ← PASAR el monto del descuento al backend
 	}
 
 	resp, err := h.orderClient.CreateOrder(req)

@@ -22,15 +22,22 @@ COPY order-service ./order-service
 # (Opcional) generar stubs si decides hacerlo aquí
 
 WORKDIR /workspace/proto/orderpb
-RUN rm -f *.pb.go && protoc --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. order.proto
+RUN protoc --go_out=. --go_opt=paths=source_relative \
+           --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+           order.proto
 
-# compilar servicio
 
 WORKDIR /workspace/order-service
 
 # desactivar workspace
 
 ENV GOWORK=off
+
+# Mostrar qué archivos hay (para debug)
+RUN ls -la /workspace/proto/orderpb/
+
+# Asegurar que go.mod tiene la referencia correcta
+RUN go mod edit -replace delivery-proto/orderpb=/workspace/proto/orderpb
 
 RUN go mod tidy
 RUN go build -o order-server ./cmd/server

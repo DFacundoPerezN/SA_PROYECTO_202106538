@@ -140,3 +140,27 @@ func (s *CatalogGRPCServer) GetProductRecommendationPercentage(
 		TotalRecomendaciones: int32(total),
 	}, nil
 }
+
+func (s *CatalogGRPCServer) GetRestaurantsByCategory(
+	ctx context.Context,
+	req *catalogpb.GetRestaurantsByCategoryRequest,
+) (*catalogpb.GetRestaurantsByCategoryResponse, error) {
+
+	data, err := s.service.GetRestaurantsByCategory(ctx, req.Categoria)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*catalogpb.RestaurantCategory
+
+	for _, r := range data {
+		result = append(result, &catalogpb.RestaurantCategory{
+			RestauranteId:     int32(r.RestauranteId),
+			RestauranteNombre: r.RestauranteNombre,
+		})
+	}
+
+	return &catalogpb.GetRestaurantsByCategoryResponse{
+		Restaurants: result,
+	}, nil
+}

@@ -18,6 +18,8 @@ service CatalogService {
   rpc CreateProductRecommendation(CreateProductRecommendationRequest) returns (CreateProductRecommendationResponse);
 
   rpc GetProductRecommendationPercentage(GetProductRecommendationPercentageRequest) returns (GetProductRecommendationPercentageResponse);
+
+  rpc GetRestaurantsByCategory(GetRestaurantsByCategoryRequest) returns (GetRestaurantsByCategoryResponse);
 }
 
 message GetCatalogRequest {
@@ -98,4 +100,17 @@ message GetProductRecommendationPercentageRequest {
 message GetProductRecommendationPercentageResponse {
   double porcentaje = 1;
   int32 total_recomendaciones = 2;
+}
+
+message GetRestaurantsByCategoryRequest {
+  string categoria = 1;
+}
+
+message RestaurantCategory {
+  int32 restaurante_id = 1;
+  string restaurante_nombre = 2;
+}
+
+message GetRestaurantsByCategoryResponse {
+  repeated RestaurantCategory restaurants = 1;
 }

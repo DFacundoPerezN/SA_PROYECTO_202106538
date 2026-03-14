@@ -54,3 +54,48 @@ func (c *RestaurantClient) GetLatestRestaurants(ctx context.Context, req *restau
 func (c *RestaurantClient) GetTopRatedRestaurants(ctx context.Context, req *restaurantpb.GetTopRatedRestaurantsRequest) (*restaurantpb.GetRestaurantsResponse, error) {
 	return c.client.GetTopRatedRestaurants(ctx, req)
 }
+
+// ─── Promociones ─────────────────────────────────────────────────────────────
+
+func (c *RestaurantClient) CreatePromocion(ctx context.Context, req *restaurantpb.CreatePromocionRequest) (*restaurantpb.CreatePromocionResponse, error) {
+	return c.client.CreatePromocion(ctx, req)
+}
+
+func (c *RestaurantClient) GetPromociones(ctx context.Context, req *restaurantpb.GetPromocionesRequest) (*restaurantpb.GetPromocionesResponse, error) {
+	return c.client.GetPromociones(ctx, req)
+}
+
+func (c *RestaurantClient) UpdatePromocion(ctx context.Context, req *restaurantpb.UpdatePromocionRequest) (*restaurantpb.UpdatePromocionResponse, error) {
+	return c.client.UpdatePromocion(ctx, req)
+}
+
+// ─── Cupones ──────────────────────────────────────────────────────────────────
+
+func (c *RestaurantClient) CreateCupon(ctx context.Context, req *restaurantpb.CreateCuponRequest) (*restaurantpb.CreateCuponResponse, error) {
+	return c.client.CreateCupon(ctx, req)
+}
+
+func (c *RestaurantClient) GetCupones(ctx context.Context, req *restaurantpb.GetCuponesRequest) (*restaurantpb.GetCuponesResponse, error) {
+	return c.client.GetCupones(ctx, req)
+}
+
+func (c *RestaurantClient) UpdateCupon(ctx context.Context, req *restaurantpb.UpdateCuponRequest) (*restaurantpb.UpdateCuponResponse, error) {
+	return c.client.UpdateCupon(ctx, req)
+}
+
+func (c *RestaurantClient) AutorizarCupon(ctx context.Context, req *restaurantpb.AutorizarCuponRequest) (*restaurantpb.AutorizarCuponResponse, error) {
+	return c.client.AutorizarCupon(ctx, req)
+}
+
+func (c *RestaurantClient) IncrementarUsoCupon(ctx context.Context, req *restaurantpb.IncrementarUsoCuponRequest) (*restaurantpb.IncrementarUsoCuponResponse, error) {
+	return c.client.IncrementarUsoCupon(ctx, req)
+}
+
+func (c *RestaurantClient) VerificarExpiracionCupon(ctx context.Context, req *restaurantpb.VerificarExpiracionCuponRequest) (*restaurantpb.VerificarExpiracionCuponResponse, error) {
+	return c.client.VerificarExpiracionCupon(ctx, req)
+}
+
+// ─── Obtener restaurantes con promociones
+func (c *RestaurantClient) GetRestaurantsWithDeals(ctx context.Context, req *restaurantpb.GetRestaurantsWithDealsRequest) (*restaurantpb.GetRestaurantsWithDealsResponse, error) {
+	return c.client.GetRestaurantsWithDeals(ctx, req)
+}

@@ -701,6 +701,1522 @@ func (x *GetRestaurantsResponse) GetRestaurants() []*Restaurant {
 	return nil
 }
 
+type Promocion struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	RestauranteId int32                  `protobuf:"varint,2,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	Titulo        string                 `protobuf:"bytes,3,opt,name=titulo,proto3" json:"titulo,omitempty"`
+	Descripcion   string                 `protobuf:"bytes,4,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	Tipo          string                 `protobuf:"bytes,5,opt,name=tipo,proto3" json:"tipo,omitempty"` // "PORCENTAJE" | "ENVIO_GRATIS"
+	Valor         float64                `protobuf:"fixed64,6,opt,name=valor,proto3" json:"valor,omitempty"`
+	FechaInicio   string                 `protobuf:"bytes,7,opt,name=fecha_inicio,json=fechaInicio,proto3" json:"fecha_inicio,omitempty"` // ISO 8601
+	FechaFin      string                 `protobuf:"bytes,8,opt,name=fecha_fin,json=fechaFin,proto3" json:"fecha_fin,omitempty"`          // ISO 8601
+	Activa        bool                   `protobuf:"varint,9,opt,name=activa,proto3" json:"activa,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Promocion) Reset() {
+	*x = Promocion{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Promocion) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Promocion) ProtoMessage() {}
+
+func (x *Promocion) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Promocion.ProtoReflect.Descriptor instead.
+func (*Promocion) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *Promocion) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Promocion) GetRestauranteId() int32 {
+	if x != nil {
+		return x.RestauranteId
+	}
+	return 0
+}
+
+func (x *Promocion) GetTitulo() string {
+	if x != nil {
+		return x.Titulo
+	}
+	return ""
+}
+
+func (x *Promocion) GetDescripcion() string {
+	if x != nil {
+		return x.Descripcion
+	}
+	return ""
+}
+
+func (x *Promocion) GetTipo() string {
+	if x != nil {
+		return x.Tipo
+	}
+	return ""
+}
+
+func (x *Promocion) GetValor() float64 {
+	if x != nil {
+		return x.Valor
+	}
+	return 0
+}
+
+func (x *Promocion) GetFechaInicio() string {
+	if x != nil {
+		return x.FechaInicio
+	}
+	return ""
+}
+
+func (x *Promocion) GetFechaFin() string {
+	if x != nil {
+		return x.FechaFin
+	}
+	return ""
+}
+
+func (x *Promocion) GetActiva() bool {
+	if x != nil {
+		return x.Activa
+	}
+	return false
+}
+
+// CreatePromocion
+type CreatePromocionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RestauranteId int32                  `protobuf:"varint,1,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	Titulo        string                 `protobuf:"bytes,2,opt,name=titulo,proto3" json:"titulo,omitempty"`
+	Descripcion   string                 `protobuf:"bytes,3,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	Tipo          string                 `protobuf:"bytes,4,opt,name=tipo,proto3" json:"tipo,omitempty"`
+	Valor         float64                `protobuf:"fixed64,5,opt,name=valor,proto3" json:"valor,omitempty"`
+	FechaInicio   string                 `protobuf:"bytes,6,opt,name=fecha_inicio,json=fechaInicio,proto3" json:"fecha_inicio,omitempty"`
+	FechaFin      string                 `protobuf:"bytes,7,opt,name=fecha_fin,json=fechaFin,proto3" json:"fecha_fin,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreatePromocionRequest) Reset() {
+	*x = CreatePromocionRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreatePromocionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreatePromocionRequest) ProtoMessage() {}
+
+func (x *CreatePromocionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreatePromocionRequest.ProtoReflect.Descriptor instead.
+func (*CreatePromocionRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CreatePromocionRequest) GetRestauranteId() int32 {
+	if x != nil {
+		return x.RestauranteId
+	}
+	return 0
+}
+
+func (x *CreatePromocionRequest) GetTitulo() string {
+	if x != nil {
+		return x.Titulo
+	}
+	return ""
+}
+
+func (x *CreatePromocionRequest) GetDescripcion() string {
+	if x != nil {
+		return x.Descripcion
+	}
+	return ""
+}
+
+func (x *CreatePromocionRequest) GetTipo() string {
+	if x != nil {
+		return x.Tipo
+	}
+	return ""
+}
+
+func (x *CreatePromocionRequest) GetValor() float64 {
+	if x != nil {
+		return x.Valor
+	}
+	return 0
+}
+
+func (x *CreatePromocionRequest) GetFechaInicio() string {
+	if x != nil {
+		return x.FechaInicio
+	}
+	return ""
+}
+
+func (x *CreatePromocionRequest) GetFechaFin() string {
+	if x != nil {
+		return x.FechaFin
+	}
+	return ""
+}
+
+type CreatePromocionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreatePromocionResponse) Reset() {
+	*x = CreatePromocionResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreatePromocionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreatePromocionResponse) ProtoMessage() {}
+
+func (x *CreatePromocionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreatePromocionResponse.ProtoReflect.Descriptor instead.
+func (*CreatePromocionResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *CreatePromocionResponse) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *CreatePromocionResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+// GetPromociones (con filtros)
+type GetPromocionesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RestauranteId int32                  `protobuf:"varint,1,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"` // 0 = todos los restaurantes
+	SoloActivas   bool                   `protobuf:"varint,2,opt,name=solo_activas,json=soloActivas,proto3" json:"solo_activas,omitempty"`       // true = WHERE Activa = 1
+	Tipo          string                 `protobuf:"bytes,3,opt,name=tipo,proto3" json:"tipo,omitempty"`                                         // "" = todos los tipos
+	FechaDesde    string                 `protobuf:"bytes,4,opt,name=fecha_desde,json=fechaDesde,proto3" json:"fecha_desde,omitempty"`           // "" = sin límite inferior  (ISO 8601)
+	FechaHasta    string                 `protobuf:"bytes,5,opt,name=fecha_hasta,json=fechaHasta,proto3" json:"fecha_hasta,omitempty"`           // "" = sin límite superior  (ISO 8601)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPromocionesRequest) Reset() {
+	*x = GetPromocionesRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPromocionesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPromocionesRequest) ProtoMessage() {}
+
+func (x *GetPromocionesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPromocionesRequest.ProtoReflect.Descriptor instead.
+func (*GetPromocionesRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *GetPromocionesRequest) GetRestauranteId() int32 {
+	if x != nil {
+		return x.RestauranteId
+	}
+	return 0
+}
+
+func (x *GetPromocionesRequest) GetSoloActivas() bool {
+	if x != nil {
+		return x.SoloActivas
+	}
+	return false
+}
+
+func (x *GetPromocionesRequest) GetTipo() string {
+	if x != nil {
+		return x.Tipo
+	}
+	return ""
+}
+
+func (x *GetPromocionesRequest) GetFechaDesde() string {
+	if x != nil {
+		return x.FechaDesde
+	}
+	return ""
+}
+
+func (x *GetPromocionesRequest) GetFechaHasta() string {
+	if x != nil {
+		return x.FechaHasta
+	}
+	return ""
+}
+
+type GetPromocionesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Promociones   []*Promocion           `protobuf:"bytes,1,rep,name=promociones,proto3" json:"promociones,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPromocionesResponse) Reset() {
+	*x = GetPromocionesResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPromocionesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPromocionesResponse) ProtoMessage() {}
+
+func (x *GetPromocionesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPromocionesResponse.ProtoReflect.Descriptor instead.
+func (*GetPromocionesResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GetPromocionesResponse) GetPromociones() []*Promocion {
+	if x != nil {
+		return x.Promociones
+	}
+	return nil
+}
+
+// UpdatePromocion
+type UpdatePromocionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Titulo        string                 `protobuf:"bytes,2,opt,name=titulo,proto3" json:"titulo,omitempty"`
+	Descripcion   string                 `protobuf:"bytes,3,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	Tipo          string                 `protobuf:"bytes,4,opt,name=tipo,proto3" json:"tipo,omitempty"`
+	Valor         float64                `protobuf:"fixed64,5,opt,name=valor,proto3" json:"valor,omitempty"`
+	FechaInicio   string                 `protobuf:"bytes,6,opt,name=fecha_inicio,json=fechaInicio,proto3" json:"fecha_inicio,omitempty"`
+	FechaFin      string                 `protobuf:"bytes,7,opt,name=fecha_fin,json=fechaFin,proto3" json:"fecha_fin,omitempty"`
+	Activa        bool                   `protobuf:"varint,8,opt,name=activa,proto3" json:"activa,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdatePromocionRequest) Reset() {
+	*x = UpdatePromocionRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdatePromocionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdatePromocionRequest) ProtoMessage() {}
+
+func (x *UpdatePromocionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdatePromocionRequest.ProtoReflect.Descriptor instead.
+func (*UpdatePromocionRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *UpdatePromocionRequest) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *UpdatePromocionRequest) GetTitulo() string {
+	if x != nil {
+		return x.Titulo
+	}
+	return ""
+}
+
+func (x *UpdatePromocionRequest) GetDescripcion() string {
+	if x != nil {
+		return x.Descripcion
+	}
+	return ""
+}
+
+func (x *UpdatePromocionRequest) GetTipo() string {
+	if x != nil {
+		return x.Tipo
+	}
+	return ""
+}
+
+func (x *UpdatePromocionRequest) GetValor() float64 {
+	if x != nil {
+		return x.Valor
+	}
+	return 0
+}
+
+func (x *UpdatePromocionRequest) GetFechaInicio() string {
+	if x != nil {
+		return x.FechaInicio
+	}
+	return ""
+}
+
+func (x *UpdatePromocionRequest) GetFechaFin() string {
+	if x != nil {
+		return x.FechaFin
+	}
+	return ""
+}
+
+func (x *UpdatePromocionRequest) GetActiva() bool {
+	if x != nil {
+		return x.Activa
+	}
+	return false
+}
+
+type UpdatePromocionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdatePromocionResponse) Reset() {
+	*x = UpdatePromocionResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdatePromocionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdatePromocionResponse) ProtoMessage() {}
+
+func (x *UpdatePromocionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdatePromocionResponse.ProtoReflect.Descriptor instead.
+func (*UpdatePromocionResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *UpdatePromocionResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type Cupon struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	RestauranteId   int32                  `protobuf:"varint,2,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	Codigo          string                 `protobuf:"bytes,3,opt,name=codigo,proto3" json:"codigo,omitempty"`
+	Titulo          string                 `protobuf:"bytes,4,opt,name=titulo,proto3" json:"titulo,omitempty"`
+	Descripcion     string                 `protobuf:"bytes,5,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	Valor           float64                `protobuf:"fixed64,6,opt,name=valor,proto3" json:"valor,omitempty"`
+	UsoMaximo       int32                  `protobuf:"varint,7,opt,name=uso_maximo,json=usoMaximo,proto3" json:"uso_maximo,omitempty"`
+	UsosActuales    int32                  `protobuf:"varint,8,opt,name=usos_actuales,json=usosActuales,proto3" json:"usos_actuales,omitempty"`
+	FechaInicio     string                 `protobuf:"bytes,9,opt,name=fecha_inicio,json=fechaInicio,proto3" json:"fecha_inicio,omitempty"`              // ISO 8601
+	FechaExpiracion string                 `protobuf:"bytes,10,opt,name=fecha_expiracion,json=fechaExpiracion,proto3" json:"fecha_expiracion,omitempty"` // ISO 8601
+	Autorizado      bool                   `protobuf:"varint,11,opt,name=autorizado,proto3" json:"autorizado,omitempty"`
+	Activo          bool                   `protobuf:"varint,12,opt,name=activo,proto3" json:"activo,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *Cupon) Reset() {
+	*x = Cupon{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Cupon) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Cupon) ProtoMessage() {}
+
+func (x *Cupon) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Cupon.ProtoReflect.Descriptor instead.
+func (*Cupon) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *Cupon) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Cupon) GetRestauranteId() int32 {
+	if x != nil {
+		return x.RestauranteId
+	}
+	return 0
+}
+
+func (x *Cupon) GetCodigo() string {
+	if x != nil {
+		return x.Codigo
+	}
+	return ""
+}
+
+func (x *Cupon) GetTitulo() string {
+	if x != nil {
+		return x.Titulo
+	}
+	return ""
+}
+
+func (x *Cupon) GetDescripcion() string {
+	if x != nil {
+		return x.Descripcion
+	}
+	return ""
+}
+
+func (x *Cupon) GetValor() float64 {
+	if x != nil {
+		return x.Valor
+	}
+	return 0
+}
+
+func (x *Cupon) GetUsoMaximo() int32 {
+	if x != nil {
+		return x.UsoMaximo
+	}
+	return 0
+}
+
+func (x *Cupon) GetUsosActuales() int32 {
+	if x != nil {
+		return x.UsosActuales
+	}
+	return 0
+}
+
+func (x *Cupon) GetFechaInicio() string {
+	if x != nil {
+		return x.FechaInicio
+	}
+	return ""
+}
+
+func (x *Cupon) GetFechaExpiracion() string {
+	if x != nil {
+		return x.FechaExpiracion
+	}
+	return ""
+}
+
+func (x *Cupon) GetAutorizado() bool {
+	if x != nil {
+		return x.Autorizado
+	}
+	return false
+}
+
+func (x *Cupon) GetActivo() bool {
+	if x != nil {
+		return x.Activo
+	}
+	return false
+}
+
+// CreateCupon — lo hace el restaurante
+type CreateCuponRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	RestauranteId   int32                  `protobuf:"varint,1,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	Codigo          string                 `protobuf:"bytes,2,opt,name=codigo,proto3" json:"codigo,omitempty"`
+	Titulo          string                 `protobuf:"bytes,3,opt,name=titulo,proto3" json:"titulo,omitempty"`
+	Descripcion     string                 `protobuf:"bytes,4,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	Valor           float64                `protobuf:"fixed64,5,opt,name=valor,proto3" json:"valor,omitempty"`
+	UsoMaximo       int32                  `protobuf:"varint,6,opt,name=uso_maximo,json=usoMaximo,proto3" json:"uso_maximo,omitempty"`
+	FechaInicio     string                 `protobuf:"bytes,7,opt,name=fecha_inicio,json=fechaInicio,proto3" json:"fecha_inicio,omitempty"`             // ISO 8601, opcional (default NOW)
+	FechaExpiracion string                 `protobuf:"bytes,8,opt,name=fecha_expiracion,json=fechaExpiracion,proto3" json:"fecha_expiracion,omitempty"` // ISO 8601, requerido
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *CreateCuponRequest) Reset() {
+	*x = CreateCuponRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateCuponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateCuponRequest) ProtoMessage() {}
+
+func (x *CreateCuponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateCuponRequest.ProtoReflect.Descriptor instead.
+func (*CreateCuponRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *CreateCuponRequest) GetRestauranteId() int32 {
+	if x != nil {
+		return x.RestauranteId
+	}
+	return 0
+}
+
+func (x *CreateCuponRequest) GetCodigo() string {
+	if x != nil {
+		return x.Codigo
+	}
+	return ""
+}
+
+func (x *CreateCuponRequest) GetTitulo() string {
+	if x != nil {
+		return x.Titulo
+	}
+	return ""
+}
+
+func (x *CreateCuponRequest) GetDescripcion() string {
+	if x != nil {
+		return x.Descripcion
+	}
+	return ""
+}
+
+func (x *CreateCuponRequest) GetValor() float64 {
+	if x != nil {
+		return x.Valor
+	}
+	return 0
+}
+
+func (x *CreateCuponRequest) GetUsoMaximo() int32 {
+	if x != nil {
+		return x.UsoMaximo
+	}
+	return 0
+}
+
+func (x *CreateCuponRequest) GetFechaInicio() string {
+	if x != nil {
+		return x.FechaInicio
+	}
+	return ""
+}
+
+func (x *CreateCuponRequest) GetFechaExpiracion() string {
+	if x != nil {
+		return x.FechaExpiracion
+	}
+	return ""
+}
+
+type CreateCuponResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateCuponResponse) Reset() {
+	*x = CreateCuponResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateCuponResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateCuponResponse) ProtoMessage() {}
+
+func (x *CreateCuponResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateCuponResponse.ProtoReflect.Descriptor instead.
+func (*CreateCuponResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *CreateCuponResponse) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *CreateCuponResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+// GetCupones — con filtros combinables
+type GetCuponesRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	RestauranteId   int32                  `protobuf:"varint,1,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"` // 0 = todos
+	SoloActivos     bool                   `protobuf:"varint,2,opt,name=solo_activos,json=soloActivos,proto3" json:"solo_activos,omitempty"`
+	SoloAutorizados bool                   `protobuf:"varint,3,opt,name=solo_autorizados,json=soloAutorizados,proto3" json:"solo_autorizados,omitempty"`
+	Codigo          string                 `protobuf:"bytes,4,opt,name=codigo,proto3" json:"codigo,omitempty"`                           // "" = sin filtro (búsqueda exacta)
+	FechaDesde      string                 `protobuf:"bytes,5,opt,name=fecha_desde,json=fechaDesde,proto3" json:"fecha_desde,omitempty"` // "" = sin límite inferior (ISO 8601)
+	FechaHasta      string                 `protobuf:"bytes,6,opt,name=fecha_hasta,json=fechaHasta,proto3" json:"fecha_hasta,omitempty"` // "" = sin límite superior (ISO 8601)
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *GetCuponesRequest) Reset() {
+	*x = GetCuponesRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCuponesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCuponesRequest) ProtoMessage() {}
+
+func (x *GetCuponesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCuponesRequest.ProtoReflect.Descriptor instead.
+func (*GetCuponesRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GetCuponesRequest) GetRestauranteId() int32 {
+	if x != nil {
+		return x.RestauranteId
+	}
+	return 0
+}
+
+func (x *GetCuponesRequest) GetSoloActivos() bool {
+	if x != nil {
+		return x.SoloActivos
+	}
+	return false
+}
+
+func (x *GetCuponesRequest) GetSoloAutorizados() bool {
+	if x != nil {
+		return x.SoloAutorizados
+	}
+	return false
+}
+
+func (x *GetCuponesRequest) GetCodigo() string {
+	if x != nil {
+		return x.Codigo
+	}
+	return ""
+}
+
+func (x *GetCuponesRequest) GetFechaDesde() string {
+	if x != nil {
+		return x.FechaDesde
+	}
+	return ""
+}
+
+func (x *GetCuponesRequest) GetFechaHasta() string {
+	if x != nil {
+		return x.FechaHasta
+	}
+	return ""
+}
+
+type GetCuponesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Cupones       []*Cupon               `protobuf:"bytes,1,rep,name=cupones,proto3" json:"cupones,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCuponesResponse) Reset() {
+	*x = GetCuponesResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCuponesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCuponesResponse) ProtoMessage() {}
+
+func (x *GetCuponesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCuponesResponse.ProtoReflect.Descriptor instead.
+func (*GetCuponesResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *GetCuponesResponse) GetCupones() []*Cupon {
+	if x != nil {
+		return x.Cupones
+	}
+	return nil
+}
+
+// UpdateCupon — lo hace el restaurante (no puede cambiar Autorizado)
+type UpdateCuponRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Titulo          string                 `protobuf:"bytes,2,opt,name=titulo,proto3" json:"titulo,omitempty"`
+	Descripcion     string                 `protobuf:"bytes,3,opt,name=descripcion,proto3" json:"descripcion,omitempty"`
+	Valor           float64                `protobuf:"fixed64,4,opt,name=valor,proto3" json:"valor,omitempty"`
+	UsoMaximo       int32                  `protobuf:"varint,5,opt,name=uso_maximo,json=usoMaximo,proto3" json:"uso_maximo,omitempty"`
+	FechaInicio     string                 `protobuf:"bytes,6,opt,name=fecha_inicio,json=fechaInicio,proto3" json:"fecha_inicio,omitempty"`
+	FechaExpiracion string                 `protobuf:"bytes,7,opt,name=fecha_expiracion,json=fechaExpiracion,proto3" json:"fecha_expiracion,omitempty"`
+	Activo          bool                   `protobuf:"varint,8,opt,name=activo,proto3" json:"activo,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *UpdateCuponRequest) Reset() {
+	*x = UpdateCuponRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateCuponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateCuponRequest) ProtoMessage() {}
+
+func (x *UpdateCuponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateCuponRequest.ProtoReflect.Descriptor instead.
+func (*UpdateCuponRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *UpdateCuponRequest) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *UpdateCuponRequest) GetTitulo() string {
+	if x != nil {
+		return x.Titulo
+	}
+	return ""
+}
+
+func (x *UpdateCuponRequest) GetDescripcion() string {
+	if x != nil {
+		return x.Descripcion
+	}
+	return ""
+}
+
+func (x *UpdateCuponRequest) GetValor() float64 {
+	if x != nil {
+		return x.Valor
+	}
+	return 0
+}
+
+func (x *UpdateCuponRequest) GetUsoMaximo() int32 {
+	if x != nil {
+		return x.UsoMaximo
+	}
+	return 0
+}
+
+func (x *UpdateCuponRequest) GetFechaInicio() string {
+	if x != nil {
+		return x.FechaInicio
+	}
+	return ""
+}
+
+func (x *UpdateCuponRequest) GetFechaExpiracion() string {
+	if x != nil {
+		return x.FechaExpiracion
+	}
+	return ""
+}
+
+func (x *UpdateCuponRequest) GetActivo() bool {
+	if x != nil {
+		return x.Activo
+	}
+	return false
+}
+
+type UpdateCuponResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateCuponResponse) Reset() {
+	*x = UpdateCuponResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateCuponResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateCuponResponse) ProtoMessage() {}
+
+func (x *UpdateCuponResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateCuponResponse.ProtoReflect.Descriptor instead.
+func (*UpdateCuponResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *UpdateCuponResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+// AutorizarCupon — exclusivo del administrador
+type AutorizarCuponRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Autorizado    bool                   `protobuf:"varint,2,opt,name=autorizado,proto3" json:"autorizado,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AutorizarCuponRequest) Reset() {
+	*x = AutorizarCuponRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AutorizarCuponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AutorizarCuponRequest) ProtoMessage() {}
+
+func (x *AutorizarCuponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AutorizarCuponRequest.ProtoReflect.Descriptor instead.
+func (*AutorizarCuponRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *AutorizarCuponRequest) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *AutorizarCuponRequest) GetAutorizado() bool {
+	if x != nil {
+		return x.Autorizado
+	}
+	return false
+}
+
+type AutorizarCuponResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AutorizarCuponResponse) Reset() {
+	*x = AutorizarCuponResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AutorizarCuponResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AutorizarCuponResponse) ProtoMessage() {}
+
+func (x *AutorizarCuponResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AutorizarCuponResponse.ProtoReflect.Descriptor instead.
+func (*AutorizarCuponResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *AutorizarCuponResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type IncrementarUsoCuponRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IncrementarUsoCuponRequest) Reset() {
+	*x = IncrementarUsoCuponRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IncrementarUsoCuponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IncrementarUsoCuponRequest) ProtoMessage() {}
+
+func (x *IncrementarUsoCuponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IncrementarUsoCuponRequest.ProtoReflect.Descriptor instead.
+func (*IncrementarUsoCuponRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *IncrementarUsoCuponRequest) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type IncrementarUsoCuponResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Desactivado   bool                   `protobuf:"varint,2,opt,name=desactivado,proto3" json:"desactivado,omitempty"` // true si alcanzó UsoMaximo y se desactivó
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IncrementarUsoCuponResponse) Reset() {
+	*x = IncrementarUsoCuponResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IncrementarUsoCuponResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IncrementarUsoCuponResponse) ProtoMessage() {}
+
+func (x *IncrementarUsoCuponResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IncrementarUsoCuponResponse.ProtoReflect.Descriptor instead.
+func (*IncrementarUsoCuponResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *IncrementarUsoCuponResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *IncrementarUsoCuponResponse) GetDesactivado() bool {
+	if x != nil {
+		return x.Desactivado
+	}
+	return false
+}
+
+type VerificarExpiracionCuponRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerificarExpiracionCuponRequest) Reset() {
+	*x = VerificarExpiracionCuponRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerificarExpiracionCuponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerificarExpiracionCuponRequest) ProtoMessage() {}
+
+func (x *VerificarExpiracionCuponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerificarExpiracionCuponRequest.ProtoReflect.Descriptor instead.
+func (*VerificarExpiracionCuponRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *VerificarExpiracionCuponRequest) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type VerificarExpiracionCuponResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Vencido       bool                   `protobuf:"varint,2,opt,name=vencido,proto3" json:"vencido,omitempty"` // true si FechaExpiracion < NOW y se desactivó
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerificarExpiracionCuponResponse) Reset() {
+	*x = VerificarExpiracionCuponResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerificarExpiracionCuponResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerificarExpiracionCuponResponse) ProtoMessage() {}
+
+func (x *VerificarExpiracionCuponResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerificarExpiracionCuponResponse.ProtoReflect.Descriptor instead.
+func (*VerificarExpiracionCuponResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *VerificarExpiracionCuponResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *VerificarExpiracionCuponResponse) GetVencido() bool {
+	if x != nil {
+		return x.Vencido
+	}
+	return false
+}
+
+// ─── GetRestaurantsWithDeals ─────────────────────────────────────────────────
+type GetRestaurantsWithDealsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetRestaurantsWithDealsRequest) Reset() {
+	*x = GetRestaurantsWithDealsRequest{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetRestaurantsWithDealsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRestaurantsWithDealsRequest) ProtoMessage() {}
+
+func (x *GetRestaurantsWithDealsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRestaurantsWithDealsRequest.ProtoReflect.Descriptor instead.
+func (*GetRestaurantsWithDealsRequest) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *GetRestaurantsWithDealsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type RestaurantDeal struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RestauranteId int32                  `protobuf:"varint,1,opt,name=restaurante_id,json=restauranteId,proto3" json:"restaurante_id,omitempty"`
+	Nombre        string                 `protobuf:"bytes,2,opt,name=nombre,proto3" json:"nombre,omitempty"`
+	Calificacion  float64                `protobuf:"fixed64,3,opt,name=calificacion,proto3" json:"calificacion,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RestaurantDeal) Reset() {
+	*x = RestaurantDeal{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RestaurantDeal) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RestaurantDeal) ProtoMessage() {}
+
+func (x *RestaurantDeal) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RestaurantDeal.ProtoReflect.Descriptor instead.
+func (*RestaurantDeal) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *RestaurantDeal) GetRestauranteId() int32 {
+	if x != nil {
+		return x.RestauranteId
+	}
+	return 0
+}
+
+func (x *RestaurantDeal) GetNombre() string {
+	if x != nil {
+		return x.Nombre
+	}
+	return ""
+}
+
+func (x *RestaurantDeal) GetCalificacion() float64 {
+	if x != nil {
+		return x.Calificacion
+	}
+	return 0
+}
+
+type GetRestaurantsWithDealsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Restaurants   []*RestaurantDeal      `protobuf:"bytes,1,rep,name=restaurants,proto3" json:"restaurants,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetRestaurantsWithDealsResponse) Reset() {
+	*x = GetRestaurantsWithDealsResponse{}
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetRestaurantsWithDealsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRestaurantsWithDealsResponse) ProtoMessage() {}
+
+func (x *GetRestaurantsWithDealsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_restaurantpb_restaurant_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRestaurantsWithDealsResponse.ProtoReflect.Descriptor instead.
+func (*GetRestaurantsWithDealsResponse) Descriptor() ([]byte, []int) {
+	return file_restaurantpb_restaurant_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *GetRestaurantsWithDealsResponse) GetRestaurants() []*RestaurantDeal {
+	if x != nil {
+		return x.Restaurants
+	}
+	return nil
+}
+
 var File_restaurantpb_restaurant_proto protoreflect.FileDescriptor
 
 const file_restaurantpb_restaurant_proto_rawDesc = "" +
@@ -752,14 +2268,145 @@ const file_restaurantpb_restaurant_proto_rawDesc = "" +
 	"\x1dGetTopRatedRestaurantsRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\"T\n" +
 	"\x16GetRestaurantsResponse\x12:\n" +
-	"\vrestaurants\x18\x01 \x03(\v2\x18.restaurantpb.RestaurantR\vrestaurants2\x90\x05\n" +
+	"\vrestaurants\x18\x01 \x03(\v2\x18.restaurantpb.RestaurantR\vrestaurants\"\xfe\x01\n" +
+	"\tPromocion\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12%\n" +
+	"\x0erestaurante_id\x18\x02 \x01(\x05R\rrestauranteId\x12\x16\n" +
+	"\x06titulo\x18\x03 \x01(\tR\x06titulo\x12 \n" +
+	"\vdescripcion\x18\x04 \x01(\tR\vdescripcion\x12\x12\n" +
+	"\x04tipo\x18\x05 \x01(\tR\x04tipo\x12\x14\n" +
+	"\x05valor\x18\x06 \x01(\x01R\x05valor\x12!\n" +
+	"\ffecha_inicio\x18\a \x01(\tR\vfechaInicio\x12\x1b\n" +
+	"\tfecha_fin\x18\b \x01(\tR\bfechaFin\x12\x16\n" +
+	"\x06activa\x18\t \x01(\bR\x06activa\"\xe3\x01\n" +
+	"\x16CreatePromocionRequest\x12%\n" +
+	"\x0erestaurante_id\x18\x01 \x01(\x05R\rrestauranteId\x12\x16\n" +
+	"\x06titulo\x18\x02 \x01(\tR\x06titulo\x12 \n" +
+	"\vdescripcion\x18\x03 \x01(\tR\vdescripcion\x12\x12\n" +
+	"\x04tipo\x18\x04 \x01(\tR\x04tipo\x12\x14\n" +
+	"\x05valor\x18\x05 \x01(\x01R\x05valor\x12!\n" +
+	"\ffecha_inicio\x18\x06 \x01(\tR\vfechaInicio\x12\x1b\n" +
+	"\tfecha_fin\x18\a \x01(\tR\bfechaFin\"C\n" +
+	"\x17CreatePromocionResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xb7\x01\n" +
+	"\x15GetPromocionesRequest\x12%\n" +
+	"\x0erestaurante_id\x18\x01 \x01(\x05R\rrestauranteId\x12!\n" +
+	"\fsolo_activas\x18\x02 \x01(\bR\vsoloActivas\x12\x12\n" +
+	"\x04tipo\x18\x03 \x01(\tR\x04tipo\x12\x1f\n" +
+	"\vfecha_desde\x18\x04 \x01(\tR\n" +
+	"fechaDesde\x12\x1f\n" +
+	"\vfecha_hasta\x18\x05 \x01(\tR\n" +
+	"fechaHasta\"S\n" +
+	"\x16GetPromocionesResponse\x129\n" +
+	"\vpromociones\x18\x01 \x03(\v2\x17.restaurantpb.PromocionR\vpromociones\"\xe4\x01\n" +
+	"\x16UpdatePromocionRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x16\n" +
+	"\x06titulo\x18\x02 \x01(\tR\x06titulo\x12 \n" +
+	"\vdescripcion\x18\x03 \x01(\tR\vdescripcion\x12\x12\n" +
+	"\x04tipo\x18\x04 \x01(\tR\x04tipo\x12\x14\n" +
+	"\x05valor\x18\x05 \x01(\x01R\x05valor\x12!\n" +
+	"\ffecha_inicio\x18\x06 \x01(\tR\vfechaInicio\x12\x1b\n" +
+	"\tfecha_fin\x18\a \x01(\tR\bfechaFin\x12\x16\n" +
+	"\x06activa\x18\b \x01(\bR\x06activa\"3\n" +
+	"\x17UpdatePromocionResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"\xf0\x02\n" +
+	"\x05Cupon\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12%\n" +
+	"\x0erestaurante_id\x18\x02 \x01(\x05R\rrestauranteId\x12\x16\n" +
+	"\x06codigo\x18\x03 \x01(\tR\x06codigo\x12\x16\n" +
+	"\x06titulo\x18\x04 \x01(\tR\x06titulo\x12 \n" +
+	"\vdescripcion\x18\x05 \x01(\tR\vdescripcion\x12\x14\n" +
+	"\x05valor\x18\x06 \x01(\x01R\x05valor\x12\x1d\n" +
+	"\n" +
+	"uso_maximo\x18\a \x01(\x05R\tusoMaximo\x12#\n" +
+	"\rusos_actuales\x18\b \x01(\x05R\fusosActuales\x12!\n" +
+	"\ffecha_inicio\x18\t \x01(\tR\vfechaInicio\x12)\n" +
+	"\x10fecha_expiracion\x18\n" +
+	" \x01(\tR\x0ffechaExpiracion\x12\x1e\n" +
+	"\n" +
+	"autorizado\x18\v \x01(\bR\n" +
+	"autorizado\x12\x16\n" +
+	"\x06activo\x18\f \x01(\bR\x06activo\"\x90\x02\n" +
+	"\x12CreateCuponRequest\x12%\n" +
+	"\x0erestaurante_id\x18\x01 \x01(\x05R\rrestauranteId\x12\x16\n" +
+	"\x06codigo\x18\x02 \x01(\tR\x06codigo\x12\x16\n" +
+	"\x06titulo\x18\x03 \x01(\tR\x06titulo\x12 \n" +
+	"\vdescripcion\x18\x04 \x01(\tR\vdescripcion\x12\x14\n" +
+	"\x05valor\x18\x05 \x01(\x01R\x05valor\x12\x1d\n" +
+	"\n" +
+	"uso_maximo\x18\x06 \x01(\x05R\tusoMaximo\x12!\n" +
+	"\ffecha_inicio\x18\a \x01(\tR\vfechaInicio\x12)\n" +
+	"\x10fecha_expiracion\x18\b \x01(\tR\x0ffechaExpiracion\"?\n" +
+	"\x13CreateCuponResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xe2\x01\n" +
+	"\x11GetCuponesRequest\x12%\n" +
+	"\x0erestaurante_id\x18\x01 \x01(\x05R\rrestauranteId\x12!\n" +
+	"\fsolo_activos\x18\x02 \x01(\bR\vsoloActivos\x12)\n" +
+	"\x10solo_autorizados\x18\x03 \x01(\bR\x0fsoloAutorizados\x12\x16\n" +
+	"\x06codigo\x18\x04 \x01(\tR\x06codigo\x12\x1f\n" +
+	"\vfecha_desde\x18\x05 \x01(\tR\n" +
+	"fechaDesde\x12\x1f\n" +
+	"\vfecha_hasta\x18\x06 \x01(\tR\n" +
+	"fechaHasta\"C\n" +
+	"\x12GetCuponesResponse\x12-\n" +
+	"\acupones\x18\x01 \x03(\v2\x13.restaurantpb.CuponR\acupones\"\xf9\x01\n" +
+	"\x12UpdateCuponRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x16\n" +
+	"\x06titulo\x18\x02 \x01(\tR\x06titulo\x12 \n" +
+	"\vdescripcion\x18\x03 \x01(\tR\vdescripcion\x12\x14\n" +
+	"\x05valor\x18\x04 \x01(\x01R\x05valor\x12\x1d\n" +
+	"\n" +
+	"uso_maximo\x18\x05 \x01(\x05R\tusoMaximo\x12!\n" +
+	"\ffecha_inicio\x18\x06 \x01(\tR\vfechaInicio\x12)\n" +
+	"\x10fecha_expiracion\x18\a \x01(\tR\x0ffechaExpiracion\x12\x16\n" +
+	"\x06activo\x18\b \x01(\bR\x06activo\"/\n" +
+	"\x13UpdateCuponResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"G\n" +
+	"\x15AutorizarCuponRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x1e\n" +
+	"\n" +
+	"autorizado\x18\x02 \x01(\bR\n" +
+	"autorizado\"2\n" +
+	"\x16AutorizarCuponResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\",\n" +
+	"\x1aIncrementarUsoCuponRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\"Y\n" +
+	"\x1bIncrementarUsoCuponResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\x12 \n" +
+	"\vdesactivado\x18\x02 \x01(\bR\vdesactivado\"1\n" +
+	"\x1fVerificarExpiracionCuponRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x05R\x02id\"V\n" +
+	" VerificarExpiracionCuponResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\x12\x18\n" +
+	"\avencido\x18\x02 \x01(\bR\avencido\"6\n" +
+	"\x1eGetRestaurantsWithDealsRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"s\n" +
+	"\x0eRestaurantDeal\x12%\n" +
+	"\x0erestaurante_id\x18\x01 \x01(\x05R\rrestauranteId\x12\x16\n" +
+	"\x06nombre\x18\x02 \x01(\tR\x06nombre\x12\"\n" +
+	"\fcalificacion\x18\x03 \x01(\x01R\fcalificacion\"a\n" +
+	"\x1fGetRestaurantsWithDealsResponse\x12>\n" +
+	"\vrestaurants\x18\x01 \x03(\v2\x1c.restaurantpb.RestaurantDealR\vrestaurants2\xe2\f\n" +
 	"\x11RestaurantService\x12L\n" +
 	"\x0fListRestaurants\x12\x13.restaurantpb.Empty\x1a$.restaurantpb.RestaurantListResponse\x12a\n" +
 	"\x10CreateRestaurant\x12%.restaurantpb.CreateRestaurantRequest\x1a&.restaurantpb.CreateRestaurantResponse\x12s\n" +
 	"\x16CreateRestaurantRating\x12+.restaurantpb.CreateRestaurantRatingRequest\x1a,.restaurantpb.CreateRestaurantRatingResponse\x12\x7f\n" +
 	"\x1aGetRestaurantRatingAverage\x12/.restaurantpb.GetRestaurantRatingAverageRequest\x1a0.restaurantpb.GetRestaurantRatingAverageResponse\x12g\n" +
 	"\x14GetLatestRestaurants\x12).restaurantpb.GetLatestRestaurantsRequest\x1a$.restaurantpb.GetRestaurantsResponse\x12k\n" +
-	"\x16GetTopRatedRestaurants\x12+.restaurantpb.GetTopRatedRestaurantsRequest\x1a$.restaurantpb.GetRestaurantsResponseB\x1dZ\x1bdelivery-proto/restaurantpbb\x06proto3"
+	"\x16GetTopRatedRestaurants\x12+.restaurantpb.GetTopRatedRestaurantsRequest\x1a$.restaurantpb.GetRestaurantsResponse\x12^\n" +
+	"\x0fCreatePromocion\x12$.restaurantpb.CreatePromocionRequest\x1a%.restaurantpb.CreatePromocionResponse\x12[\n" +
+	"\x0eGetPromociones\x12#.restaurantpb.GetPromocionesRequest\x1a$.restaurantpb.GetPromocionesResponse\x12^\n" +
+	"\x0fUpdatePromocion\x12$.restaurantpb.UpdatePromocionRequest\x1a%.restaurantpb.UpdatePromocionResponse\x12R\n" +
+	"\vCreateCupon\x12 .restaurantpb.CreateCuponRequest\x1a!.restaurantpb.CreateCuponResponse\x12O\n" +
+	"\n" +
+	"GetCupones\x12\x1f.restaurantpb.GetCuponesRequest\x1a .restaurantpb.GetCuponesResponse\x12R\n" +
+	"\vUpdateCupon\x12 .restaurantpb.UpdateCuponRequest\x1a!.restaurantpb.UpdateCuponResponse\x12[\n" +
+	"\x0eAutorizarCupon\x12#.restaurantpb.AutorizarCuponRequest\x1a$.restaurantpb.AutorizarCuponResponse\x12j\n" +
+	"\x13IncrementarUsoCupon\x12(.restaurantpb.IncrementarUsoCuponRequest\x1a).restaurantpb.IncrementarUsoCuponResponse\x12y\n" +
+	"\x18VerificarExpiracionCupon\x12-.restaurantpb.VerificarExpiracionCuponRequest\x1a..restaurantpb.VerificarExpiracionCuponResponse\x12v\n" +
+	"\x17GetRestaurantsWithDeals\x12,.restaurantpb.GetRestaurantsWithDealsRequest\x1a-.restaurantpb.GetRestaurantsWithDealsResponseB\x1dZ\x1bdelivery-proto/restaurantpbb\x06proto3"
 
 var (
 	file_restaurantpb_restaurant_proto_rawDescOnce sync.Once
@@ -773,7 +2420,7 @@ func file_restaurantpb_restaurant_proto_rawDescGZIP() []byte {
 	return file_restaurantpb_restaurant_proto_rawDescData
 }
 
-var file_restaurantpb_restaurant_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_restaurantpb_restaurant_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
 var file_restaurantpb_restaurant_proto_goTypes = []any{
 	(*Empty)(nil),                              // 0: restaurantpb.Empty
 	(*Restaurant)(nil),                         // 1: restaurantpb.Restaurant
@@ -787,27 +2434,73 @@ var file_restaurantpb_restaurant_proto_goTypes = []any{
 	(*GetLatestRestaurantsRequest)(nil),        // 9: restaurantpb.GetLatestRestaurantsRequest
 	(*GetTopRatedRestaurantsRequest)(nil),      // 10: restaurantpb.GetTopRatedRestaurantsRequest
 	(*GetRestaurantsResponse)(nil),             // 11: restaurantpb.GetRestaurantsResponse
+	(*Promocion)(nil),                          // 12: restaurantpb.Promocion
+	(*CreatePromocionRequest)(nil),             // 13: restaurantpb.CreatePromocionRequest
+	(*CreatePromocionResponse)(nil),            // 14: restaurantpb.CreatePromocionResponse
+	(*GetPromocionesRequest)(nil),              // 15: restaurantpb.GetPromocionesRequest
+	(*GetPromocionesResponse)(nil),             // 16: restaurantpb.GetPromocionesResponse
+	(*UpdatePromocionRequest)(nil),             // 17: restaurantpb.UpdatePromocionRequest
+	(*UpdatePromocionResponse)(nil),            // 18: restaurantpb.UpdatePromocionResponse
+	(*Cupon)(nil),                              // 19: restaurantpb.Cupon
+	(*CreateCuponRequest)(nil),                 // 20: restaurantpb.CreateCuponRequest
+	(*CreateCuponResponse)(nil),                // 21: restaurantpb.CreateCuponResponse
+	(*GetCuponesRequest)(nil),                  // 22: restaurantpb.GetCuponesRequest
+	(*GetCuponesResponse)(nil),                 // 23: restaurantpb.GetCuponesResponse
+	(*UpdateCuponRequest)(nil),                 // 24: restaurantpb.UpdateCuponRequest
+	(*UpdateCuponResponse)(nil),                // 25: restaurantpb.UpdateCuponResponse
+	(*AutorizarCuponRequest)(nil),              // 26: restaurantpb.AutorizarCuponRequest
+	(*AutorizarCuponResponse)(nil),             // 27: restaurantpb.AutorizarCuponResponse
+	(*IncrementarUsoCuponRequest)(nil),         // 28: restaurantpb.IncrementarUsoCuponRequest
+	(*IncrementarUsoCuponResponse)(nil),        // 29: restaurantpb.IncrementarUsoCuponResponse
+	(*VerificarExpiracionCuponRequest)(nil),    // 30: restaurantpb.VerificarExpiracionCuponRequest
+	(*VerificarExpiracionCuponResponse)(nil),   // 31: restaurantpb.VerificarExpiracionCuponResponse
+	(*GetRestaurantsWithDealsRequest)(nil),     // 32: restaurantpb.GetRestaurantsWithDealsRequest
+	(*RestaurantDeal)(nil),                     // 33: restaurantpb.RestaurantDeal
+	(*GetRestaurantsWithDealsResponse)(nil),    // 34: restaurantpb.GetRestaurantsWithDealsResponse
 }
 var file_restaurantpb_restaurant_proto_depIdxs = []int32{
 	1,  // 0: restaurantpb.RestaurantListResponse.restaurants:type_name -> restaurantpb.Restaurant
 	1,  // 1: restaurantpb.GetRestaurantsResponse.restaurants:type_name -> restaurantpb.Restaurant
-	0,  // 2: restaurantpb.RestaurantService.ListRestaurants:input_type -> restaurantpb.Empty
-	3,  // 3: restaurantpb.RestaurantService.CreateRestaurant:input_type -> restaurantpb.CreateRestaurantRequest
-	5,  // 4: restaurantpb.RestaurantService.CreateRestaurantRating:input_type -> restaurantpb.CreateRestaurantRatingRequest
-	7,  // 5: restaurantpb.RestaurantService.GetRestaurantRatingAverage:input_type -> restaurantpb.GetRestaurantRatingAverageRequest
-	9,  // 6: restaurantpb.RestaurantService.GetLatestRestaurants:input_type -> restaurantpb.GetLatestRestaurantsRequest
-	10, // 7: restaurantpb.RestaurantService.GetTopRatedRestaurants:input_type -> restaurantpb.GetTopRatedRestaurantsRequest
-	2,  // 8: restaurantpb.RestaurantService.ListRestaurants:output_type -> restaurantpb.RestaurantListResponse
-	4,  // 9: restaurantpb.RestaurantService.CreateRestaurant:output_type -> restaurantpb.CreateRestaurantResponse
-	6,  // 10: restaurantpb.RestaurantService.CreateRestaurantRating:output_type -> restaurantpb.CreateRestaurantRatingResponse
-	8,  // 11: restaurantpb.RestaurantService.GetRestaurantRatingAverage:output_type -> restaurantpb.GetRestaurantRatingAverageResponse
-	11, // 12: restaurantpb.RestaurantService.GetLatestRestaurants:output_type -> restaurantpb.GetRestaurantsResponse
-	11, // 13: restaurantpb.RestaurantService.GetTopRatedRestaurants:output_type -> restaurantpb.GetRestaurantsResponse
-	8,  // [8:14] is the sub-list for method output_type
-	2,  // [2:8] is the sub-list for method input_type
-	2,  // [2:2] is the sub-list for extension type_name
-	2,  // [2:2] is the sub-list for extension extendee
-	0,  // [0:2] is the sub-list for field type_name
+	12, // 2: restaurantpb.GetPromocionesResponse.promociones:type_name -> restaurantpb.Promocion
+	19, // 3: restaurantpb.GetCuponesResponse.cupones:type_name -> restaurantpb.Cupon
+	33, // 4: restaurantpb.GetRestaurantsWithDealsResponse.restaurants:type_name -> restaurantpb.RestaurantDeal
+	0,  // 5: restaurantpb.RestaurantService.ListRestaurants:input_type -> restaurantpb.Empty
+	3,  // 6: restaurantpb.RestaurantService.CreateRestaurant:input_type -> restaurantpb.CreateRestaurantRequest
+	5,  // 7: restaurantpb.RestaurantService.CreateRestaurantRating:input_type -> restaurantpb.CreateRestaurantRatingRequest
+	7,  // 8: restaurantpb.RestaurantService.GetRestaurantRatingAverage:input_type -> restaurantpb.GetRestaurantRatingAverageRequest
+	9,  // 9: restaurantpb.RestaurantService.GetLatestRestaurants:input_type -> restaurantpb.GetLatestRestaurantsRequest
+	10, // 10: restaurantpb.RestaurantService.GetTopRatedRestaurants:input_type -> restaurantpb.GetTopRatedRestaurantsRequest
+	13, // 11: restaurantpb.RestaurantService.CreatePromocion:input_type -> restaurantpb.CreatePromocionRequest
+	15, // 12: restaurantpb.RestaurantService.GetPromociones:input_type -> restaurantpb.GetPromocionesRequest
+	17, // 13: restaurantpb.RestaurantService.UpdatePromocion:input_type -> restaurantpb.UpdatePromocionRequest
+	20, // 14: restaurantpb.RestaurantService.CreateCupon:input_type -> restaurantpb.CreateCuponRequest
+	22, // 15: restaurantpb.RestaurantService.GetCupones:input_type -> restaurantpb.GetCuponesRequest
+	24, // 16: restaurantpb.RestaurantService.UpdateCupon:input_type -> restaurantpb.UpdateCuponRequest
+	26, // 17: restaurantpb.RestaurantService.AutorizarCupon:input_type -> restaurantpb.AutorizarCuponRequest
+	28, // 18: restaurantpb.RestaurantService.IncrementarUsoCupon:input_type -> restaurantpb.IncrementarUsoCuponRequest
+	30, // 19: restaurantpb.RestaurantService.VerificarExpiracionCupon:input_type -> restaurantpb.VerificarExpiracionCuponRequest
+	32, // 20: restaurantpb.RestaurantService.GetRestaurantsWithDeals:input_type -> restaurantpb.GetRestaurantsWithDealsRequest
+	2,  // 21: restaurantpb.RestaurantService.ListRestaurants:output_type -> restaurantpb.RestaurantListResponse
+	4,  // 22: restaurantpb.RestaurantService.CreateRestaurant:output_type -> restaurantpb.CreateRestaurantResponse
+	6,  // 23: restaurantpb.RestaurantService.CreateRestaurantRating:output_type -> restaurantpb.CreateRestaurantRatingResponse
+	8,  // 24: restaurantpb.RestaurantService.GetRestaurantRatingAverage:output_type -> restaurantpb.GetRestaurantRatingAverageResponse
+	11, // 25: restaurantpb.RestaurantService.GetLatestRestaurants:output_type -> restaurantpb.GetRestaurantsResponse
+	11, // 26: restaurantpb.RestaurantService.GetTopRatedRestaurants:output_type -> restaurantpb.GetRestaurantsResponse
+	14, // 27: restaurantpb.RestaurantService.CreatePromocion:output_type -> restaurantpb.CreatePromocionResponse
+	16, // 28: restaurantpb.RestaurantService.GetPromociones:output_type -> restaurantpb.GetPromocionesResponse
+	18, // 29: restaurantpb.RestaurantService.UpdatePromocion:output_type -> restaurantpb.UpdatePromocionResponse
+	21, // 30: restaurantpb.RestaurantService.CreateCupon:output_type -> restaurantpb.CreateCuponResponse
+	23, // 31: restaurantpb.RestaurantService.GetCupones:output_type -> restaurantpb.GetCuponesResponse
+	25, // 32: restaurantpb.RestaurantService.UpdateCupon:output_type -> restaurantpb.UpdateCuponResponse
+	27, // 33: restaurantpb.RestaurantService.AutorizarCupon:output_type -> restaurantpb.AutorizarCuponResponse
+	29, // 34: restaurantpb.RestaurantService.IncrementarUsoCupon:output_type -> restaurantpb.IncrementarUsoCuponResponse
+	31, // 35: restaurantpb.RestaurantService.VerificarExpiracionCupon:output_type -> restaurantpb.VerificarExpiracionCuponResponse
+	34, // 36: restaurantpb.RestaurantService.GetRestaurantsWithDeals:output_type -> restaurantpb.GetRestaurantsWithDealsResponse
+	21, // [21:37] is the sub-list for method output_type
+	5,  // [5:21] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_restaurantpb_restaurant_proto_init() }
@@ -821,7 +2514,7 @@ func file_restaurantpb_restaurant_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_restaurantpb_restaurant_proto_rawDesc), len(file_restaurantpb_restaurant_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   35,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

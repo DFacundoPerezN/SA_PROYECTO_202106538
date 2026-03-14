@@ -56,6 +56,7 @@ message CreateOrderRequest {
   repeated OrderItem items = 7;
   int32 restaurant_id = 8;
   string restaurant_name = 9;
+  double discount_amount = 10; // Nuevo campo para el monto del descuento aplicado
 }
 
 message CreateOrderResponse {
