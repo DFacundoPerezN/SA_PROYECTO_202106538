@@ -146,15 +146,27 @@ func (s *OrderGRPCServer) GetFinishedOrders(
 
 	var protoOrders []*orderpb.OrderSummary
 	for _, o := range orders {
+		products := make([]*orderpb.ProductoOrdenSummary, 0, len(o.Items))
+		for _, item := range o.Items {
+			products = append(products, &orderpb.ProductoOrdenSummary{
+				ProductoId:     item.ProductoId,
+				NombreProducto: item.NombreProducto,
+				Cantidad:       item.Cantidad,
+				PrecioUnitario: item.PrecioUnitario,
+			})
+		}
+
 		protoOrders = append(protoOrders, &orderpb.OrderSummary{
 			Id:                int32(o.Id),
 			ClienteId:         int32(o.ClienteId),
 			ClienteNombre:     o.ClienteNombre,
 			RestauranteId:     int32(o.RestauranteId),
 			RestauranteNombre: o.RestauranteNombre,
+			RepartidorId:      int32(o.RepartidorId),
 			Estado:            o.Estado,
 			DireccionEntrega:  o.DireccionEntrega,
 			CostoTotal:        o.CostoTotal,
+			Productos:         products,
 		})
 	}
 
@@ -173,15 +185,27 @@ func (s *OrderGRPCServer) GetDeliveredOrders(
 
 	var protoOrders []*orderpb.OrderSummary
 	for _, o := range orders {
+		products := make([]*orderpb.ProductoOrdenSummary, 0, len(o.Items))
+		for _, item := range o.Items {
+			products = append(products, &orderpb.ProductoOrdenSummary{
+				ProductoId:     item.ProductoId,
+				NombreProducto: item.NombreProducto,
+				Cantidad:       item.Cantidad,
+				PrecioUnitario: item.PrecioUnitario,
+			})
+		}
+
 		protoOrders = append(protoOrders, &orderpb.OrderSummary{
 			Id:                int32(o.Id),
 			ClienteId:         int32(o.ClienteId),
 			ClienteNombre:     o.ClienteNombre,
 			RestauranteId:     int32(o.RestauranteId),
 			RestauranteNombre: o.RestauranteNombre,
+			RepartidorId:      int32(o.RepartidorId),
 			Estado:            o.Estado,
 			DireccionEntrega:  o.DireccionEntrega,
 			CostoTotal:        o.CostoTotal,
+			Productos:         products,
 		})
 	}
 

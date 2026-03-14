@@ -99,6 +99,14 @@ message OrderSummary {
   string fecha_creacion = 9;
   int32 repartidor_id = 10;
   string cliente_telefono = 11;
+  repeated ProductoOrdenSummary productos = 12;
+}
+
+message ProductoOrdenSummary {
+  int32 producto_id = 1;
+  string nombre_producto = 2;
+  int32 cantidad = 3;
+  double precio_unitario = 4;
 }
 
 message GetOrdersByClientRequest {

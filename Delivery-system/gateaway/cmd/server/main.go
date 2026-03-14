@@ -170,6 +170,7 @@ func main() {
 		})
 
 		protected.POST("/restaurants", restaurantHandler.CreateRestaurant)
+		protected.GET("/users", userHandler.ListUsers)
 
 		// Promociones (escritura protegida)
 		protected.POST("/restaurants/:id/promociones", restaurantHandler.CreatePromocion)
@@ -191,6 +192,7 @@ func main() {
 		protected.POST("/orders/:id/cancel", orderHandler.CancelOrder)
 		// cliente
 		protected.GET("/orders/me", orderHandler.GetMyOrders)
+		protected.GET("/orders/delivered", orderHandler.GetDeliveredOrders)
 		// restaurante
 		protected.GET("/orders/restaurant/:id", orderHandler.GetRestaurantOrders)
 		// repartidor

@@ -84,11 +84,19 @@ func (s *UserGRPCServer) CreateUser(ctx context.Context, req *userpb.CreateUserR
 
 func (s *UserGRPCServer) ListUsers(ctx context.Context, req *userpb.ListUsersRequest) (*userpb.ListUsersResponse, error) {
 	roleFilter := req.RoleFilter
+
+	var (
+		users []domain.User
+		total int
+		err   error
+	)
+
 	if roleFilter == "" {
-		roleFilter = "CLIENTE" // Filtro por defecto
+		users, total, err = s.userService.GetAllUsers(int(req.Page), int(req.PageSize))
+	} else {
+		users, total, err = s.userService.GetAllUsersByRole(roleFilter, int(req.Page), int(req.PageSize))
 	}
 
-	users, total, err := s.userService.GetAllUsersByRole(roleFilter, int(req.Page), int(req.PageSize))
 	if err != nil {
 		log.Printf("[user-service][ListUsers] role=%s page=%d pageSize=%d error=%v", roleFilter, req.Page, req.PageSize, err)
 		return nil, err
