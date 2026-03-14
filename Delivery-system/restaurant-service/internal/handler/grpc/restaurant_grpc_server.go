@@ -302,3 +302,28 @@ func (s *RestaurantGRPCServer) VerificarExpiracionCupon(
 ) (*restaurantpb.VerificarExpiracionCuponResponse, error) {
 	return s.cupon.VerificarExpiracionCupon(ctx, req)
 }
+
+func (s *RestaurantGRPCServer) GetRestaurantsWithDeals(
+	ctx context.Context,
+	req *restaurantpb.GetRestaurantsWithDealsRequest,
+) (*restaurantpb.GetRestaurantsWithDealsResponse, error) {
+
+	data, err := s.service.GetRestaurantsWithDeals(ctx, int(req.Limit))
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*restaurantpb.RestaurantDeal
+
+	for _, r := range data {
+		result = append(result, &restaurantpb.RestaurantDeal{
+			RestauranteId: int32(r.Id),
+			Nombre:        r.Nombre,
+			Calificacion:  r.Calificacion,
+		})
+	}
+
+	return &restaurantpb.GetRestaurantsWithDealsResponse{
+		Restaurants: result,
+	}, nil
+}

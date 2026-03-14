@@ -179,3 +179,61 @@ func (r *PromocionRepository) Update(ctx context.Context, id int, u PromocionUpd
 
 	return nil
 }
+
+func (r *RestaurantRepository) GetRestaurantsWithDeals(
+	ctx context.Context,
+	limit int,
+) ([]domain.RestaurantDeal, error) {
+
+	query := `
+	SELECT TOP (@p1)
+	    r.Id,
+	    r.Nombre,
+	    r.CalificacionPromedio
+	FROM Restaurante r
+	WHERE r.Id IN (
+
+	    SELECT RestauranteId
+	    FROM Promocion
+	    WHERE Activa = 1
+	    AND FechaInicio <= GETDATE()
+	    AND FechaFin >= GETDATE()
+
+	    UNION
+
+	    SELECT RestauranteId
+	    FROM Cupon
+	    WHERE Activo = 1
+	    AND Autorizado = 1
+	    AND UsoActual < UsoMaximo
+	    AND FechaInicio <= GETDATE()
+	    AND FechaExpiracion >= GETDATE()
+	)
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []domain.RestaurantDeal
+
+	for rows.Next() {
+		var r domain.RestaurantDeal
+
+		err := rows.Scan(
+			&r.Id,
+			&r.Nombre,
+			&r.Calificacion,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, r)
+	}
+
+	return result, nil
+}

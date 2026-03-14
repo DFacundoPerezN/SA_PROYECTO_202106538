@@ -30,6 +30,9 @@ service RestaurantService {
   // Operaciones de ciclo de vida del cupón (cliente autenticado)
   rpc IncrementarUsoCupon(IncrementarUsoCuponRequest) returns (IncrementarUsoCuponResponse);
   rpc VerificarExpiracionCupon(VerificarExpiracionCuponRequest) returns (VerificarExpiracionCuponResponse);
+
+  //Obtener restaurantes con promos
+  rpc GetRestaurantsWithDeals(GetRestaurantsWithDealsRequest) returns (GetRestaurantsWithDealsResponse);
 }
 
 message Empty {}
@@ -252,4 +255,19 @@ message VerificarExpiracionCuponRequest {
 message VerificarExpiracionCuponResponse {
   string message   = 1;
   bool   vencido   = 2;   // true si FechaExpiracion < NOW y se desactivó
+}
+
+// ─── GetRestaurantsWithDeals ─────────────────────────────────────────────────
+message GetRestaurantsWithDealsRequest {
+  int32 limit = 1;
+}
+
+message RestaurantDeal {
+  int32 restaurante_id = 1;
+  string nombre = 2;
+  double calificacion = 3;
+}
+
+message GetRestaurantsWithDealsResponse {
+  repeated RestaurantDeal restaurants = 1;
 }
