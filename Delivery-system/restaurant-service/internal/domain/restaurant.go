@@ -38,7 +38,7 @@ type Promocion struct {
 
 // PromocionFiltros agrupa los filtros opcionales para GetPromociones.
 type PromocionFiltros struct {
-	RestauranteId int       // 0 = sin filtro
+	RestauranteId int // 0 = sin filtro
 	SoloActivas   bool
 	Tipo          string    // "" = sin filtro
 	FechaDesde    time.Time // zero value = sin filtro
@@ -63,10 +63,16 @@ type Cupon struct {
 
 // CuponFiltros agrupa los filtros opcionales para GetCupones.
 type CuponFiltros struct {
-	RestauranteId   int       // 0 = sin filtro
+	RestauranteId   int // 0 = sin filtro
 	SoloActivos     bool
 	SoloAutorizados bool
 	Codigo          string    // "" = sin filtro (búsqueda exacta)
 	FechaDesde      time.Time // zero value = sin filtro
 	FechaHasta      time.Time // zero value = sin filtro
+}
+
+type RestaurantDeal struct {
+	Nombre       string
+	Id           int
+	Calificacion float64
 }

@@ -339,6 +339,7 @@ func (h *RestaurantHandler) CreateCupon(c *gin.Context) {
 //   - codigo          string
 //   - fecha_desde     string (ISO 8601)
 //   - fecha_hasta     string (ISO 8601)
+//
 // Acceso: público
 func (h *RestaurantHandler) GetCupones(c *gin.Context) {
 	restauranteID, _ := strconv.Atoi(c.DefaultQuery("restaurante_id", "0"))
@@ -488,4 +489,24 @@ func (h *RestaurantHandler) VerificarExpiracionCupon(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, resp)
+}
+
+func (h *RestaurantHandler) GetRestaurantsWithDeals(c *gin.Context) {
+
+	limitStr := c.DefaultQuery("n", "7")
+	limit, _ := strconv.Atoi(limitStr)
+
+	resp, err := h.restaurantClient.GetRestaurantsWithDeals(
+		c,
+		&restaurantpb.GetRestaurantsWithDealsRequest{
+			Limit: int32(limit),
+		},
+	)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, resp.Restaurants)
 }

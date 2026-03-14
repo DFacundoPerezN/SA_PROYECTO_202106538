@@ -165,3 +165,11 @@ func parseDate(s string) (time.Time, error) {
 	}
 	return time.Time{}, status.Error(codes.InvalidArgument, "formato de fecha inválido")
 }
+
+func (s *RestaurantService) GetRestaurantsWithDeals(
+	ctx context.Context,
+	limit int,
+) ([]domain.RestaurantDeal, error) {
+
+	return s.repo.GetRestaurantsWithDeals(ctx, limit)
+}
