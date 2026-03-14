@@ -3,10 +3,20 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strings"
 
 	"auth-service/internal/grpc"
 	"auth-service/internal/jwt"
 	passwordlib "auth-service/internal/password"
+
+	grpcCodes "google.golang.org/grpc/codes"
+	grpcStatus "google.golang.org/grpc/status"
+)
+
+var (
+	ErrInvalidCredentials    = errors.New("invalid credentials")
+	ErrUserServiceUnavailable = errors.New("user service unavailable")
 )
 
 type LoginResult struct {
@@ -34,17 +44,16 @@ func (s *AuthService) Login(ctx context.Context, email string, password string) 
 
 	user, err := s.userClient.GetUserByEmail(ctx, email)
 	if err != nil {
-		return nil, errors.New("invalid credentials")
+		if isUserNotFoundError(err) {
+			return nil, ErrInvalidCredentials
+		}
+
+		return nil, fmt.Errorf("%w: %v", ErrUserServiceUnavailable, err)
 	}
 
 	resultPas := passwordlib.CheckPasswordHash(password, user.Password)
 	if !resultPas {
-		return nil, errors.New("invalid credentials")
-	}
-
-	userProfile, err := s.userClient.GetUserByID(user.Id)
-	if err != nil {
-		return nil, err
+		return nil, ErrInvalidCredentials
 	}
 
 	token, err := s.jwtManager.GenerateToken(user.Id, user.Email, user.Role)
@@ -54,11 +63,10 @@ func (s *AuthService) Login(ctx context.Context, email string, password string) 
 
 	return &LoginResult{
 		Token:          token,
-		UserID:         userProfile.Id,
-		Email:          userProfile.Email,
-		Role:           userProfile.Role,
-		NombreCompleto: userProfile.NombreCompleto,
-		//Telefono:       userProfile.Telefono,
+		UserID:         user.Id,
+		Email:          user.Email,
+		Role:           user.Role,
+		NombreCompleto: user.NombreCompleto,
 	}, nil
 }
 
@@ -70,4 +78,16 @@ func (s *AuthService) ValidateToken(token string) (*jwt.Claims, error) {
 	}
 
 	return claims, nil
+}
+
+func isUserNotFoundError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	if grpcStatus.Code(err) == grpcCodes.NotFound {
+		return true
+	}
+
+	return strings.Contains(strings.ToLower(err.Error()), "user not found")
 }

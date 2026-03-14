@@ -101,7 +101,7 @@ func main() {
 
 	userServiceClient := userpb.NewUserServiceClient(userConn)
 	userClient := gatewaygrpc.NewUserClient(userServiceClient)
-	userHandler := handlers.NewUserHandler(userClient)
+	userHandler := handlers.NewUserHandler(userClient, orderClient)
 
 	authHandler := handlers.NewAuthHandler(authClient, userClient)
 
@@ -138,6 +138,7 @@ func main() {
 		api.GET("orders/cancelled", orderHandler.GetCancelledOrRejectedOrders)
 
 		api.GET("/ratings/driver/:id/average", userHandler.GetRatingAverage)
+		api.GET("/ratings/client/:id/average", userHandler.GetClientRatingAverage)
 		api.GET("/ratings/restaurant/:id/average", restaurantHandler.GetRatingAverage)
 		api.GET("/products/:id/recommendation", catalogHandler.GetRecommendationPercentage)
 
@@ -203,6 +204,7 @@ func main() {
 		protected.GET("/payments", paymentHandler.GetPayments)
 
 		protected.POST("/drivers/ratings", userHandler.CreateRating)
+		protected.POST("/clients/ratings", userHandler.CreateClientRating)
 		protected.POST("/restaurants/ratings", restaurantHandler.CreateRating)
 		protected.POST("/products/recommendations", catalogHandler.CreateRecommendation)
 	}

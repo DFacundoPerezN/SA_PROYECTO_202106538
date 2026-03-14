@@ -43,3 +43,43 @@ func (s *UserGRPCServer) GetDriverRatingAverage(
 		TotalCalificaciones: int32(total),
 	}, nil
 }
+
+func (s *UserGRPCServer) CreateClientRating(
+	ctx context.Context,
+	req *userpb.CreateClientRatingRequest,
+) (*userpb.CreateClientRatingResponse, error) {
+
+	id, err := s.userService.CreateClientRating(
+		ctx,
+		int(req.ClienteId),
+		int(req.RepartidorId),
+		int(req.OrdenId),
+		int(req.Estrellas),
+		req.Comentario,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &userpb.CreateClientRatingResponse{
+		RatingId: int32(id),
+		Message:  "Calificación registrada",
+	}, nil
+}
+
+func (s *UserGRPCServer) GetClientRatingAverage(
+	ctx context.Context,
+	req *userpb.GetClientRatingAverageRequest,
+) (*userpb.GetClientRatingAverageResponse, error) {
+
+	avg, total, err := s.userService.GetClientRatingAverage(ctx, int(req.ClienteId))
+	if err != nil {
+		return nil, err
+	}
+
+	return &userpb.GetClientRatingAverageResponse{
+		Promedio:            avg,
+		TotalCalificaciones: int32(total),
+	}, nil
+}

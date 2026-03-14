@@ -51,4 +51,6 @@ type UserRepository interface {
 	CountByRole(role string) (int, error)
 	CreateDriverRating(ctx context.Context, rating *DriverRating) (int, error)
 	GetDriverRatingAverage(ctx context.Context, driverID int) (float64, int, error)
+	CreateClientRating(ctx context.Context, rating *ClientRating) (int, error)
+	GetClientRatingAverage(ctx context.Context, clientID int) (float64, int, error)
 }

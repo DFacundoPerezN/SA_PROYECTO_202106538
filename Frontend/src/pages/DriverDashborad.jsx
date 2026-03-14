@@ -196,6 +196,16 @@ const handleDeliverWithImage = async () => {
           <div className={styles.logoText}>Panel Repartidor</div>
         </div>
         <div className={styles.navUser}>
+          <button
+            onClick={() => navigate('/repartidor/reviews')}
+            className={styles.btnLogout}
+            style={{
+              borderColor: '#2196f3',
+              color: '#0b7dda',
+            }}
+          >
+            Calificar Clientes
+          </button>
           <div className={styles.userInfo}>
             <span className={styles.userName}>{user?.email}</span>
             <span className={styles.userRole}>Repartidor</span>
