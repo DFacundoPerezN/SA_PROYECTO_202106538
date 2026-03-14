@@ -99,6 +99,14 @@ func (c *OrderClient) GetFinishedOrders() (*orderpb.GetOrdersResponse, error) {
 	return c.client.GetFinishedOrders(ctx, &orderpb.GetFinishedOrdersRequest{})
 }
 
+func (c *OrderClient) GetDeliveredOrders() (*orderpb.GetOrdersResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return c.client.GetDeliveredOrders(ctx, &orderpb.GetDeliveredOrdersRequest{})
+}
+
 func (c *OrderClient) GetOrdersByDriver(driverID int32) (*orderpb.GetOrdersResponse, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

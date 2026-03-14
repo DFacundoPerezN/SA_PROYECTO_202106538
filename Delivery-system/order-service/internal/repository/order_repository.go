@@ -215,6 +215,7 @@ func (r *OrderRepository) GetOrdersByStatus(ctx context.Context, status string) 
 		ClienteTelefono,
 		RestauranteId,
 		RestauranteNombre,
+		ISNULL(RepartidorId, 0) AS RepartidorId,
 		Estado,
 		DireccionEntrega,
 		LatitudEntrega,
@@ -244,6 +245,7 @@ func (r *OrderRepository) GetOrdersByStatus(ctx context.Context, status string) 
 			&o.ClienteTelefono,
 			&o.RestauranteId,
 			&o.RestauranteNombre,
+			&o.RepartidorId,
 			&o.Estado,
 			&o.DireccionEntrega,
 			&o.LatitudEntrega,
@@ -385,6 +387,7 @@ func (r *OrderRepository) GetOrderItems(
 
 	query := `
 	SELECT
+		ProductoId,
 		NombreProducto,
 		Cantidad,
 		PrecioUnitario
@@ -404,6 +407,7 @@ func (r *OrderRepository) GetOrderItems(
 		var item domain.OrderItem
 
 		err := rows.Scan(
+			&item.ProductoId,
 			&item.NombreProducto,
 			&item.Cantidad,
 			&item.PrecioUnitario,

@@ -208,6 +208,50 @@ func (h *OrderHandler) GetAvailableOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, resp.Orders)
 }
 
+func (h *OrderHandler) GetDeliveredOrders(c *gin.Context) {
+
+	resp, err := h.orderClient.GetDeliveredOrders()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	targetUserID := 0
+	role, _ := c.Get("role")
+
+	if role == "CLIENTE" {
+		targetUserID = c.GetInt("user_id")
+	} else {
+		selectedUserID := c.Query("user_id")
+		if selectedUserID == "" {
+			selectedUserID = c.Query("client_id")
+		}
+
+		if selectedUserID != "" {
+			parsedUserID, parseErr := strconv.Atoi(selectedUserID)
+			if parseErr != nil || parsedUserID <= 0 {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "user_id/client_id invalido"})
+				return
+			}
+			targetUserID = parsedUserID
+		}
+	}
+
+	if targetUserID == 0 {
+		c.JSON(http.StatusOK, resp.Orders)
+		return
+	}
+
+	filteredOrders := make([]*orderpb.OrderSummary, 0)
+	for _, order := range resp.Orders {
+		if int(order.ClienteId) == targetUserID {
+			filteredOrders = append(filteredOrders, order)
+		}
+	}
+
+	c.JSON(http.StatusOK, filteredOrders)
+}
+
 func (h *OrderHandler) GetMyDriverOrders(c *gin.Context) {
 
 	driverID := c.GetInt("user_id") // viene del middleware

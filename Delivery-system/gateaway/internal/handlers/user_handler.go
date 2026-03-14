@@ -21,7 +21,7 @@ func NewUserHandler(userClient *grpc.UserClient) *UserHandler {
 func (h *UserHandler) ListUsers(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
-	roleFilter := c.DefaultQuery("role", "CLIENTE") // Filtro por defecto: CLIENTE
+	roleFilter := c.Query("role")
 
 	users, err := h.userClient.ListUsers(int32(page), int32(pageSize), roleFilter)
 	if err != nil {

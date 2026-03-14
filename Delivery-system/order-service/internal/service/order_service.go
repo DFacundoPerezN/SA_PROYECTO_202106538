@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
-	"errors"
 
 	catalogpb "delivery-proto/catalogpb"
 	notificationpb "delivery-proto/notificationpb"
@@ -226,7 +226,20 @@ func (s *OrderService) GetFinishedOrders(ctx context.Context) ([]domain.Order, e
 }
 
 func (s *OrderService) GetDeliveredOrders(ctx context.Context) ([]domain.Order, error) {
-	return s.repo.GetOrdersByStatus(ctx, "ENTREGADA")
+	orders, err := s.repo.GetOrdersByStatus(ctx, "ENTREGADA")
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range orders {
+		items, itemErr := s.repo.GetOrderItems(ctx, orders[i].Id)
+		if itemErr != nil {
+			return nil, itemErr
+		}
+		orders[i].Items = items
+	}
+
+	return orders, nil
 }
 
 func (s *OrderService) GetDriverOrders(ctx context.Context, driverID int) ([]domain.Order, error) {

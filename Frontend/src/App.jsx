@@ -4,6 +4,7 @@ import Register from './pages/Register'
 import AdminDashboard from './pages/AdminDashboard'
 import ClienteDashboard from './pages/ClienteDashboard'
 import ClienteOrders from './pages/ClienteOrders'
+import ClienteRatings from './pages/ClienteRatings'
 import RestaurantMenu from './pages/RestaurantMenu'
 import ProtectedRoute from './components/ProtectedRoute'
 import RestaurantDashboard from './pages/RestaurantDashboard'
@@ -41,6 +42,15 @@ function App() {
               <ClienteOrders />
             </ProtectedRoute>
           } 
+        />
+
+        <Route
+          path="/cliente/ratings"
+          element={
+            <ProtectedRoute allowedRoles={['CLIENTE']}>
+              <ClienteRatings />
+            </ProtectedRoute>
+          }
         />
 
         <Route 

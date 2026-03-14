@@ -76,7 +76,23 @@ const handleViewMenu = (restaurant) => {
               transition: 'all 0.3s ease'
             }}
           >
-           -+ Mis Órdenes
+             Mis Órdenes
+          </button>
+          <button
+            onClick={() => navigate('/cliente/ratings')}
+            style={{
+              padding: '0.5rem 1rem',
+              background: 'linear-gradient(135deg, #0891b2, #0e7490)',
+              border: 'none',
+              borderRadius: '10px',
+              color: 'white',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+             Calificaciones
           </button>
           <div className="user-info">
             <span className="user-name">{user?.nombre_completo}</span>
@@ -93,6 +109,7 @@ const handleViewMenu = (restaurant) => {
           <h1>¡Bienvenido de nuevo!</h1>
           <p>Hola, {user?.nombre_completo}. ¿Qué te gustaría pedir hoy?</p>
         </div>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <button 
                 onClick={() => navigate('/cliente/orders')}
                 style={{
@@ -118,6 +135,32 @@ const handleViewMenu = (restaurant) => {
               >
                 📋 Ver Mis Órdenes
               </button>
+              <button
+                onClick={() => navigate('/cliente/ratings')}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: 'linear-gradient(135deg, #0891b2, #0e7490)',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 12px rgba(8, 145, 178, 0.25)'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(8, 145, 178, 0.35)'
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(8, 145, 178, 0.25)'
+                }}
+              >
+                ⭐ Ir a Calificaciones
+              </button>
+        </div>
         <div className="search-section">
           <div className="search-box">
             <span className="search-icon">🔍</span>

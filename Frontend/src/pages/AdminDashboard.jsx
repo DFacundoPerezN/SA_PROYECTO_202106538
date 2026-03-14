@@ -254,16 +254,8 @@ const handleViewUserOrders = async (user) => {
   setLoadingOrders(true)
   
   try {
-    // Buscar órdenes ENTREGADAS usando el nuevo endpoint
-    const response = await api.get('/api/orders/delivered')
-    if (response.data) {
-      const userOrdersFiltered = response.data.filter(order => 
-        order.cliente_id === user.id || order.client_id === user.id
-      )
-      setUserOrders(userOrdersFiltered)
-    } else {
-      setUserOrders([])
-    }
+    const response = await api.get(`/api/orders/delivered?user_id=${user.id}`)
+    setUserOrders(response.data || [])
   } catch (err) {
     console.error('Error fetching user orders:', err)
     setUserOrders([])

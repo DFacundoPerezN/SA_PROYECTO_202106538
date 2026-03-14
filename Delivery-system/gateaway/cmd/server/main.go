@@ -161,12 +161,14 @@ func main() {
 		})
 
 		protected.POST("/restaurants", restaurantHandler.CreateRestaurant)
+		protected.GET("/users", userHandler.ListUsers)
 
 		protected.POST("/orders", orderHandler.CreateOrder)
 		protected.PATCH("/orders/:id/status", orderHandler.UpdateStatus)
 		protected.POST("/orders/:id/cancel", orderHandler.CancelOrder)
 		// cliente
 		protected.GET("/orders/me", orderHandler.GetMyOrders)
+		protected.GET("/orders/delivered", orderHandler.GetDeliveredOrders)
 		// restaurante
 		protected.GET("/orders/restaurant/:id", orderHandler.GetRestaurantOrders)
 		// repartidor
