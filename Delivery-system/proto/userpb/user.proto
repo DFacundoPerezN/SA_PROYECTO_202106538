@@ -12,6 +12,8 @@ service UserService {
 
   rpc CreateDriverRating(CreateDriverRatingRequest) returns (CreateDriverRatingResponse);
   rpc GetDriverRatingAverage(GetDriverRatingAverageRequest) returns (GetDriverRatingAverageResponse);
+  rpc CreateClientRating(CreateClientRatingRequest) returns (CreateClientRatingResponse);
+  rpc GetClientRatingAverage(GetClientRatingAverageRequest) returns (GetClientRatingAverageResponse);
 }
 
 message User {
@@ -79,6 +81,28 @@ message GetDriverRatingAverageRequest {
 }
 
 message GetDriverRatingAverageResponse {
+  double promedio = 1;
+  int32 total_calificaciones = 2;
+}
+
+message CreateClientRatingRequest {
+  int32 cliente_id = 1;
+  int32 repartidor_id = 2;
+  int32 orden_id = 3;
+  int32 estrellas = 4;
+  string comentario = 5;
+}
+
+message CreateClientRatingResponse {
+  int32 rating_id = 1;
+  string message = 2;
+}
+
+message GetClientRatingAverageRequest {
+  int32 cliente_id = 1;
+}
+
+message GetClientRatingAverageResponse {
   double promedio = 1;
   int32 total_calificaciones = 2;
 }

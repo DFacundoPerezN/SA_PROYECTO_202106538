@@ -28,6 +28,25 @@ CREATE TABLE CalificacionRepartidor (
     INDEX IX_CalificacionRepartidor_Repartidor (RepartidorId)
 );
 
+CREATE TABLE CalificacionCliente (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+
+    ClienteId INT NOT NULL,
+    RepartidorId INT NOT NULL,
+    OrdenId INT NOT NULL,
+
+    Estrellas INT NOT NULL
+        CHECK (Estrellas BETWEEN 1 AND 5),
+
+    Comentario NVARCHAR(512),
+
+    FechaCreacion DATETIME DEFAULT GETDATE(),
+
+    INDEX IX_CalificacionCliente_Cliente (ClienteId),
+    INDEX IX_CalificacionCliente_Repartidor (RepartidorId),
+    CONSTRAINT UQ_CalificacionCliente_OrdenId UNIQUE (OrdenId)
+);
+
 -- RESTURATNES DATABASE
 CREATE DATABASE Delivereats_SA_Restaurantes;
 GO 

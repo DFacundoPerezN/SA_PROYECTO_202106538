@@ -53,3 +53,53 @@ func (r *UserRepositoryImpl) GetDriverRatingAverage(ctx context.Context, driverI
 
 	return avg, total, nil
 }
+
+func (r *UserRepositoryImpl) CreateClientRating(ctx context.Context, rating *domain.ClientRating) (int, error) {
+
+	query := `
+	INSERT INTO CalificacionCliente
+	(ClienteId, RepartidorId, OrdenId, Estrellas, Comentario)
+	OUTPUT INSERTED.Id
+	VALUES (@p1, @p2, @p3, @p4, @p5)
+	`
+
+	var id int
+
+	err := r.db.QueryRowContext(
+		ctx,
+		query,
+		rating.ClienteId,
+		rating.RepartidorId,
+		rating.OrdenId,
+		rating.Estrellas,
+		rating.Comentario,
+	).Scan(&id)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
+
+func (r *UserRepositoryImpl) GetClientRatingAverage(ctx context.Context, clientID int) (float64, int, error) {
+
+	query := `
+	SELECT 
+		ISNULL(AVG(CAST(Estrellas AS FLOAT)),0),
+		COUNT(*)
+	FROM CalificacionCliente
+	WHERE ClienteId = @p1
+	`
+
+	var avg float64
+	var total int
+
+	err := r.db.QueryRowContext(ctx, query, clientID).Scan(&avg, &total)
+
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return avg, total, nil
+}

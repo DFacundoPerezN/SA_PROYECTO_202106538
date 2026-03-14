@@ -18,4 +18,10 @@ export const orderService = {
     const response = await api.get('/api/orders/delivered')
     return response.data
   },
+
+  // Obtener ordenes del repartidor autenticado
+  getMyDriverOrders: async () => {
+    const response = await api.get('/api/orders/driver/me')
+    return response.data
+  },
 }
