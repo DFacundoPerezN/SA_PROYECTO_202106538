@@ -42,10 +42,11 @@ func (c *UserClient) GetUserByEmail(ctx context.Context, email string) (*UserDTO
 
 	// OJO: ahora usamos los campos directos
 	return &UserDTO{
-		Id:       res.User.Id,
-		Email:    res.User.Email,
-		Role:     res.User.Role,
-		Password: res.User.Password,
+		Id:             res.User.Id,
+		Email:          res.User.Email,
+		Role:           res.User.Role,
+		Password:       res.User.Password,
+		NombreCompleto: res.User.NombreCompleto,
 	}, nil
 }
 

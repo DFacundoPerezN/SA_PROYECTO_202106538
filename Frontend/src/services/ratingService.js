@@ -15,6 +15,21 @@ export const ratingService = {
     return response.data
   },
 
+  rateClient: async ({ client_id, order_id, stars, comment }) => {
+    const response = await api.post('/api/clients/ratings', {
+      client_id,
+      order_id,
+      stars,
+      comment,
+    })
+    return response.data
+  },
+
+  getClientAverage: async (clientId) => {
+    const response = await api.get(`/api/ratings/client/${clientId}/average`)
+    return response.data
+  },
+
   rateRestaurant: async ({ restaurant_id, stars, comment }) => {
     const response = await api.post('/api/restaurants/ratings', {
       restaurant_id,

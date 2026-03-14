@@ -66,3 +66,31 @@ func (u *UserClient) GetDriverRatingAverage(
 		RepartidorId: req.RepartidorId,
 	})
 }
+
+func (u *UserClient) CreateClientRating(
+	req *userpb.CreateClientRatingRequest,
+) (*userpb.CreateClientRatingResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	return u.client.CreateClientRating(ctx, &userpb.CreateClientRatingRequest{
+		ClienteId:    req.ClienteId,
+		RepartidorId: req.RepartidorId,
+		OrdenId:      req.OrdenId,
+		Estrellas:    req.Estrellas,
+		Comentario:   req.Comentario,
+	})
+}
+
+func (u *UserClient) GetClientRatingAverage(
+	req *userpb.GetClientRatingAverageRequest,
+) (*userpb.GetClientRatingAverageResponse, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	return u.client.GetClientRatingAverage(ctx, &userpb.GetClientRatingAverageRequest{
+		ClienteId: req.ClienteId,
+	})
+}

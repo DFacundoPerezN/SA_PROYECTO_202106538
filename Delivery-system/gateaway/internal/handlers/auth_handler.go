@@ -6,6 +6,8 @@ import (
 	"api-gateway/internal/grpc"
 
 	"github.com/gin-gonic/gin"
+	grpcCodes "google.golang.org/grpc/codes"
+	grpcStatus "google.golang.org/grpc/status"
 )
 
 type AuthHandler struct {
@@ -33,7 +35,19 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	resp, err := h.authClient.Login(req.Email, req.Password)
 
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		if status, ok := grpcStatus.FromError(err); ok {
+			switch status.Code() {
+			case grpcCodes.Unauthenticated:
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Credenciales inválidas"})
+			case grpcCodes.Unavailable:
+				c.JSON(http.StatusServiceUnavailable, gin.H{"error": "El servicio de autenticación no está disponible"})
+			default:
+				c.JSON(http.StatusBadGateway, gin.H{"error": "No se pudo completar el inicio de sesión"})
+			}
+			return
+		}
+
+		c.JSON(http.StatusBadGateway, gin.H{"error": "No se pudo completar el inicio de sesión"})
 		return
 	}
 

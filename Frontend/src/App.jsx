@@ -5,10 +5,12 @@ import AdminDashboard from './pages/AdminDashboard'
 import ClienteDashboard from './pages/ClienteDashboard'
 import ClienteOrders from './pages/ClienteOrders'
 import ClienteRatings from './pages/ClienteRatings'
+import ClienteTopRestaurants from './pages/ClienteTopRestaurants'
 import RestaurantMenu from './pages/RestaurantMenu'
 import ProtectedRoute from './components/ProtectedRoute'
 import RestaurantDashboard from './pages/RestaurantDashboard'
 import DriverDashboard from './pages/DriverDashborad'
+import DriverUserRatings from './pages/DriverUserRatings'
 
 function App() {
   return (
@@ -53,6 +55,15 @@ function App() {
           }
         />
 
+        <Route
+          path="/cliente/top-restaurants"
+          element={
+            <ProtectedRoute allowedRoles={['CLIENTE']}>
+              <ClienteTopRestaurants />
+            </ProtectedRoute>
+          }
+        />
+
         <Route 
           path="/cliente/restaurant/:restaurantId/menu" 
           element={
@@ -78,6 +89,15 @@ function App() {
               <DriverDashboard />
             </ProtectedRoute>
           } 
+        />
+
+        <Route
+          path="/repartidor/reviews"
+          element={
+            <ProtectedRoute allowedRoles={['REPARTIDOR']}>
+              <DriverUserRatings />
+            </ProtectedRoute>
+          }
         />
         
         <Route path="/" element={<Navigate to="/login" replace />} />

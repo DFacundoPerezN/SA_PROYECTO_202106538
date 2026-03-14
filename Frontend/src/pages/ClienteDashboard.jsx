@@ -151,8 +151,22 @@ const ClienteDashboard = () => {
             }}
           >
              Calificaciones
-          <button onClick={() => navigate('/cliente/orders')} style={{ padding:'0.5rem 1rem', background:'linear-gradient(135deg, var(--primary), var(--primary-dark))', border:'none', borderRadius:'10px', color:'white', fontSize:'0.875rem', fontWeight:'600', cursor:'pointer', transition:'all 0.3s ease' }}>
-            📋 Mis Órdenes
+          </button>
+          <button
+            onClick={() => navigate('/cliente/top-restaurants')}
+            style={{
+              padding: '0.5rem 1rem',
+              background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+              border: 'none',
+              borderRadius: '10px',
+              color: 'white',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+             Top 3
           </button>
           <div className="user-info">
             <span className="user-name">{user?.nombre_completo}</span>
@@ -217,6 +231,31 @@ const ClienteDashboard = () => {
                 }}
               >
                 ⭐ Ir a Calificaciones
+              </button>
+              <button
+                onClick={() => navigate('/cliente/top-restaurants')}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                  border: 'none',
+                  borderRadius: '10px',
+                  color: 'white',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 12px rgba(245, 158, 11, 0.26)'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(245, 158, 11, 0.38)'
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.26)'
+                }}
+              >
+                🏆 Ver Top 3
               </button>
         </div>
         <div className="search-section">

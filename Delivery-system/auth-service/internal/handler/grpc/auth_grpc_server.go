@@ -2,6 +2,8 @@ package grpc
 
 import (
 	"context"
+	"errors"
+	"log"
 
 	"auth-service/internal/service"
 	authpb "auth-service/proto"
@@ -23,7 +25,16 @@ func (s *AuthGRPCServer) Login(ctx context.Context, req *authpb.LoginRequest) (*
 
 	result, err := s.authService.Login(ctx, req.Email, req.Password)
 	if err != nil {
-		return nil, status.Error(codes.Unauthenticated, err.Error())
+		log.Printf("[auth-service][Login] email=%s error=%v", req.Email, err)
+
+		switch {
+		case errors.Is(err, service.ErrInvalidCredentials):
+			return nil, status.Error(codes.Unauthenticated, "invalid credentials")
+		case errors.Is(err, service.ErrUserServiceUnavailable):
+			return nil, status.Error(codes.Unavailable, "authentication backend unavailable")
+		default:
+			return nil, status.Error(codes.Internal, "internal authentication error")
+		}
 	}
 
 	return &authpb.LoginResponse{
