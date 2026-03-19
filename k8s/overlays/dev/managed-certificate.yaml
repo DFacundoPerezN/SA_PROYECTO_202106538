@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: deliver-eats-dev-cert
+  namespace: deliver-eats
+spec:
+  domains:
+    - dev.delivereats.example.com

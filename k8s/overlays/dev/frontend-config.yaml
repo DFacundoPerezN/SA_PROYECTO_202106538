@@ -1,0 +1,9 @@
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: deliver-eats-dev-frontendconfig
+  namespace: deliver-eats
+spec:
+  redirectToHttps:
+    enabled: false
+    responseCodeName: MOVED_PERMANENTLY_DEFAULT
