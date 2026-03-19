@@ -10,6 +10,7 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
 ENV PATH="$PATH:/go/bin"
+ENV GOWORK=off
 
 WORKDIR /workspace
 
@@ -26,11 +27,7 @@ RUN protoc --go_out=. --go_opt=paths=source_relative \
            --go-grpc_out=. --go-grpc_opt=paths=source_relative \
            payment.proto
 
-
 WORKDIR /workspace/payment-service
-
-# desactivar workspace
-ENV GOWORK=off
 
 # Mostrar qué archivos hay (para debug)
 RUN ls -la /workspace/proto/paymentpb/
