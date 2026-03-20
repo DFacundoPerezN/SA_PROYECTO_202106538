@@ -1,0 +1,102 @@
+name: CI - Build Docker Images
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAMESPACE: diegofacundopereznicolau
+
+jobs:
+  build:
+    runs-on: self-hosted   #ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # -------- BUILD API GATEWAY ----------
+      - name: Build api-gateway
+        run: |
+          docker build \
+            -t $IMAGE_NAMESPACE/api-gateway:${{ github.ref_name }} \
+            -t $IMAGE_NAMESPACE/api-gateway:latest \
+            -f Delivery-system/gateaway/Dockerfile \
+            Delivery-system
+
+      # -------- AUTH ----------
+      - name: Build auth-service
+        run: |
+          docker build \
+            -t $IMAGE_NAMESPACE/auth-service:${{ github.ref_name }} \
+            -t $IMAGE_NAMESPACE/auth-service:latest \
+            -f Delivery-system/auth-service/Dockerfile \
+            Delivery-system
+
+      # -------- USER ----------
+      - name: Build user-service
+        run: |
+          docker build \
+            -t $IMAGE_NAMESPACE/user-service:${{ github.ref_name }} \
+            -t $IMAGE_NAMESPACE/user-service:latest \
+            -f Delivery-system/user-service/Dockerfile \
+            Delivery-system
+
+      # -------- CATALOG ----------
+      - name: Build catalog-service
+        run: |
+          docker build \
+            -t $IMAGE_NAMESPACE/catalog-service:${{ github.ref_name }} \
+            -t $IMAGE_NAMESPACE/catalog-service:latest \
+            -f Delivery-system/catalog-service/Dockerfile \
+            Delivery-system
+
+      # -------- RESTAURANT ----------
+      - name: Build restaurant-service
+        run: |
+          docker build \
+            -t $IMAGE_NAMESPACE/restaurant-service:${{ github.ref_name }} \
+            -t $IMAGE_NAMESPACE/restaurant-service:latest \
+            -f Delivery-system/restaurant-service/Dockerfile \
+            Delivery-system
+
+      # -------- ORDER ----------
+      - name: Build order-service
+        run: |
+          docker build \
+            -t $IMAGE_NAMESPACE/order-service:${{ github.ref_name }} \
+            -t $IMAGE_NAMESPACE/order-service:latest \
+            -f Delivery-system/order-service/Dockerfile \
+            Delivery-system
+
+      # -------- NOTIFICATION ----------
+      - name: Build notification-service
+        run: |
+          docker build \
+            -t $IMAGE_NAMESPACE/notification-service:${{ github.ref_name }} \
+            -t $IMAGE_NAMESPACE/notification-service:latest \
+            -f Delivery-system/notification-service/Dockerfile \
+            Delivery-system
+
+      # -------- PAYMENT ----------
+      - name: Build payment-service
+        run: |
+          docker build \
+            -t $IMAGE_NAMESPACE/payment-service:${{ github.ref_name }} \
+            -t $IMAGE_NAMESPACE/payment-service:latest \
+            -f Delivery-system/payment-service/Dockerfile \
+            Delivery-system
+
+      # -------- CONVERT ----------
+      - name: Build convert-service
+        run: |
+          docker build \
+            -t $IMAGE_NAMESPACE/convert-service:${{ github.ref_name }} \
+            -t $IMAGE_NAMESPACE/convert-service:latest \
+            -f Delivery-system/convert-service/Dockerfile \
+            Delivery-system
