@@ -1,7 +1,11 @@
 import axios from 'axios'
 
-// Configura aquí la URL de tu backend
-const API_BASE_URL = 'http://localhost:8080'
+const DEFAULT_API_BASE_URL =
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8080'
+    : window.location.origin
+
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL).replace(/\/$/, '')
 
 const api = axios.create({
   baseURL: API_BASE_URL,

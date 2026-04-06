@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: deliver-eats
+  labels:
+    app.kubernetes.io/name: payment-service
+    app.kubernetes.io/part-of: deliver-eats
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: payment-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: payment-service
+        app.kubernetes.io/part-of: deliver-eats
+    spec:
+      imagePullSecrets:
+        - name: artifact-registry-pull-secret
+      containers:
+        - name: payment-service
+          image: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/payment-service:latest
+          imagePullPolicy: Always
+          ports:
+            - name: grpc
+              containerPort: 50058
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_PORT
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: PAYMENT_DB_NAME
+            - name: DB_WINDOWS_AUTH
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_WINDOWS_AUTH
+          readinessProbe:
+            tcpSocket:
+              port: grpc
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: grpc
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: deliver-eats
+  labels:
+    app.kubernetes.io/name: payment-service
+    app.kubernetes.io/part-of: deliver-eats
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: payment-service
+  ports:
+    - name: grpc
+      port: 50058
+      targetPort: grpc

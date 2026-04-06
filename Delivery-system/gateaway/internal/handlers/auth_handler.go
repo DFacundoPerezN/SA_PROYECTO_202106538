@@ -83,7 +83,21 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		if status, ok := grpcStatus.FromError(err); ok {
+			switch status.Code() {
+			case grpcCodes.InvalidArgument:
+				c.JSON(http.StatusBadRequest, gin.H{"error": status.Message()})
+			case grpcCodes.AlreadyExists:
+				c.JSON(http.StatusConflict, gin.H{"error": status.Message()})
+			case grpcCodes.Unavailable:
+				c.JSON(http.StatusServiceUnavailable, gin.H{"error": "El servicio de usuarios no está disponible"})
+			default:
+				c.JSON(http.StatusBadGateway, gin.H{"error": "No se pudo completar el registro"})
+			}
+			return
+		}
+
+		c.JSON(http.StatusBadGateway, gin.H{"error": "No se pudo completar el registro"})
 		return
 	}
 

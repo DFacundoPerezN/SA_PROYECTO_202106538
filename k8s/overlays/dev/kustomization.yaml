@@ -1,0 +1,40 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+  - managed-certificate.yaml
+  - frontend-config.yaml
+patches:
+  - path: ingress-patch.yaml
+  - path: replicas-patch.yaml
+images:
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/api-gateway
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/api-gateway
+    newTag: dev
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/auth-service
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/auth-service
+    newTag: dev
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/user-service
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/user-service
+    newTag: dev
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/catalog-service
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/catalog-service
+    newTag: dev
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/restaurant-service
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/restaurant-service
+    newTag: dev
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/order-service
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/order-service
+    newTag: dev
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/notification-service
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/notification-service
+    newTag: dev
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/convert-service
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/convert-service
+    newTag: dev
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/payment-service
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/payment-service
+    newTag: dev
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/frontend
+    newName: us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo/frontend
+    newTag: dev

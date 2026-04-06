@@ -48,14 +48,43 @@ try {
 
 Print-Info "Usando: $dockerComposeCmd"
 
+function Invoke-Compose {
+    param([string[]]$ComposeArgs)
+
+    if ($dockerComposeCmd -eq "docker-compose") {
+        & docker-compose @ComposeArgs
+    } else {
+        & docker compose @ComposeArgs
+    }
+}
+
+$pullServices = @(
+    "rabbitmq",
+    "redis",
+    "auth-service",
+    "notification-service"
+)
+
+$buildServices = @(
+    "api-gateway",
+    "user-service",
+    "catalog-service",
+    "restaurant-service",
+    "order-service",
+    "convert-service",
+    "payment-service"
+)
+
+$env:COMPOSE_BAKE = "false"
+$env:COMPOSE_PARALLEL_LIMIT = "1"
+$env:DOCKER_BUILDKIT = "0"
+
+Print-Info "Modo de build estable activado (sin Bake, sin paralelismo y sin --no-cache)"
+
 # Paso 1: Detener contenedores existentes si están corriendo
 Print-Info "Deteniendo contenedores existentes..."
 try {
-    if ($dockerComposeCmd -eq "docker-compose") {
-        docker-compose down
-    } else {
-        docker compose down
-    }
+    Invoke-Compose @("down")
 } catch {
     Print-Warning "No hay contenedores previos para detener"
 }
@@ -64,11 +93,7 @@ try {
 $cleanVolumes = Read-Host "¿Desea eliminar volúmenes huérfanos? (y/n)"
 if ($cleanVolumes -eq "y" -or $cleanVolumes -eq "Y") {
     Print-Info "Eliminando volúmenes huérfanos..."
-    if ($dockerComposeCmd -eq "docker-compose") {
-        docker-compose down -v
-    } else {
-        docker compose down -v
-    }
+    Invoke-Compose @("down", "-v")
 }
 
 # Paso 3: Verificar archivos .env necesarios
@@ -80,33 +105,24 @@ if (-not (Test-Path "./notification-service/.env")) {
     Print-Warning "No se encontró ./notification-service/.env"
 }
 
-# Paso 4: Construir las imágenes
-Print-Info "Construyendo imágenes Docker..."
-if ($dockerComposeCmd -eq "docker-compose") {
-    docker-compose build --no-cache
-} else {
-    docker compose build --no-cache
-}
-
-# Paso 5: Pull de imágenes desde Docker Hub
-Print-Info "Descargando imágenes desde Docker Hub..."
+# Paso 4: Pull de imágenes preconstruidas
+Print-Info "Descargando imágenes preconstruidas desde Docker Hub..."
 try {
-    if ($dockerComposeCmd -eq "docker-compose") {
-        docker-compose pull
-    } else {
-        docker compose pull
-    }
+    Invoke-Compose (@("pull") + $pullServices)
 } catch {
     Print-Warning "Algunas imágenes no pudieron ser descargadas"
 }
 
+# Paso 5: Construir las imágenes locales de forma secuencial
+Print-Info "Construyendo imágenes locales de forma secuencial..."
+foreach ($service in $buildServices) {
+    Print-Info "Construyendo $service..."
+    Invoke-Compose @("build", $service)
+}
+
 # Paso 6: Levantar todos los servicios
 Print-Info "Levantando todos los servicios..."
-if ($dockerComposeCmd -eq "docker-compose") {
-    docker-compose up -d
-} else {
-    docker compose up -d
-}
+Invoke-Compose @("up", "-d")
 
 # Paso 7: Esperar un momento para que los servicios inicien
 Print-Info "Esperando a que los servicios inicien..."
@@ -114,11 +130,7 @@ Start-Sleep -Seconds 5
 
 # Paso 8: Mostrar estado de los contenedores
 Print-Info "Estado de los contenedores:"
-if ($dockerComposeCmd -eq "docker-compose") {
-    docker-compose ps
-} else {
-    docker compose ps
-}
+Invoke-Compose @("ps")
 
 # Paso 9: Información final
 Write-Host ""

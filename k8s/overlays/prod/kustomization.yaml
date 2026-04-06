@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+  - managed-certificate.yaml
+  - frontend-config.yaml
+patches:
+  - path: ingress-patch.yaml
+  - path: replicas-patch.yaml
+images:
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/api-gateway
+    newTag: prod
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/auth-service
+    newTag: prod
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/user-service
+    newTag: prod
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/catalog-service
+    newTag: prod
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/restaurant-service
+    newTag: prod
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/order-service
+    newTag: prod
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/notification-service
+    newTag: prod
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/convert-service
+    newTag: prod
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/payment-service
+    newTag: prod
+  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/frontend
+    newTag: prod

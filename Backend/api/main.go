@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -22,13 +23,38 @@ import (
 )
 
 func CORSMiddleware() gin.HandlerFunc {
+	allowedOriginsRaw := os.Getenv("CORS_ALLOWED_ORIGINS")
+	if allowedOriginsRaw == "" {
+		allowedOriginsRaw = "http://localhost:3000,http://127.0.0.1:3000,https://dev.delivereats.example.com,https://app.delivereats.example.com"
+	}
+
+	allowedOrigins := make(map[string]struct{})
+	for _, origin := range strings.Split(allowedOriginsRaw, ",") {
+		origin = strings.TrimSpace(origin)
+		if origin != "" {
+			allowedOrigins[origin] = struct{}{}
+		}
+	}
+
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		origin := c.GetHeader("Origin")
+		if _, ok := allowedOrigins[origin]; ok {
+			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+			c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+			c.Writer.Header().Set("Vary", "Origin")
+		}
+
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, Origin, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE, PATCH")
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
 
 		if c.Request.Method == "OPTIONS" {
+			if origin != "" {
+				if _, ok := allowedOrigins[origin]; !ok {
+					c.AbortWithStatus(http.StatusForbidden)
+					return
+				}
+			}
 			c.AbortWithStatus(204)
 			return
 		}

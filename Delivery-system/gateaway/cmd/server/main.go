@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -23,14 +24,57 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+func getEnvOrDefault(key, fallback string) string {
+	if val := os.Getenv(key); val != "" {
+		return val
+	}
+	return fallback
+}
+
+func getDurationEnv(key string, fallback time.Duration) time.Duration {
+	if raw := os.Getenv(key); raw != "" {
+		parsed, err := time.ParseDuration(raw)
+		if err != nil {
+			log.Printf("invalid duration for %s (%s), using %s", key, raw, fallback)
+			return fallback
+		}
+		return parsed
+	}
+	return fallback
+}
+
 func CORSMiddleware() gin.HandlerFunc {
+	allowedOriginsRaw := getEnvOrDefault(
+		"CORS_ALLOWED_ORIGINS",
+		"http://localhost:3000,http://127.0.0.1:3000,https://dev.delivereats.example.com,https://app.delivereats.example.com",
+	)
+	allowedOrigins := make(map[string]struct{})
+	for _, origin := range strings.Split(allowedOriginsRaw, ",") {
+		origin = strings.TrimSpace(origin)
+		if origin != "" {
+			allowedOrigins[origin] = struct{}{}
+		}
+	}
+
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		origin := c.GetHeader("Origin")
+		if _, ok := allowedOrigins[origin]; ok {
+			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+			c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+			c.Writer.Header().Set("Vary", "Origin")
+		}
+
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, Origin, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH")
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
 
 		if c.Request.Method == "OPTIONS" {
+			if origin != "" {
+				if _, ok := allowedOrigins[origin]; !ok {
+					c.AbortWithStatus(http.StatusForbidden)
+					return
+				}
+			}
 			c.AbortWithStatus(204)
 			return
 		}
@@ -48,6 +92,16 @@ func main() {
 
 	// Load config
 	cfg := config.Load()
+	userGRPCAddr := getEnvOrDefault("USER_GRPC_ADDR", cfg.UserGRPC)
+	catalogGRPCAddr := getEnvOrDefault("CATALOG_GRPC_ADDR", "catalog-service:50053")
+	orderGRPCAddr := getEnvOrDefault("ORDER_GRPC_ADDR", "order-service:50055")
+	restaurantGRPCAddr := getEnvOrDefault("RESTAURANT_GRPC_ADDR", "restaurant-service:50054")
+	convertGRPCAddr := getEnvOrDefault("CONVERT_GRPC_ADDR", "convert-service:50057")
+	paymentGRPCAddr := getEnvOrDefault("PAYMENT_GRPC_ADDR", "payment-service:50058")
+
+	readTimeout := getDurationEnv("HTTP_READ_TIMEOUT", 15*time.Second)
+	writeTimeout := getDurationEnv("HTTP_WRITE_TIMEOUT", 15*time.Second)
+	idleTimeout := getDurationEnv("HTTP_IDLE_TIMEOUT", 60*time.Second)
 
 	// Connect to auth-service (gRPC)
 	authClient, err := gatewaygrpc.NewAuthClient(cfg.AuthGRPC)
@@ -59,39 +113,39 @@ func main() {
 	// si usas docker-compose debe ser "user-service:50052"
 	// si usas local: "localhost:50052"
 	userConn, err := grpc.Dial(
-		"user-service:50052",
+		userGRPCAddr,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
 		log.Fatal("cannot connect to user-service:", err)
 	}
 
-	catalogClient, err := gatewaygrpc.NewCatalogClient("catalog-service:50053")
+	catalogClient, err := gatewaygrpc.NewCatalogClient(catalogGRPCAddr)
 	if err != nil {
 		log.Fatalf("could not connect to catalog-service: %v", err)
 	}
 
-	orderClient, err := gatewaygrpc.NewOrderClient("order-service:50055")
+	orderClient, err := gatewaygrpc.NewOrderClient(orderGRPCAddr)
 	if err != nil {
 		log.Fatal("cannot connect to order-service:", err)
 	}
 
 	// ---------------- RESTAURANT SERVICE ----------------
 
-	restaurantClient, err := gatewaygrpc.NewRestaurantClient("restaurant-service:50054")
+	restaurantClient, err := gatewaygrpc.NewRestaurantClient(restaurantGRPCAddr)
 	if err != nil {
 		log.Fatalf("could not connect to restaurant-service: %v", err)
 	}
 
 	// ---------------- CONVERT SERVICE ----------------
 
-	convertClient, err := gatewaygrpc.NewConvertClient("convert-service:50057")
+	convertClient, err := gatewaygrpc.NewConvertClient(convertGRPCAddr)
 	if err != nil {
 		log.Fatalf("could not connect to convert-service: %v", err)
 	}
 
 	// ---------------- PAYMENT SERVICE ----------------
-	paymentClient, err := gatewaygrpc.NewPaymentClient("payment-service:50058")
+	paymentClient, err := gatewaygrpc.NewPaymentClient(paymentGRPCAddr)
 	if err != nil {
 		log.Fatalf("could not connect to payment-service: %v", err)
 	}
@@ -213,9 +267,9 @@ func main() {
 	srv := &http.Server{
 		Addr:         ":" + cfg.ServerPort,
 		Handler:      router,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 15 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
+		IdleTimeout:  idleTimeout,
 	}
 
 	// Start server

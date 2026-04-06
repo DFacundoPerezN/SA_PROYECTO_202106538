@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: deliver-eats
+  labels:
+    app.kubernetes.io/name: api-gateway
+    app.kubernetes.io/part-of: deliver-eats
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api-gateway
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: api-gateway
+        app.kubernetes.io/part-of: deliver-eats
+    spec:
+      imagePullSecrets:
+        - name: artifact-registry-pull-secret
+      containers:
+        - name: api-gateway
+          image: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/api-gateway:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: GATEWAY_SERVER_PORT
+            - name: AUTH_GRPC_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: AUTH_GRPC_ADDR
+            - name: USER_GRPC_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: USER_GRPC_ADDR
+            - name: CATALOG_GRPC_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: CATALOG_GRPC_ADDR
+            - name: RESTAURANT_GRPC_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: RESTAURANT_GRPC_ADDR
+            - name: ORDER_GRPC_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: ORDER_GRPC_ADDR
+            - name: CONVERT_GRPC_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: CONVERT_GRPC_ADDR
+            - name: PAYMENT_GRPC_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: PAYMENT_GRPC_ADDR
+            - name: HTTP_READ_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: HTTP_READ_TIMEOUT
+            - name: HTTP_WRITE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: HTTP_WRITE_TIMEOUT
+            - name: HTTP_IDLE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: HTTP_IDLE_TIMEOUT
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: deliver-eats
+  labels:
+    app.kubernetes.io/name: api-gateway
+    app.kubernetes.io/part-of: deliver-eats
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: api-gateway
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
