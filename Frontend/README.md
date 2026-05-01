@@ -6,7 +6,7 @@ Aplicación de deliveries construida con React + Vite.
 
 - Node.js (v18 o superior)
 - npm o yarn
-- Backend API corriendo (por defecto en `http://127.0.0.1:8080`)
+- Backend API corriendo (local o en GCP)
 
 ## 🛠️ Instalación
 
@@ -16,10 +16,22 @@ npm install
 ```
 
 2. Configurar la URL del backend:
-Edita el archivo `src/services/api.js` y actualiza la variable `API_BASE_URL` con la URL de tu backend:
-```javascript
-const API_BASE_URL = 'http://127.0.0.1:8080' // Cambia esto a tu URL
+
+El proyecto usa variables de entorno de Vite:
+
+- `.env.development` (modo local)
+- `.env.production` (build de produccion)
+
+Ejemplo:
+
+```bash
+VITE_API_BASE_URL=https://dev.delivereats.example.com
 ```
+
+Notas:
+
+- Si no defines `VITE_API_BASE_URL`, en local usa `http://localhost:8080`.
+- Si no defines `VITE_API_BASE_URL` fuera de local, usa `window.location.origin`.
 
 ## Uso
 
@@ -156,7 +168,7 @@ El estado se maneja usando:
 
 ### El backend no responde
 - Verifica que el backend esté corriendo
-- Confirma la URL en `src/services/api.js`
+- Confirma `VITE_API_BASE_URL` en tu archivo `.env.*`
 - Revisa la consola del navegador para errores
 
 ### Error de CORS

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
 	"order-service/internal/domain"
 	"slices"
 	"time"
@@ -157,25 +158,29 @@ func (s *OrderService) CancelOrder(
 }
 
 func (s *OrderService) notifyOrderRejected(orderID int) {
-
 	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
 	defer cancel()
+
+	_ = s.notifyOrderRejectedWithContext(ctx, orderID)
+}
+
+func (s *OrderService) notifyOrderRejectedWithContext(ctx context.Context, orderID int) error {
 
 	// 1. obtener orden
 	order, err := s.repo.GetOrderByID(ctx, orderID)
 	if err != nil {
-		return
+		return err
 	}
 
 	// 2. obtener productos
 	items, err := s.repo.GetOrderItems(ctx, orderID)
 	if err != nil {
-		return
+		return err
 	}
 
 	clientResp, err := s.userClient.GetUser(order.ClienteId)
 	if err != nil {
-		return
+		return err
 	}
 
 	// 3. convertir productos
@@ -196,7 +201,37 @@ func (s *OrderService) notifyOrderRejected(orderID int) {
 		Status:         "RECHAZADA",
 	}
 
-	_ = s.notificationClient.SendOrderRejectedEmail(ctx, req)
+	return s.notificationClient.SendOrderRejectedEmail(ctx, req)
+}
+
+// AutoRejectStaleCreatedOrders rejects CREADA orders older than the threshold.
+// Anti-spam: only orders atomically updated from CREADA -> RECHAZADA are notified.
+func (s *OrderService) AutoRejectStaleCreatedOrders(ctx context.Context, olderThan time.Duration) (int, int, error) {
+	minutes := int(olderThan.Minutes())
+	if minutes <= 0 {
+		minutes = 60
+	}
+
+	updatedOrderIDs, err := s.repo.AutoRejectStaleCreatedOrders(ctx, minutes)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	notified := 0
+	for _, orderID := range updatedOrderIDs {
+		notifyCtx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+		notifyErr := s.notifyOrderRejectedWithContext(notifyCtx, orderID)
+		cancel()
+
+		if notifyErr != nil {
+			log.Printf("[auto-reject] failed to notify order %d: %v", orderID, notifyErr)
+			continue
+		}
+
+		notified++
+	}
+
+	return len(updatedOrderIDs), notified, nil
 }
 
 func (s *OrderService) GetCancelledOrRejectedOrders() ([]domain.CancelledOrRejectedOrder, error) {

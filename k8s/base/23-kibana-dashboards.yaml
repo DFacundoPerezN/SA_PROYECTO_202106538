@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-dashboards
+  namespace: observability
+  labels:
+    app.kubernetes.io/name: kibana-dashboards
+data:
+  dashboards.ndjson: |-
+    {"type":"index-pattern","id":"deliver-eats-*","attributes":{"title":"deliver-eats-*","timeFieldName":"@timestamp"},"references":[]}
+    {"type":"visualization","id":"errors-by-service","attributes":{"title":"Errors by Service","visState":"{\"title\": \"Errors by Service\", \"type\": \"histogram\", \"params\": {}, \"aggs\": [{\"id\": \"1\", \"enabled\": true, \"type\": \"count\", \"schema\": \"metric\", \"params\": {}}, {\"id\": \"2\", \"enabled\": true, \"type\": \"terms\", \"schema\": \"segment\", \"params\": {\"field\": \"service\", \"size\": 5, \"order\": \"desc\", \"orderBy\": \"1\"}}], \"listeners\": {}}","uiStateJSON":"{}","description":"Count of error-level logs per service","version":1,"kibanaSavedObjectMeta":{"searchSourceJSON":"{\"query\": {\"query\": \"level: \\\"error\\\"\", \"language\": \"kuery\"}, \"filter\": [], \"indexRefName\": \"kibanaSavedObjectMeta.searchSourceJSON.index\"}"}},"references":[{"name":"kibanaSavedObjectMeta.searchSourceJSON.index","type":"index-pattern","id":"deliver-eats-*"}]}
+    {"type":"visualization","id":"latency-overview","attributes":{"title":"Latency Overview","visState":"{\"title\": \"Latency Overview\", \"type\": \"line\", \"params\": {}, \"aggs\": [{\"id\": \"1\", \"enabled\": true, \"type\": \"avg\", \"schema\": \"metric\", \"params\": {\"field\": \"latency_ms\"}}, {\"id\": \"2\", \"enabled\": true, \"type\": \"date_histogram\", \"schema\": \"segment\", \"params\": {\"field\": \"@timestamp\", \"interval\": \"auto\"}}], \"listeners\": {}}","uiStateJSON":"{}","description":"Average request latency per service","version":1,"kibanaSavedObjectMeta":{"searchSourceJSON":"{\"query\": {\"query\": \"*\", \"language\": \"kuery\"}, \"filter\": [], \"indexRefName\": \"kibanaSavedObjectMeta.searchSourceJSON.index\"}"}},"references":[{"name":"kibanaSavedObjectMeta.searchSourceJSON.index","type":"index-pattern","id":"deliver-eats-*"}]}
+    {"type":"dashboard","id":"deliver-eats-observability","attributes":{"title":"Deliver-eats Observability","hits":0,"description":"Errors and latency overview","panelsJSON":"[{\"panelIndex\": \"1\", \"gridData\": {\"x\": 0, \"y\": 0, \"w\": 24, \"h\": 15}, \"version\": \"7.17.0\", \"type\": \"visualization\", \"id\": \"errors-by-service\"}, {\"panelIndex\": \"2\", \"gridData\": {\"x\": 0, \"y\": 15, \"w\": 24, \"h\": 15}, \"version\": \"7.17.0\", \"type\": \"visualization\", \"id\": \"latency-overview\"}]","optionsJSON":"{\"useMargins\": true}","version":1,"timeRestore":false,"kibanaSavedObjectMeta":{"searchSourceJSON":"{\"query\": {\"query\": \"*\", \"language\": \"kuery\"}, \"filter\": [], \"index\": \"deliver-eats-*\"}"},"uiStateJSON":"{}"},"references":[]}
+
+---
+# Job to import dashboards into Kibana once the service is available
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kibana-import-dashboards
+  namespace: observability
+  labels:
+    app.kubernetes.io/name: kibana-dashboards-import
+spec:
+  backoffLimit: 4
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kibana-dashboards-import
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: import
+          image: curlimages/curl:8.2.1
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              KIBANA_URL="http://kibana.observability.svc.cluster.local:5601"
+              echo "Waiting for Kibana..."
+              until curl -sSf "$KIBANA_URL" > /dev/null; do
+                sleep 3
+              done
+              echo "Importing dashboards to $KIBANA_URL"
+              curl -sS -H "kbn-xsrf: true" -F file=@/dashboards/dashboards.ndjson "$KIBANA_URL/api/saved_objects/_import?overwrite=true" || { echo "Import failed"; exit 1; }
+          volumeMounts:
+            - name: dashboards
+              mountPath: /dashboards
+      volumes:
+        - name: dashboards
+          configMap:
+            name: kibana-dashboards

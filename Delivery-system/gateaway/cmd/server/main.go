@@ -166,7 +166,9 @@ func main() {
 	paymentHandler := handlers.NewPaymentHandler(paymentClient.Client)
 
 	// Gin
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Recovery())
+	router.Use(middleware.JSONRequestLogger("api-gateway"))
 	router.Use(CORSMiddleware())
 
 	// Health

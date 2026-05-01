@@ -5,6 +5,7 @@ PROJECT_ID="${PROJECT_ID:-}"
 REGION="${REGION:-us-central1}"
 REPOSITORY="${REPOSITORY:-deliver-eats-repo}"
 TAG="${TAG:-latest}"
+GCP_ACCOUNT="${GCP_ACCOUNT:-}"
 SERVICE_NAME="api-gateway"
 DOCKERFILE="Delivery-system/gateaway/Dockerfile"
 CONTEXT="Delivery-system"
@@ -17,6 +18,11 @@ fi
 
 REGISTRY_HOST="${REGION}-docker.pkg.dev"
 IMAGE="${REGISTRY_HOST}/${PROJECT_ID}/${REPOSITORY}/${SERVICE_NAME}:${TAG}"
+
+if [[ -n "$GCP_ACCOUNT" ]]; then
+  echo "Setting active gcloud account to ${GCP_ACCOUNT}"
+  gcloud config set account "${GCP_ACCOUNT}" >/dev/null
+fi
 
 echo "Configuring Docker auth for ${REGISTRY_HOST}"
 gcloud auth configure-docker "${REGISTRY_HOST}" -q

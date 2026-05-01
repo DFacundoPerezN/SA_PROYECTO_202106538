@@ -13,7 +13,7 @@ RUN npm ci --legacy-peer-deps
 COPY . .
 
 # Build de producción
-RUN npm run build
+RUN node ./node_modules/vite/bin/vite.js build
 
 # Etapa 2: Servidor con Nginx
 FROM nginx:alpine

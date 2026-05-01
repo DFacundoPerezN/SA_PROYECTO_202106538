@@ -1,0 +1,25 @@
+# Keep the Cloud Build context small and deterministic
+.git
+.git/**
+.gitignore
+
+# Local tooling and SDKs
+n/
+**/node_modules/
+**/.npm/
+**/.cache/
+
+# Build outputs and temporary files
+**/dist/
+**/build/
+**/tmp/
+**/.tmp/
+**/*.log
+**/*.tgz
+**/*.zip
+
+# Editor and OS files
+.vscode/
+**/.DS_Store
+**/Thumbs.db
+

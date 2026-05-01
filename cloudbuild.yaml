@@ -1,0 +1,153 @@
+timeout: 3600s
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+serviceAccount: projects/saproyecto-494423/serviceAccounts/deliver-eats-builder@saproyecto-494423.iam.gserviceaccount.com
+
+tags:
+  - deliver-eats
+  - dev
+
+substitutions:
+  _REGION: us-central1
+  _REPOSITORY: deliver-eats-repo
+  _TAG: dev
+  _CLUSTER_NAME: deliver-eats-dev
+  _CLUSTER_ZONE: us-central1-a
+  _NAMESPACE: deliver-eats
+
+steps:
+  - name: hashicorp/terraform:1.8.5
+    dir: Delivery-system/terraform
+    args:
+      - fmt
+      - -check
+      - -recursive
+
+  - name: hashicorp/terraform:1.8.5
+    dir: Delivery-system/terraform
+    args:
+      - init
+      - -backend=false
+      - -input=false
+
+  - name: hashicorp/terraform:1.8.5
+    dir: Delivery-system/terraform
+    args:
+      - validate
+
+  - name: hashicorp/terraform:1.8.5
+    dir: Delivery-system/terraform
+    args:
+      - plan
+      - -input=false
+      - -no-color
+      - -refresh=false
+      - -lock=false
+      - -var-file=terraform.tfvars
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/api-gateway:${_TAG}
+      - --dockerfile=Delivery-system/gateaway/Dockerfile
+      - --context=dir://Delivery-system
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/auth-service:${_TAG}
+      - --dockerfile=Delivery-system/auth-service/Dockerfile
+      - --context=dir://Delivery-system
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/user-service:${_TAG}
+      - --dockerfile=Delivery-system/user-service/Dockerfile
+      - --context=dir://Delivery-system
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/catalog-service:${_TAG}
+      - --dockerfile=Delivery-system/catalog-service/Dockerfile
+      - --context=dir://Delivery-system
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/restaurant-service:${_TAG}
+      - --dockerfile=Delivery-system/restaurant-service/Dockerfile
+      - --context=dir://Delivery-system
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/order-service:${_TAG}
+      - --dockerfile=Delivery-system/order-service/Dockerfile
+      - --context=dir://Delivery-system
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/notification-service:${_TAG}
+      - --dockerfile=Delivery-system/notification-service/Dockerfile
+      - --context=dir://Delivery-system
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/convert-service:${_TAG}
+      - --dockerfile=Delivery-system/convert-service/Dockerfile
+      - --context=dir://Delivery-system
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/payment-service:${_TAG}
+      - --dockerfile=Delivery-system/payment-service/Dockerfile
+      - --context=dir://Delivery-system
+
+  - name: gcr.io/kaniko-project/executor:latest
+    args:
+      - --destination=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/frontend:${_TAG}
+      - --dockerfile=Frontend/Dockerfile
+      - --context=dir://Frontend
+
+  - name: gcr.io/cloud-builders/kubectl
+    env:
+      - CLOUDSDK_CORE_PROJECT=$PROJECT_ID
+      - CLOUDSDK_COMPUTE_ZONE=${_CLUSTER_ZONE}
+      - CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}
+    args:
+      - apply
+      - -k
+      - k8s/overlays/dev
+
+  - name: gcr.io/cloud-builders/kubectl
+    entrypoint: /bin/sh
+    env:
+      - CLOUDSDK_CORE_PROJECT=$PROJECT_ID
+      - CLOUDSDK_COMPUTE_ZONE=${_CLUSTER_ZONE}
+      - CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}
+    args:
+      - -c
+      - |
+        kubectl rollout restart deployment/api-gateway -n ${_NAMESPACE}
+        kubectl rollout restart deployment/auth-service -n ${_NAMESPACE}
+        kubectl rollout restart deployment/user-service -n ${_NAMESPACE}
+        kubectl rollout restart deployment/catalog-service -n ${_NAMESPACE}
+        kubectl rollout restart deployment/restaurant-service -n ${_NAMESPACE}
+        kubectl rollout restart deployment/order-service -n ${_NAMESPACE}
+        kubectl rollout restart deployment/notification-service -n ${_NAMESPACE}
+        kubectl rollout restart deployment/convert-service -n ${_NAMESPACE}
+        kubectl rollout restart deployment/payment-service -n ${_NAMESPACE}
+        kubectl rollout restart deployment/frontend -n ${_NAMESPACE}
+
+  - name: gcr.io/cloud-builders/kubectl
+    entrypoint: /bin/sh
+    env:
+      - CLOUDSDK_CORE_PROJECT=$PROJECT_ID
+      - CLOUDSDK_COMPUTE_ZONE=${_CLUSTER_ZONE}
+      - CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}
+    args:
+      - -c
+      - |
+        kubectl rollout status deployment/api-gateway -n ${_NAMESPACE} --timeout=300s
+        kubectl rollout status deployment/user-service -n ${_NAMESPACE} --timeout=300s
+        kubectl rollout status deployment/frontend -n ${_NAMESPACE} --timeout=300s
+        kubectl get deployment -n ${_NAMESPACE}
+        kubectl get pods -n ${_NAMESPACE}

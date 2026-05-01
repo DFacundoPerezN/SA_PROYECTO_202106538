@@ -16,6 +16,7 @@ Esta guia describe el flujo completo para desplegar todos los componentes de Del
 - payment-service
 - redis
 - rabbitmq
+- observability (elasticsearch, fluentd, kibana)
 
 ## 0) Prerrequisitos
 
@@ -178,6 +179,26 @@ Si algun pod falla, revisar eventos y logs:
 kubectl describe pod <POD_NAME> -n deliver-eats
 kubectl logs <POD_NAME> -n deliver-eats --tail=200
 ```
+
+## 7.1) Validar observabilidad
+
+El stack de observabilidad se despliega en el namespace `observability`.
+
+```bash
+kubectl get pods -n observability
+kubectl get svc -n observability
+```
+
+Elasticsearch expone el puerto `9200` dentro del cluster y Kibana el `5601`.
+Fluentd corre como DaemonSet para leer los logs JSON de los pods y enviarlos a Elasticsearch.
+
+Para revisar Kibana desde local, usa port-forward:
+
+```bash
+kubectl port-forward -n observability svc/kibana 5601:5601
+```
+
+Luego abre `http://localhost:5601` y busca los indices `deliver-eats-*`.
 
 ## 8) Validar certificado administrado (si aplica)
 

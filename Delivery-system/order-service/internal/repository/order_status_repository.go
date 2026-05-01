@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"order-service/internal/domain"
 	"time"
 )
@@ -138,4 +139,48 @@ func (r *OrderRepository) GetCancelledOrRejectedOrders() ([]domain.CancelledOrRe
 	}
 
 	return orders, nil
+}
+
+// AutoRejectStaleCreatedOrders marks orders as RECHAZADA only when they are still
+// in CREADA state and older than the provided threshold in minutes.
+// The UPDATE + OUTPUT makes this operation idempotent and safe against duplicates.
+func (r *OrderRepository) AutoRejectStaleCreatedOrders(ctx context.Context, olderThanMinutes int) ([]int, error) {
+	if olderThanMinutes <= 0 {
+		olderThanMinutes = 60
+	}
+
+	query := `
+		UPDATE Orden
+		SET Estado = 'RECHAZADA'
+		OUTPUT INSERTED.Id
+		WHERE Estado = 'CREADA'
+		  AND DATEDIFF(MINUTE, FechaHoraCreacion, SYSUTCDATETIME()) >= @p1
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, olderThanMinutes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	ids := make([]int, 0)
+	for rows.Next() {
+		var id int
+		if scanErr := rows.Scan(&id); scanErr != nil {
+			return nil, scanErr
+		}
+		ids = append(ids, id)
+	}
+
+	if rowsErr := rows.Err(); rowsErr != nil {
+		return nil, rowsErr
+	}
+
+	if ids == nil {
+		return []int{}, nil
+	}
+
+	fmt.Printf("[auto-reject] updated stale created orders: %d\n", len(ids))
+
+	return ids, nil
 }
