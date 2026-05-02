@@ -21,7 +21,7 @@ spec:
         - name: artifact-registry-pull-secret
       containers:
         - name: payment-service
-          image: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/payment-service:latest
+          image: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/payment-service:latest
           imagePullPolicy: Always
           ports:
             - name: grpc

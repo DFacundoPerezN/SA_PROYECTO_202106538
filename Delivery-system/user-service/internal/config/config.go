@@ -19,7 +19,7 @@ type Config struct {
 
 func Load() *Config {
 	return &Config{
-		DBHost:             getEnv("DB_HOST", "sa-delivereats.database.windows.net"),
+		DBHost:             getEnv("DB_HOST", "sqlserver.deliver-eats.internal"),
 		DBPort:             getEnvAsInt("DB_PORT", 1433),
 		DBUser:             getEnv("DB_USER", "adminsql"),
 		DBPassword:         getEnv("DB_PASSWORD", "Delivereats123"),

@@ -17,13 +17,13 @@ type Config struct {
 
 func Load() *Config {
 	return &Config{
-		DBHost:        getEnv("DB_HOST", "localhost"),
-		DBPort:        getEnvAsInt("DB_PORT", 1434),
-		DBUser:        getEnv("DB_USER", "sa"),
-		DBPassword:    getEnv("DB_PASSWORD", ""),
+		DBHost:        getEnv("DB_HOST", "sqlserver.deliver-eats.internal"),
+		DBPort:        getEnvAsInt("DB_PORT", 1433),
+		DBUser:        getEnv("DB_USER", "adminsql"),
+		DBPassword:    getEnv("DB_PASSWORD", "Delivereats123"),
 		DBName:        getEnv("DB_NAME", "Delivereats_SA_Ordenes"),
 		ServerPort:    getEnv("SERVER_PORT", "8080"),
-		DBWindowsAuth: getEnvAsBool("DB_WINDOWS_AUTH", true), // false por defecto
+		DBWindowsAuth: getEnvAsBool("DB_WINDOWS_AUTH", false),
 	}
 }
 

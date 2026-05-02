@@ -25,7 +25,7 @@ spec:
             - name: artifact-registry-pull-secret
           containers:
             - name: order-auto-reject
-              image: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/order-service:latest
+              image: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/order-service:latest
               imagePullPolicy: Always
               env:
                 - name: AUTO_REJECT_ONCE

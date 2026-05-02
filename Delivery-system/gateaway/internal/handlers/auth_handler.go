@@ -63,7 +63,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 type RegisterRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	Name     string `json:"name"`
+	NombreCompleto string `json:"nombre_completo"`
 	Role     string `json:"role"`
 }
 
@@ -78,7 +78,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	resp, err := h.userClient.Register(
 		req.Email,
 		req.Password,
-		req.Name,
+		req.NombreCompleto,
 		req.Role,
 	)
 

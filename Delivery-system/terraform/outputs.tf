@@ -18,15 +18,6 @@ output "gke_node_pool_name" {
   value       = google_container_node_pool.primary.name
 }
 
-output "sql_vm_name" {
-  description = "Nombre de la VM que aloja SQL Server."
-  value       = google_compute_instance.sqlserver_vm.name
-}
-
-output "sql_vm_private_ip" {
-  description = "IP privada estable de la VM SQL Server."
-  value       = google_compute_address.sql_vm_internal.address
-}
 
 output "sql_admin_username" {
   description = "Usuario administrador de SQL Server."

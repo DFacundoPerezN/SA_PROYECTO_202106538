@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
@@ -11,17 +11,22 @@ systemctl start docker
 
 docker pull mcr.microsoft.com/mssql/server:2022-latest
 docker rm -f sqlserver >/dev/null 2>&1 || true
-docker run -d \
-  --name sqlserver \
-  --restart unless-stopped \
-  -e ACCEPT_EULA=Y \
-  -e MSSQL_PID=Developer \
-  -e MSSQL_SA_PASSWORD='${sql_server_password}' \
-  -p 1433:1433 \
+docker run -d \\
+  --name sqlserver \\
+  --restart unless-stopped \\
+  -e ACCEPT_EULA=Y \\
+  -e MSSQL_PID=Developer \\
+  -e MSSQL_SA_PASSWORD='${sql_server_password}' \\
+  -p 1433:1433 \\
   mcr.microsoft.com/mssql/server:2022-latest
 
 echo "Waiting for SQL Server to become ready"
-until docker run --rm --network host mcr.microsoft.com/mssql-tools18:latest /opt/mssql-tools18/bin/sqlcmd -S 127.0.0.1 -U sa -P '${sql_server_password}' -C -Q "SELECT 1" >/dev/null 2>&1; do
+for i in {1..60}; do
+  if docker run --rm --network host mcr.microsoft.com/mssql-tools18:latest /opt/mssql-tools18/bin/sqlcmd -S 127.0.0.1 -U sa -P '${sql_server_password}' -C -Q "SELECT 1" >/dev/null 2>&1; then
+    echo "SQL Server is ready"
+    break
+  fi
+  echo "Waiting... ($i/60)"
   sleep 10
 done
 

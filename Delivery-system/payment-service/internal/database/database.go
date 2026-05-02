@@ -35,7 +35,7 @@ func NewSQLServer(cfg Config) (*sql.DB, error) {
 			cfg.Host, cfg.Port, cfg.DBName)
 	} else {
 		// Autenticación SQL Server con puerto específico
-		connString = fmt.Sprintf("server=%s,%d;user id=%s;password=%s;database=%s;encrypt=true",
+		connString = fmt.Sprintf("server=%s,%d;user id=%s;password=%s;database=%s;encrypt=disable",
 			cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName)
 	}
 

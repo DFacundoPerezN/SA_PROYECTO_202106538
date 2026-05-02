@@ -21,7 +21,7 @@ spec:
         - name: artifact-registry-pull-secret
       containers:
         - name: restaurant-service
-          image: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/restaurant-service:latest
+          image: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/restaurant-service:latest
           imagePullPolicy: Always
           ports:
             - name: grpc

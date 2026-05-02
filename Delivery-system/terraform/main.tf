@@ -58,12 +58,13 @@ resource "google_compute_subnetwork" "subnet" {
   }
 }
 
-resource "google_compute_address" "sql_vm_internal" {
-  name         = "${var.sql_vm_name}-internal-ip"
-  region       = var.region
-  subnetwork   = google_compute_subnetwork.subnet.id
-  address_type = "INTERNAL"
-}
+# Internal IP para SQL Server VM - COMENTADO: Ya no se necesita con Cloud SQL
+# resource "google_compute_address" "sql_vm_internal" {
+#   name         = "${var.sql_vm_name}-internal-ip"
+#   region       = var.region
+#   subnetwork   = google_compute_subnetwork.subnet.id
+#   address_type = "INTERNAL"
+# }
 
 resource "google_dns_managed_zone" "private" {
   name     = var.private_dns_zone_name
@@ -78,14 +79,15 @@ resource "google_dns_managed_zone" "private" {
   }
 }
 
-resource "google_dns_record_set" "sql_vm_a_record" {
-  name         = "${var.sql_vm_dns_name}."
-  managed_zone = google_dns_managed_zone.private.name
-  type         = "A"
-  ttl          = 300
-
-  rrdatas = [google_compute_address.sql_vm_internal.address]
-}
+# DNS record ahora es manejado por cloudsql.tf (google_dns_record_set.cloudsql_a_record)
+# resource "google_dns_record_set" "sql_vm_a_record" {
+#   name         = "${var.sql_vm_dns_name}."
+#   managed_zone = google_dns_managed_zone.private.name
+#   type         = "A"
+#   ttl          = 300
+#
+#   rrdatas = [google_compute_address.sql_vm_internal.address]
+# }
 
 resource "google_service_account" "gke_nodes" {
   account_id   = "deliver-eats-gke-nodes"
@@ -216,19 +218,22 @@ resource "google_compute_firewall" "allow_internal" {
   }
 }
 
-resource "google_compute_firewall" "allow_sqlserver" {
-  name    = "${var.network_name}-allow-sqlserver"
-  network = google_compute_network.vpc.name
-
-  direction     = "INGRESS"
-  source_ranges = [var.network_cidr, var.pods_secondary_cidr, var.services_secondary_cidr]
-  target_tags   = ["sqlserver-vm"]
-
-  allow {
-    protocol = "tcp"
-    ports    = ["1433"]
-  }
-}
+# ============================================================================
+# Firewall para SQL Server VM - COMENTADO: Ya no se necesita con Cloud SQL
+# ============================================================================
+# resource "google_compute_firewall" "allow_sqlserver" {
+#   name    = "${var.network_name}-allow-sqlserver"
+#   network = google_compute_network.vpc.name
+#
+#   direction     = "INGRESS"
+#   source_ranges = [var.network_cidr, var.pods_secondary_cidr, var.services_secondary_cidr]
+#   target_tags   = ["sqlserver-vm"]
+#
+#   allow {
+#     protocol = "tcp"
+#     ports    = ["1433"]
+#   }
+# }
 
 resource "google_compute_firewall" "allow_ssh" {
   name    = "${var.network_name}-allow-ssh"
@@ -258,42 +263,45 @@ resource "google_compute_firewall" "allow_load_balancer" {
   }
 }
 
-resource "google_compute_instance" "sqlserver_vm" {
-  name         = var.sql_vm_name
-  machine_type = var.sql_vm_machine_type
-  zone         = var.zone
-  tags         = ["sqlserver-vm"]
-
-  allow_stopping_for_update = true
-
-  boot_disk {
-    auto_delete = true
-
-    initialize_params {
-      image = "ubuntu-os-cloud/ubuntu-2204-lts"
-      size  = var.sql_vm_disk_size_gb
-      type  = "pd-balanced"
-    }
-  }
-
-  network_interface {
-    network    = google_compute_network.vpc.id
-    subnetwork = google_compute_subnetwork.subnet.id
-    network_ip = google_compute_address.sql_vm_internal.address
-
-    access_config {}
-  }
-
-  metadata = {
-    enable-oslogin = "FALSE"
-  }
-
-  metadata_startup_script = templatefile("${path.module}/scripts/sqlserver-startup.sh.tftpl", {
-    sql_admin_username = var.sql_admin_username
-    sql_server_password = var.sql_server_password
-    sql_database_names  = var.sql_database_names
-  })
-}
+# ============================================================================
+# SQL Server VM - COMENTADO: Usando Cloud SQL en su lugar (ver cloudsql.tf)
+# ============================================================================
+# resource "google_compute_instance" "sqlserver_vm" {
+#   name         = var.sql_vm_name
+#   machine_type = var.sql_vm_machine_type
+#   zone         = var.zone
+#   tags         = ["sqlserver-vm"]
+#
+#   allow_stopping_for_update = true
+#
+#   boot_disk {
+#     auto_delete = true
+#
+#     initialize_params {
+#       image = "ubuntu-os-cloud/ubuntu-2204-lts"
+#       size  = var.sql_vm_disk_size_gb
+#       type  = "pd-balanced"
+#     }
+#   }
+#
+#   network_interface {
+#     network    = google_compute_network.vpc.id
+#     subnetwork = google_compute_subnetwork.subnet.id
+#     network_ip = google_compute_address.sql_vm_internal.address
+#
+#     access_config {}
+#   }
+#
+#   metadata = {
+#     enable-oslogin = "FALSE"
+#   }
+#
+#   metadata_startup_script = templatefile("${path.module}/scripts/sqlserver-startup.sh.tftpl", {
+#     sql_admin_username = var.sql_admin_username
+#     sql_server_password = var.sql_server_password
+#     sql_database_names  = var.sql_database_names
+#   })
+# }
 
 resource "google_cloud_run_v2_service" "frontend" {
   name     = "deliver-eats-frontend"
