@@ -1,0 +1,636 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "scale-deliver-eats-to-one",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"scale",
+				"deployment",
+				"-n",
+				"deliver-eats",
+				"api-gateway",
+				"auth-service",
+				"user-service",
+				"catalog-service",
+				"restaurant-service",
+				"order-service",
+				"notification-service",
+				"convert-service",
+				"payment-service",
+				"frontend",
+				"--replicas=1"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "verify-deliver-eats-replicas",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"get",
+				"deployment",
+				"-n",
+				"deliver-eats",
+				"-o",
+				"custom-columns=NAME:.metadata.name,REPLICAS:.spec.replicas"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "inspect-deliver-eats",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"describe",
+				"pod",
+				"restaurant-service-657f89d58-65bql",
+				"-n",
+				"deliver-eats"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "none"
+		},
+		{
+			"label": "inspect-restaurant-logs",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"logs",
+				"pod/restaurant-service-657f89d58-65bql",
+				"-n",
+				"deliver-eats",
+				"--tail=200"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "none"
+		},
+		{
+			"label": "inspect-user-logs",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"logs",
+				"pod/user-service-54475f4dd5-5jg96",
+				"-n",
+				"deliver-eats",
+				"--tail=80"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "none"
+		},
+		{
+			"label": "verify-pods-after-restart",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"get",
+				"pods",
+				"-n",
+				"deliver-eats",
+				"-o",
+				"wide"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "none"
+		},
+		{
+			"label": "check-pods-status",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"get",
+				"pods",
+				"-n",
+				"deliver-eats"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "none"
+		},
+		{
+			"label": "tail-restaurant-logs",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"logs",
+				"-f",
+				"pod/restaurant-service-657f89d58-65bql",
+				"-n",
+				"deliver-eats"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "none"
+		},
+		{
+			"label": "final-status-check",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"get",
+				"pods",
+				"-n",
+				"deliver-eats",
+				"--sort-by=.metadata.name"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "exec-get-pods",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"exec",
+				"-n",
+				"deliver-eats",
+				"notification-service-f949957c4-6rs4k",
+				"--",
+				"sh",
+				"-c",
+				"kubectl get pods -n deliver-eats || echo 'kubectl not in container, skipping'"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "diag-user-describe",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"describe",
+				"pod",
+				"user-service-6cb8c8464f-zl7cx",
+				"-n",
+				"deliver-eats"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "recreate-artifact-secret-pipeline",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"kubectl create secret docker-registry artifact-registry-pull-secret --namespace deliver-eats --docker-server=us-central1-docker.pkg.dev --docker-username=_json_key --docker-password=\"$(tr -d '\\r' < /c/Users/diego/Downloads/service-account.json)\" --docker-email=not-used@example.com --dry-run=client -o yaml | kubectl apply -f -"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "locate-git-bash",
+			"type": "shell",
+			"command": "where.exe",
+			"args": [
+				"bash.exe"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "recreate-artifact-secret-powershell",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"create",
+				"secret",
+				"docker-registry",
+				"artifact-registry-pull-secret",
+				"--namespace",
+				"deliver-eats",
+				"--docker-server=us-central1-docker.pkg.dev",
+				"--docker-username=_json_key",
+				"--docker-password=$((Get-Content -Raw 'C:\\Users\\diego\\Downloads\\service-account.json') -replace \"`r\",\"\")",
+				"--docker-email=not-used@example.com",
+				"--dry-run=client",
+				"-o",
+				"yaml",
+				"|",
+				"kubectl",
+				"apply",
+				"-f",
+				"-"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "recreate-artifact-secret-powershell-pipeline",
+			"type": "shell",
+			"command": "$json=(Get-Content -Raw 'C:\\Users\\diego\\Downloads\\service-account.json') -replace \"`r\",\"\"; kubectl create secret docker-registry artifact-registry-pull-secret --namespace deliver-eats --docker-server=us-central1-docker.pkg.dev --docker-username=_json_key --docker-password=\"$json\" --docker-email=not-used@example.com --dry-run=client -o yaml | kubectl apply -f -",
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "recreate-artifact-secret-ps-simple",
+			"type": "shell",
+			"command": "kubectl create secret docker-registry artifact-registry-pull-secret --namespace deliver-eats --docker-server=us-central1-docker.pkg.dev --docker-username=_json_key --docker-password=\"$(Get-Content -Raw 'C:\\Users\\diego\\Downloads\\service-account.json')\" --docker-email=not-used@example.com --dry-run=client -o yaml | kubectl apply -f -",
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "verify-pull-secret",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"get",
+				"secret",
+				"artifact-registry-pull-secret",
+				"-n",
+				"deliver-eats",
+				"-o",
+				"jsonpath={.metadata.name} {.type}"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "recreate-secret-compressed-json",
+			"type": "shell",
+			"command": "$json=((Get-Content -Raw 'C:\\Users\\diego\\Downloads\\service-account.json') | ConvertFrom-Json | ConvertTo-Json -Compress); kubectl create secret docker-registry artifact-registry-pull-secret --namespace deliver-eats --docker-server=us-central1-docker.pkg.dev --docker-username=_json_key --docker-password=$json --docker-email=not-used@example.com --dry-run=client -o yaml | kubectl apply -f -",
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "restart-deliver-eats-pods",
+			"type": "shell",
+			"command": "kubectl.exe",
+			"args": [
+				"delete",
+				"pods",
+				"-n",
+				"deliver-eats",
+				"-l",
+				"app.kubernetes.io/part-of=deliver-eats"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "wait-and-get-pods-wide",
+			"type": "shell",
+			"command": "Start-Sleep -Seconds 20; kubectl get pods -n deliver-eats -o wide",
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "check-artifact-reader-binding",
+			"type": "shell",
+				"command": "gcloud projects get-iam-policy saproyecto-494423 --flatten=\"bindings[].members\" --filter=\"bindings.members:serviceAccount:artifact-puller@enduring-guard-457223-c4.iam.gserviceaccount.com AND bindings.role:roles/artifactregistry.reader\" --format=\"table(bindings.role,bindings.members)\"",
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "check-artifact-reader-binding-quoted",
+			"type": "shell",
+				"command": "gcloud projects get-iam-policy saproyecto-494423 --flatten='bindings[].members' --filter='bindings.members:serviceAccount:artifact-puller@enduring-guard-457223-c4.iam.gserviceaccount.com AND bindings.role:roles/artifactregistry.reader' --format='table(bindings.role,bindings.members)'",
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "check-artifact-reader-binding-cmd",
+			"type": "shell",
+			"command": "gcloud.cmd",
+			"args": [
+				"projects",
+				"get-iam-policy",
+				"saproyecto-494423",
+				"--flatten=bindings[].members",
+				"--filter=bindings.members:serviceAccount:artifact-puller@enduring-guard-457223-c4.iam.gserviceaccount.com AND bindings.role:roles/artifactregistry.reader",
+				"--format=table(bindings.role,bindings.members)"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "check-artifact-reader-binding-json",
+			"type": "shell",
+			"command": "gcloud.cmd",
+			"args": [
+				"projects",
+				"get-iam-policy",
+				"saproyecto-494423",
+				"--flatten=bindings[].members",
+				"--filter=bindings.members:serviceAccount:artifact-puller@enduring-guard-457223-c4.iam.gserviceaccount.com AND bindings.role:roles/artifactregistry.reader",
+				"--format=json"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "add-artifact-reader-binding",
+			"type": "shell",
+			"command": "gcloud.cmd",
+			"args": [
+				"projects",
+				"add-iam-policy-binding",
+				"saproyecto-494423",
+				"--member=serviceAccount:artifact-puller@enduring-guard-457223-c4.iam.gserviceaccount.com",
+				"--role=roles/artifactregistry.reader"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "tmp-cmd2-secret-recreate",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"kubectl create secret docker-registry artifact-registry-pull-secret --namespace deliver-eats --docker-server=us-central1-docker.pkg.dev --docker-username=_json_key --docker-password=\"$(tr -d '\\r' < /c/Users/diego/Downloads/service-account.json)\" --docker-email=not-used@example.com --dry-run=client -o yaml | kubectl apply -f -"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp-cmd4-sleep-getpods",
+			"type": "shell",
+			"command": "Start-Sleep -Seconds 20; kubectl get pods -n deliver-eats",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-cmd5-iam-reader-value",
+			"type": "shell",
+			"command": "gcloud.cmd",
+			"args": [
+				"projects",
+				"get-iam-policy",
+				"saproyecto-494423",
+				"--flatten=bindings[].members",
+				"--filter=bindings.members:serviceAccount:artifact-puller@enduring-guard-457223-c4.iam.gserviceaccount.com AND bindings.role:roles/artifactregistry.reader",
+				"--format=value(bindings.role)"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp-cmd4-exact2",
+			"type": "shell",
+			"command": "Start-Sleep -Seconds 20; kubectl.exe get pods -n deliver-eats",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-cmd5-exact-fixed-quoting",
+			"type": "shell",
+				"command": "gcloud.cmd projects get-iam-policy saproyecto-494423 --flatten='bindings[].members' --filter='bindings.members:serviceAccount:artifact-puller@enduring-guard-457223-c4.iam.gserviceaccount.com AND bindings.role:roles/artifactregistry.reader' --format='value(bindings.role)'",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-kubectl-get-deploy-frontend",
+			"type": "shell",
+			"command": "kubectl get deployment frontend -n deliver-eats",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-kubectl-get-frontend-pods-wide",
+			"type": "shell",
+			"command": "kubectl get pods -n deliver-eats -l app.kubernetes.io/name=frontend -o wide",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-kubectl-describe-frontend-tail30",
+			"type": "shell",
+			"command": "bash -lc \"kubectl describe deployment frontend -n deliver-eats | tail -n 30\"",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-kubectl-describe-frontend-last30-ps",
+			"type": "shell",
+			"command": "kubectl describe deployment frontend -n deliver-eats | Select-Object -Last 30",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-describe-specific-frontend-pod",
+			"type": "shell",
+			"command": "kubectl describe pod frontend-7f87cd4b9f-6hvw8 -n deliver-eats",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-get-dockerconfigjson-secret",
+			"type": "shell",
+			"command": "kubectl get secret artifact-registry-pull-secret -n deliver-eats -o jsonpath='{.data.\\.dockerconfigjson}'",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-decode-dockerconfig-host-username",
+			"type": "shell",
+			"command": "$raw = kubectl get secret artifact-registry-pull-secret -n deliver-eats -o jsonpath='{.data.\\.dockerconfigjson}'; $cfg = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw)) | ConvertFrom-Json; $cfg.auths.PSObject.Properties | ForEach-Object { [pscustomobject]@{host=$_.Name; username=$_.Value.username} } | ConvertTo-Json -Compress",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-build-api-gateway-dev",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"build",
+				"-t",
+				"us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/api-gateway:dev",
+				"-f",
+				"./Delivery-system/gateaway/Dockerfile",
+				"./Delivery-system"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp-push-api-gateway-dev",
+			"type": "shell",
+			"command": "docker",
+			"args": [
+				"push",
+				"us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/api-gateway:dev"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp-rollout-restart-api-gateway",
+			"type": "shell",
+			"command": "kubectl",
+			"args": [
+				"rollout",
+				"restart",
+				"deployment/api-gateway",
+				"-n",
+				"deliver-eats"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp-rollout-status-api-gateway",
+			"type": "shell",
+			"command": "kubectl",
+			"args": [
+				"rollout",
+				"status",
+				"deployment/api-gateway",
+				"-n",
+				"deliver-eats",
+				"--timeout=240s"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp-get-api-gateway-pods-wide",
+			"type": "shell",
+			"command": "kubectl",
+			"args": [
+				"get",
+				"pods",
+				"-n",
+				"deliver-eats",
+				"-l",
+				"app.kubernetes.io/name=api-gateway",
+				"-o",
+				"wide"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp-get-api-gateway-image",
+			"type": "shell",
+			"command": "kubectl",
+			"args": [
+				"get",
+				"deployment",
+				"api-gateway",
+				"-n",
+				"deliver-eats",
+				"-o=jsonpath={.spec.template.spec.containers[0].image}"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp-rollout-status-api-gateway-final",
+			"type": "shell",
+			"command": "kubectl rollout status deployment/api-gateway -n deliver-eats --timeout=240s",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-get-api-gateway-pods-wide-final",
+			"type": "shell",
+			"command": "kubectl get pods -n deliver-eats -l app.kubernetes.io/name=api-gateway -o wide",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-get-api-gateway-image-final",
+			"type": "shell",
+			"command": "kubectl get deployment api-gateway -n deliver-eats -o=jsonpath='{.spec.template.spec.containers[0].image}'",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-get-api-gateway-deploy-status-table",
+			"type": "shell",
+			"command": "kubectl get deployment api-gateway -n deliver-eats",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-get-api-gateway-pods-wide-now",
+			"type": "shell",
+			"command": "kubectl get pods -n deliver-eats -l app.kubernetes.io/name=api-gateway -o wide",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-rollout-status-api-gateway-definitive",
+			"type": "shell",
+			"command": "kubectl rollout status deployment/api-gateway -n deliver-eats --timeout=240s",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-get-user-service-deployment",
+			"type": "shell",
+			"command": "kubectl get deployment user-service -n deliver-eats",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-get-user-service-pods-wide",
+			"type": "shell",
+			"command": "kubectl get pods -n deliver-eats -l app.kubernetes.io/name=user-service -o wide",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-user-service-logs-tail30",
+			"type": "shell",
+			"command": "kubectl logs -n deliver-eats deployment/user-service --tail=30",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-describe-user-service-pod-tail30",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"$pod = kubectl get pods -n deliver-eats -l app.kubernetes.io/name=user-service -o jsonpath='{.items[0].metadata.name}'; kubectl describe pod -n deliver-eats $pod | Select-Object -Last 30"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "tmp-describe-user-service-pod-tail30-v2",
+			"type": "shell",
+			"command": "kubectl describe pod -n deliver-eats $(kubectl get pods -n deliver-eats -l app.kubernetes.io/name=user-service -o jsonpath='{.items[0].metadata.name}') | tail -n 30",
+			"isBackground": false
+		},
+		{
+			"label": "tmp-describe-user-service-pod-tail30-ps",
+			"type": "shell",
+			"command": "$pod = kubectl get pods -n deliver-eats -l app.kubernetes.io/name=user-service -o jsonpath='{.items[0].metadata.name}'; kubectl describe pod -n deliver-eats $pod | Select-Object -Last 30",
+			"isBackground": false
+		},
+		{
+			"label": "copilot-step1-user-deploy",
+			"type": "shell",
+			"command": "kubectl get deployment user-service -n deliver-eats",
+			"isBackground": false
+		},
+		{
+			"label": "copilot-step2-user-pods-wide",
+			"type": "shell",
+			"command": "kubectl get pods -n deliver-eats -l app.kubernetes.io/name=user-service -o wide",
+			"isBackground": false
+		},
+		{
+			"label": "copilot-step3-user-logs-60",
+			"type": "shell",
+			"command": "kubectl logs -n deliver-eats deployment/user-service --tail=60",
+			"isBackground": false
+		},
+		{
+			"label": "copilot-step4-post-user-status-body",
+			"type": "shell",
+			"command": "$body = '{\"name\":\"asdasd\",\"email\":\"pruebascliente@gmail.com\",\"password\":\"12345678\",\"role\":\"CLIENTE\"}'; curl.exe -sS -X POST \"http://34.36.97.164/api/users\" -H \"Content-Type: application/json\" -d $body -w \"`nHTTP_STATUS:%{http_code}`n\"",
+			"isBackground": false
+		},
+		{
+			"label": "copilot-step4-post-user-status-body-v2",
+			"type": "shell",
+			"command": "$body = '{\"name\":\"asdasd\",\"email\":\"pruebascliente@gmail.com\",\"password\":\"12345678\",\"role\":\"CLIENTE\"}'; try { $r = Invoke-WebRequest -Uri 'http://34.36.97.164/api/users' -Method Post -ContentType 'application/json' -Body $body -TimeoutSec 45; Write-Output $r.Content; Write-Output (\"HTTP_STATUS:\" + [int]$r.StatusCode) } catch { if ($_.Exception.Response) { $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream()); $resp = $reader.ReadToEnd(); $code = [int]$_.Exception.Response.StatusCode; Write-Output $resp; Write-Output (\"HTTP_STATUS:\" + $code) } else { Write-Output $_.Exception.Message; Write-Output 'HTTP_STATUS:000' } }",
+			"isBackground": false
+		},
+		{
+			"label": "copilot-step4-post-user-status-body-v3",
+			"type": "shell",
+			"command": "$body = '{\"name\":\"asdasd\",\"email\":\"pruebascliente@gmail.com\",\"password\":\"12345678\",\"role\":\"CLIENTE\"}'; try { $r = Invoke-WebRequest -Uri 'http://34.36.97.164/api/users' -Method Post -ContentType 'application/json' -Body $body -TimeoutSec 45; Write-Output $r.Content; Write-Output ('HTTP_STATUS:{0}' -f [int]$r.StatusCode) } catch { if ($_.Exception.Response) { $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream()); $resp = $reader.ReadToEnd(); $code = [int]$_.Exception.Response.StatusCode; Write-Output $resp; Write-Output ('HTTP_STATUS:{0}' -f $code) } else { Write-Output $_.Exception.Message; Write-Output 'HTTP_STATUS:000' } }",
+			"isBackground": false
+		},
+		{
+			"label": "copilot-step5-apigw-logs-80",
+			"type": "shell",
+			"command": "kubectl logs -n deliver-eats deployment/api-gateway --tail=80",
+			"isBackground": false
+		},
+		{
+			"label": "copilot-step5-user-logs-80",
+			"type": "shell",
+			"command": "kubectl logs -n deliver-eats deployment/user-service --tail=80",
+			"isBackground": false
+		}
+	]
+}

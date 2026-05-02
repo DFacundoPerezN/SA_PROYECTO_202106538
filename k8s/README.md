@@ -53,7 +53,7 @@ gcloud projects list
 Define tu proyecto real, el que contiene el clúster, y configura credenciales del cluster:
 
 ```bash
-gcloud config set project project-26fc9494-b364-4414-ba9
+gcloud config set project saproyecto-494423
 gcloud config set compute/zone us-central1-a
 gcloud container clusters get-credentials deliver-eats-dev --zone us-central1-a
 ```
@@ -70,7 +70,7 @@ kubectl get nodes
 Edita [02-secrets.yaml](02-secrets.yaml) y reemplaza todos los valores `REPLACE_*`.
 
 ```bash
-export PROJECT_ID="project-26fc9494-b364-4414-ba9"
+export PROJECT_ID="saproyecto-494423"
 export REGION="us-central1"
 export REGISTRY="$REGION-docker.pkg.dev"
 
@@ -112,7 +112,7 @@ Formato esperado:
 Desde la raiz del repositorio, ejecuta en Git Bash:
 
 ```bash
-PROJECT_ID="project-26fc9494-b364-4414-ba9" \
+PROJECT_ID="saproyecto-494423" \
 REGION="us-central1" \
 REPOSITORY="deliver-eats-repo" \
 TAG="dev" \
@@ -123,7 +123,7 @@ Si quieres fijar la cuenta activa desde el script, agrega `GCP_ACCOUNT`:
 
 ```bash
 GCP_ACCOUNT="TU_NUEVA_CUENTA@gmail.com" \
-PROJECT_ID="project-26fc9494-b364-4414-ba9" \
+PROJECT_ID="saproyecto-494423" \
 REGION="us-central1" \
 REPOSITORY="deliver-eats-repo" \
 TAG="dev" \
@@ -133,7 +133,7 @@ TAG="dev" \
 Confirma que las imagenes quedaron en el registry:
 
 ```bash
-gcloud artifacts docker images list us-central1-docker.pkg.dev/project-26fc9494-b364-4414-ba9/deliver-eats-repo
+gcloud artifacts docker images list us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo
 ```
 
 ## 5) Ajustar dominio dev (si usaras Ingress con host)
@@ -263,7 +263,7 @@ Desde la raiz del repo:
 
 ```bash
 chmod +x ./k8s/scripts/create-cloudbuild-trigger.sh
-PROJECT_ID="project-26fc9494-b364-4414-ba9" \
+PROJECT_ID="saproyecto-494423" \
 REGION="us-central1" \
 REPO_OWNER="DFacundoPerezN" \
 REPO_NAME="SA_PROYECTO_202106538" \
