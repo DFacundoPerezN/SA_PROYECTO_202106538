@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cloudsql-proxy
+  namespace: deliver-eats
+  annotations:
+    iam.gke.io/gcp-service-account: cloudsql-proxy@saproyecto-494423.iam.gserviceaccount.com
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudsql-auth-proxy
+  namespace: deliver-eats
+  labels:
+    app: cloudsql-auth-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudsql-auth-proxy
+  template:
+    metadata:
+      labels:
+        app: cloudsql-auth-proxy
+    spec:
+      serviceAccountName: cloudsql-proxy
+      containers:
+      - name: cloud-sql-proxy
+        # Usar la imagen del Cloud SQL Auth Proxy v2
+        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.7.0
+        
+        args:
+          - "saproyecto-494423:us-central1:deliver-eats-sqlserver"
+          # Puerto local en el que escuchar
+          - "--port=1433"
+          # IP en la que escuchar (0.0.0.0 para aceptar desde cualquier pod)
+          - "--address=0.0.0.0"
+          - "--private-ip"
+          - "--max-connections=100"
+        
+        ports:
+        - containerPort: 1433
+          name: sqlserver
+          protocol: TCP
+        
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        
+        livenessProbe:
+          tcpSocket:
+            port: sqlserver
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        readinessProbe:
+          tcpSocket:
+            port: sqlserver
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 2
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudsql-proxy
+  namespace: deliver-eats
+  labels:
+    app: cloudsql-auth-proxy
+spec:
+  type: ClusterIP
+  ports:
+  - port: 1433
+    targetPort: 1433
+    protocol: TCP
+    name: sqlserver
+  selector:
+    app: cloudsql-auth-proxy

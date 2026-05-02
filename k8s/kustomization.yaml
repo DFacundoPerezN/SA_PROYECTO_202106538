@@ -18,25 +18,26 @@ resources:
   - 20-ingress.yaml
   - 21-order-auto-reject-cronjob.yaml
   - 22-observability.yaml
+  - 23-cloudsql-proxy.yaml
   - 23-kibana-dashboards.yaml
 images:
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/api-gateway
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/api-gateway
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/api-gateway
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/auth-service
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/auth-service
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/auth-service
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/user-service
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/user-service
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/user-service
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/catalog-service
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/catalog-service
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/catalog-service
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/restaurant-service
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/restaurant-service
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/restaurant-service
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/order-service
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/order-service
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/order-service
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/notification-service
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/notification-service
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/notification-service
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/convert-service
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/convert-service
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/convert-service
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/payment-service
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/payment-service
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/payment-service
-  - name: us-central1-docker.pkg.dev/enduring-guard-457223-c4/deliver-eats-repo/frontend
+  - name: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/frontend
     newName: us-central1-docker.pkg.dev/saproyecto-494423/deliver-eats-repo/frontend
